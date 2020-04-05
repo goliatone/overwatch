@@ -48,8 +48,8 @@ function dev:frontend {
     popd
 
     mkdir -p ./backend/modules/server/public/build
-    cp ./frontend/public/build/* ./backend/modules/server/public/build
-    cp ./frontend/public/global.css ./backend/modules/server/public/global.css
+    cp ./frontend/public/* ./backend/modules/server/public/build
+    rm -f ./backend/modules/server/public/index.html
 }
 
 function dev:docker {
@@ -58,13 +58,12 @@ function dev:docker {
 }
 
 function dev:run {
-    
     NAME=goliatone/crime-visualization-backend
     docker run -it --rm --env-file ./backend/.envset -p 4981:1981 -p 9090:9090 -d "$NAME"
 }
 
 ##########################################
-# Publish NPM/Github Tags
+# Release build
 ##########################################
 
 function release:docker {
@@ -73,40 +72,6 @@ function release:docker {
     popd
     NAME=goliatone/crime-visualization-backend
     docker build --no-cache --tag "$NAME" .
-}
-
-
-
-##########################################
-# Publish NPM/Github Tags
-##########################################
-
-function _publish:check {
-    if output=$(git status --untracked-files=no --porcelain) && [ -z "$output" ]; then
-        # Working directory clean
-        echo "Ready to publish..."    
-    else
-        red=`tput setaf 1`
-        reset=`tput sgr0`
-        echo "  ${red}Git working directory not clean."
-        echo "  Commit your changes and try again.${reset}"
-        exit 1
-    fi
-}
-
-function publish:major {
-    _publish:check
-    npm version major && npm publish && npm version patch && git push --tags && git push origin master
-}
-
-function publish:minor {
-    _publish:check
-    npm version minor && npm publish && npm version patch && git push --tags && git push origin master
-}
-
-function publish:patch {
-    _publish:check
-    npm version patch && npm publish && git push --tags && git push origin master
 }
 
 function help {
