@@ -47,30 +47,23 @@
         });
 
         /**
-             * Animate map on first render
-             */ 
-            map.flyTo({ 
-                center: features[0].coordinates,
-                essential: true,
-                curve: 1,
-                speed: 0.2,
-                // zoom: 9,
-                // pitch: 0
-            });
+         * Animate map on first render
+         */ 
+        map.flyTo({ 
+            center: features[0].coordinates,
+            essential: true,
+            curve: 1,
+            // speed: 0.9,
+            bearing: 0,
+            duration: 5200,
+            // zoom: 9,
+            // pitch: 0
+        });
     }
     window.updateDataSource = updateDataSource;
 
     function initializeMap() {
         mapboxgl.accessToken = accessToken;
-
-        let options = {
-            city: 'sacramento',
-            center: [
-                -121.478851, 
-                38.575764
-            ],
-        };
-
 
         /**
          * dark-v10
@@ -82,7 +75,7 @@
             center: activeCity.center,
             zoom: 15,
             pitch: 60, // pitch in degrees
-            bearing: 0, // bearing in degrees
+            bearing: 30, // bearing in degrees
         };
     
         map = new mapboxgl.Map(mapOptions);
@@ -147,18 +140,6 @@
 
 
             await incidents.listItems('sacramento', {page:1, size:200});
-
-            // /**
-            //  * Animate map on first render
-            //  */ 
-            // map.flyTo({ 
-            //     center: options.flyTo,
-            //     essential: true,
-            //     curve: 1,
-            //     speed: 0.2,
-            //     // zoom: 9,
-            //     // pitch: 0
-            // });
         });
     }
 
@@ -172,7 +153,9 @@
                 center: $incidentItems[newActiveMapItem].coordinates,
                 essential: true,
                 curve: 1,
-                speed: 0.2,
+                // speed: 0.8,
+                bearing: 0,
+                duration: 3200,
                 // zoom: 9,
                 // pitch: 0
             });
@@ -203,6 +186,8 @@
         width: 100%;
         height: 100%;
         background-color: #393838;
+        background-color: #393838;
+        
     }
 
     #map:before {

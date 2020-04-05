@@ -3,7 +3,7 @@
 Uses [Mapbox GL](https://docs.mapbox.com/mapbox-gl-js/examples/) to render map.
 Map code using [svelte-reactive-map-list](https://gitlab.com/brycedorn/svelte-reactive-map-list)
 
-We would use tokens with right scopes and restrict the URL to our application's domain. Tokens would be rendered by backend so that we can [rotate](https://docs.mapbox.com/accounts/overview/tokens/) them and maintain a level of control.
+We would use tokens with right scopes and restrict the URL to our application's domain. Tokens would be [generated](https://docs.mapbox.com/api/accounts/#tokens) and rendered by backend so that we can [rotate](https://docs.mapbox.com/accounts/overview/tokens/) them and maintain a level of control.
 
 MapBox security:
 
@@ -12,11 +12,17 @@ MapBox security:
 
 ## TODO
 
-- [ ] Show MapBox map 
-- [ ] Create components
-- [ ] Pull data from Server
+- [x] Show MapBox map 
+- [x] Create components
+- [x] Pull data from Server
+    - [x] Paginate * 
+    - [ ] Query * 
+    - [ ] Sort * 
+- [ ] Export as web component *
 
-Strech goals:
+* strech goal
 
-- [ ] Export as web component
 
+<!-- 
+https://www.heropatterns.com/
+-->

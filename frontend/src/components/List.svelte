@@ -7,6 +7,21 @@
     import { activeListItem, activeMapItem } from '../stores.js';
     import { activeCity } from '../consts.js';
 
+    let tid;
+    let eye = 0;
+    let start = true;
+    function updateEye() {
+        if(!tid) tid = setInterval(updateEye, 200);
+        eye++;
+        if(eye > 2){ 
+            eye = 1;
+            clearInterval(tid);
+            setTimeout(updateEye, 1000);
+        }
+    }
+    updateEye();
+    
+
     // Define the ref
     let listRef;
 
@@ -90,33 +105,58 @@
         overflow: scroll;
     }
 
+    .list-item-wrapper {
+        width: 100%;
+        border-left: 1px solid #f6f6fc;
+        border-bottom: #ccc solid 1px;
+        cursor: pointer;
+    }
+
+    .list-item-wrapper.active { 
+        border-left: 4px solid #ff3377;
+        transition: border-width 0.2s ease-out;
+    }
+
     .list-item {
         /* font-family: Helvetica, Arial, sans-serif;
         font-size: 1.2em;
         line-height: 1.5em; */
-        width: 100%;
         margin: 0px 40px 0px 40px;
-        border-bottom: #ccc solid 1px;
-    }
-
-    .list-item.active { 
-        background-color: #ff3377;
+        padding-top: 8px;
+        padding-bottom: 12px;
+        display: flex;
+        flex-direction: column;
     }
 
     .list-item .description {
         font-size: 1.2em;
+        line-height: 1.3em;
+        padding-bottom: 8px;
     }
 
+    .list-item .meta {
+        font-size: 0.9em;
+        line-height: 1em;
+    }
+
+
     .head {
-        position: -webkit-sticky;
         position: sticky;
+        position: -webkit-sticky;
         top: 0;
-        background:#fff;
         width: 100%;
         align-self: flex-start;
+        background-color: #f6f6fc;
     }
     .title {
         margin: 30px 40px;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .title > .logo > img {
+        width: 48px;
+        padding-right: 6px;
     }
 
     .loader {
@@ -135,13 +175,23 @@
         bottom: 0px;
         height: 40px;
         width:100%;
-        background-color:#232332;
+        background-color:#252529;
         padding: 20px 40px;
     }
 
-    h5 {
+    .pagination > button:first-child {
+        margin-right: 4%;
+    }
+
+    .pagination > button {
+        width: 46%;
+    }
+
+    h2 {
         font-family: Helvetica, Arial, sans-serif;
         text-transform: capitalize;
+        /** this is to compensate for the icons attribution padding **/
+        line-height: 16px; 
     }
 </style>
 
@@ -149,17 +199,20 @@
   
   <div class="head">
     <div class="title">
-        <h2>Overwatch: Sacramento</h2>
+        <span class="logo"><img src="/images/eye-0{eye}.svg"/></span>
+        <h2>Overwatch</h2>
     </div>
   </div>
 
 {#if $incidentItems && $incidentItems.length}
   {#each $incidentItems as listItem, index}
-    <div on:click={_=>setActiveMapItem(index)} class="list-item {$activeMapItem === index ? 'active': ''}" id="list-item-{index}">
-        <div>
+    <div on:click={_=>setActiveMapItem(index)} class="list-item-wrapper {$activeMapItem === index ? 'active': ''}" id="list-item-{index}">
+        <div class="list-item">
             <span class="description">{listItem.description}</span>
+            <div class="meta">
+                <small>Reported on </small><span class="date">{listItem.date}</span> <small>At</small> <span class="address">{listItem.address}</span>
+            </div>
         </div>
-        Reported on <span>{listItem.date} At {listItem.address}</span>
     </div>
   {/each}
 {:else}
