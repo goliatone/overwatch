@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+'use strict';
+const pkg = require('../package');
+const program = require('commander');
+const methods = require('../lib/data-formatter');
+
+program
+    .version(pkg.version)
+    .requiredOption('-d, --data <source>', 'Path to json data file')
+    .parse(process.argv);
+
+let data;
+const filepath = program.data;
+try {
+    data = methods.load(filepath);
+} catch (error) {
+    console.error('Error loading data...');
+    console.error(error);
+    process.exit(1);
+}
+
+/**
+ * Format data:
+ * 
+ * ```json
+ * {
+ *    "date": "1/1/06 0:00",
+ *    "address": "1326 HELMSMAN WAY",
+ *    "beat": "1B        ",
+ *    "grid": 444,
+ *    "crimeDescription": "1708 US   THEFT OF MAIL",
+ *    "code": "2310",
+ *    "coordinates": [
+ *      38.60960217,
+ *      -121.4918375
+ *    ]
+ *  }
+ * ```
+ */
+
+let output = methods.format(data, true);
+console.log(output);

@@ -1,0 +1,24 @@
+{
+    "name": "crime-visualization-frontend",
+    "version": "0.0.0",
+    "description": "Crime visualization frontend",
+    "scripts": {
+        "build": "rollup -c",
+        "dev": "rollup -c -w",
+        "test": "./node_modules/.bin/bogota",
+        "start": "sirv public"
+    },
+    "author": "burgosemi@gmail.com",
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^11.0.0",
+        "@rollup/plugin-node-resolve": "^7.0.0",
+        "in-view": "^0.6.1",
+        "mapbox-gl": "^1.9.1",
+        "rollup": "^1.20.0",
+        "rollup-plugin-livereload": "^1.0.0",
+        "rollup-plugin-svelte": "^5.0.3",
+        "rollup-plugin-terser": "^5.1.2",
+        "sirv-cli": "^0.4.4",
+        "svelte": "^3.0.0"
+    }
+}

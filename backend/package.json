@@ -1,0 +1,35 @@
+{
+    "name": "crime-visualization-backend",
+    "version": "0.0.5",
+    "description": "Crime visualization backend offering data services",
+    "main": "index.js",
+    "scripts": {
+        "test": "./node_modules/.bin/bogota",
+        "dtest": "watch bogota tests/",
+        "cover": "./node_modules/.bin/nyc npm test",
+        "start": "node index.js"
+    },
+    "author": "burgosemi@gmail.com",
+    "dependencies": {
+        "@polka/redirect": "^1.0.0-next.0",
+        "@polka/send-type": "^0.5.2",
+        "application-core": "*",
+        "body-parser": "^1.19.0",
+        "commander": "^5.0.0",
+        "cors": "^2.8.5",
+        "ejs": "^3.0.2",
+        "moment": "^2.24.0",
+        "polka": "^0.5.2",
+        "sirv": "^0.4.2"
+    },
+    "devDependencies": {
+        "bogota": "^2.0.4",
+        "csv2json": "^2.0.2",
+        "nyc": "^10.3.2",
+        "sinon": "^7.3.2",
+        "tap-spec": "^5.0.0",
+        "tape": "^4.13.2",
+        "tape-catch": "^1.0.6",
+        "watch": "^1.0.2"
+    }
+}

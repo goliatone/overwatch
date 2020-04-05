@@ -1,0 +1,261 @@
+[{
+        "id": 1,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "3108 occidental dr",
+        "beat": "3C",
+        "grid": 1115,
+        "description": "10851(a)vc take veh w/o owner",
+        "code": "2404",
+        "coordinates": [-121.3914158,
+            38.55042047
+        ]
+    },
+    {
+        "id": 2,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "2082 expedition way",
+        "beat": "5A",
+        "grid": 1512,
+        "description": "459 pc  burglary residence",
+        "code": "2204",
+        "coordinates": [-121.4901858,
+            38.47350069
+        ]
+    },
+    {
+        "id": 3,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "4 palen ct",
+        "beat": "2A",
+        "grid": 212,
+        "description": "10851(a)vc take veh w/o owner",
+        "code": "2404",
+        "coordinates": [-121.4621009,
+            38.65784584
+        ]
+    },
+    {
+        "id": 4,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "22 beckford ct",
+        "beat": "6C",
+        "grid": 1443,
+        "description": "476 pc pass ficticious check",
+        "code": "2501",
+        "coordinates": [-121.4269508,
+            38.50677377
+        ]
+    },
+    {
+        "id": 5,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "3421 auburn blvd",
+        "beat": "2A",
+        "grid": 508,
+        "description": "459 pc  burglary-unspecified",
+        "code": "2299",
+        "coordinates": [-121.3846125,
+            38.6374478
+        ]
+    },
+    {
+        "id": 6,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "5301 bonniemae way",
+        "beat": "6B",
+        "grid": 1084,
+        "description": "530.5 pc use personal id info",
+        "code": "2604",
+        "coordinates": [-121.4513383,
+            38.52697863
+        ]
+    },
+    {
+        "id": 7,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "2217 16th ave",
+        "beat": "4A",
+        "grid": 957,
+        "description": "459 pc  burglary vehicle",
+        "code": "2299",
+        "coordinates": [-121.4875774,
+            38.537173
+        ]
+    },
+    {
+        "id": 8,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "3547 p st",
+        "beat": "3C",
+        "grid": 853,
+        "description": "484 pc   petty theft/inside",
+        "code": "2308",
+        "coordinates": [-121.4618826,
+            38.56433456
+        ]
+    },
+    {
+        "id": 9,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "3421 auburn blvd",
+        "beat": "2A",
+        "grid": 508,
+        "description": "459 pc  burglary business",
+        "code": "2203",
+        "coordinates": [-121.3846125,
+            38.6374478
+        ]
+    },
+    {
+        "id": 10,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "1326 helmsman way",
+        "beat": "1B",
+        "grid": 444,
+        "description": "1708 us   theft of mail",
+        "code": "2310",
+        "coordinates": [-121.4918375,
+            38.60960217
+        ]
+    },
+    {
+        "id": 11,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "2315 stockton blvd",
+        "beat": "6B",
+        "grid": 1005,
+        "description": "Assault with weapon - i rpt",
+        "code": "7000",
+        "coordinates": [-121.4546045,
+            38.55426406
+        ]
+    },
+    {
+        "id": 12,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "5112 63rd st",
+        "beat": "6B",
+        "grid": 1088,
+        "description": "530.5 pc use personal id info",
+        "code": "2604",
+        "coordinates": [-121.4314528,
+            38.52816497
+        ]
+    },
+    {
+        "id": 13,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "6351 driftwood st",
+        "beat": "4C",
+        "grid": 1261,
+        "description": "Susp pers-no crime - i rpt",
+        "code": "7000",
+        "coordinates": [-121.5488201,
+            38.51092155
+        ]
+    },
+    {
+        "id": 14,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "7721 college town dr",
+        "beat": "3C",
+        "grid": 888,
+        "description": "530.5 pc use personal id info",
+        "code": "2604",
+        "coordinates": [-121.4142729,
+            38.55611545
+        ]
+    },
+    {
+        "id": 15,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "8460 rovana cir",
+        "beat": "6C",
+        "grid": 1447,
+        "description": "484g(b) pc access card fraud",
+        "code": "2605",
+        "coordinates": [-121.3923987,
+            38.50398051
+        ]
+    },
+    {
+        "id": 16,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "4856 11th ave",
+        "beat": "6B",
+        "grid": 1054,
+        "description": "487(a) pc grand theft",
+        "code": "2303",
+        "coordinates": [-121.4495097,
+            38.54152896
+        ]
+    },
+    {
+        "id": 17,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "6033 69th st",
+        "beat": "6C",
+        "grid": 1403,
+        "description": "Telepest -i rpt",
+        "code": "7000",
+        "coordinates": [-121.4234749,
+            38.51657327
+        ]
+    },
+    {
+        "id": 18,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "547 l st",
+        "beat": "3M",
+        "grid": 742,
+        "description": "487(a) grand theft-inside",
+        "code": "2308",
+        "coordinates": [-121.5011657,
+            38.58184562
+        ]
+    },
+    {
+        "id": 19,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "3525 42nd st",
+        "beat": "6A",
+        "grid": 1034,
+        "description": "530.5 pc use personal id info",
+        "code": "2604",
+        "coordinates": [-121.4572067,
+            38.54270763
+        ]
+    },
+    {
+        "id": 20,
+        "date": "1/1/06 0:00",
+        "timestamp": "2006-01-01T08:00:00.000Z",
+        "address": "5641 dorset way",
+        "beat": "4C",
+        "grid": 1225,
+        "description": "484j pc publish card info",
+        "code": "2605",
+        "coordinates": [-121.5203609,
+            38.52459987
+        ]
+    }
+]
