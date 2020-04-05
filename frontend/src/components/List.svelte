@@ -2,25 +2,12 @@
     import inView from 'in-view';
     import { onMount, onDestroy } from 'svelte';
     import { fly } from 'svelte/transition';
-        
+    
+    import Header from './Header.svelte';
+
     import incidents, {incidentItems} from '../stores/incidents';
     import { activeListItem, activeMapItem } from '../stores.js';
     import { activeCity } from '../consts.js';
-
-    let tid;
-    let eye = 0;
-    let start = true;
-    function updateEye() {
-        if(!tid) tid = setInterval(updateEye, 200);
-        eye++;
-        if(eye > 2){ 
-            eye = 1;
-            clearInterval(tid);
-            setTimeout(updateEye, 1000);
-        }
-    }
-    updateEye();
-    
 
     // Define the ref
     let listRef;
@@ -139,26 +126,6 @@
         line-height: 1em;
     }
 
-
-    .head {
-        position: sticky;
-        position: -webkit-sticky;
-        top: 0;
-        width: 100%;
-        align-self: flex-start;
-        background-color: #f6f6fc;
-    }
-    .title {
-        margin: 30px 40px;
-        display: flex;
-        flex-direction: row;
-    }
-
-    .title > .logo > img {
-        width: 48px;
-        padding-right: 6px;
-    }
-
     .loader {
         margin: 30px 40px;
     }
@@ -186,23 +153,11 @@
     .pagination > button {
         width: 46%;
     }
-
-    h2 {
-        font-family: Helvetica, Arial, sans-serif;
-        text-transform: capitalize;
-        /** this is to compensate for the icons attribution padding **/
-        line-height: 16px; 
-    }
 </style>
 
 <div id="list-items" bind:this="{listRef}">
   
-  <div class="head">
-    <div class="title">
-        <span class="logo"><img src="/images/eye-0{eye}.svg"/></span>
-        <h2>Overwatch</h2>
-    </div>
-  </div>
+  <Header doAnimate={visible}/>
 
 {#if $incidentItems && $incidentItems.length}
   {#each $incidentItems as listItem, index}
