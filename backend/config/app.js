@@ -11,4 +11,5 @@ module.exports = {
     name: 'Svelte Front End Template',
     basepath: resolve('./'),
     environment: process.env.NODE_ENV || 'development',
+    registry: false
 };
