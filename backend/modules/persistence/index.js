@@ -1,6 +1,6 @@
 'use strict';
 
-const Persistence = require('../lib/database');
+const Persistence = require('../../lib/database');
 
 module.exports.init = function(context, config) {
     const logger = context.getLogger(config.moduleid);
