@@ -37,6 +37,11 @@ var app = (function () {
         const unsub = store.subscribe(...callbacks);
         return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
     }
+    function get_store_value(store) {
+        let value;
+        subscribe(store, _ => value = _)();
+        return value;
+    }
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe(store, callback));
     }
@@ -664,6 +669,16 @@ var app = (function () {
 
     const subscriber_queue = [];
     /**
+     * Creates a `Readable` store that allows reading by subscription.
+     * @param value initial value
+     * @param {StartStopNotifier}start start and stop notifications for subscriptions
+     */
+    function readable(value, start) {
+        return {
+            subscribe: writable(value, start).subscribe,
+        };
+    }
+    /**
      * Create a `Writable` store that allows both updating and reading by subscription.
      * @param {*=}value initial value
      * @param {StartStopNotifier=}start start and stop notifications for subscriptions
@@ -712,6 +727,47 @@ var app = (function () {
             };
         }
         return { set, update, subscribe };
+    }
+    function derived(stores, fn, initial_value) {
+        const single = !Array.isArray(stores);
+        const stores_array = single
+            ? [stores]
+            : stores;
+        const auto = fn.length < 2;
+        return readable(initial_value, (set) => {
+            let inited = false;
+            const values = [];
+            let pending = 0;
+            let cleanup = noop;
+            const sync = () => {
+                if (pending) {
+                    return;
+                }
+                cleanup();
+                const result = fn(single ? values[0] : values, set);
+                if (auto) {
+                    set(result);
+                }
+                else {
+                    cleanup = is_function(result) ? result : noop;
+                }
+            };
+            const unsubscribers = stores_array.map((store, i) => subscribe(store, (value) => {
+                values[i] = value;
+                pending &= ~(1 << i);
+                if (inited) {
+                    sync();
+                }
+            }, () => {
+                pending |= (1 << i);
+            }));
+            inited = true;
+            sync();
+            return function stop() {
+                run_all(unsubscribers);
+                cleanup();
+            };
+        });
     }
 
     const activeListItem = writable(0);
@@ -779,6 +835,11 @@ var app = (function () {
     const { subscribe: subscribe$1, set, update: update$1 } = writable([]);
 
     const error = writable('');
+    const metadata = writable({
+        page: 1,
+        size: 100,
+        count: 200
+    });
     const incidentItems = writable([]);
 
     const incidents = _ => ({
@@ -792,6 +853,7 @@ var app = (function () {
                 let data = response.data;
                 let meta = response.meta;
                 set(data);
+                metadata.set(meta);
                 incidentItems.set(data);
                 return data;
             } catch (e) {
@@ -1420,7 +1482,100 @@ var app = (function () {
         };
     }
 
+    /**
+     * Items per page, default 10. 
+     */
+    const itemsPerPage = writable(10);
+    const totalItems = writable(0);
+    const currentItems = writable(0);
+    const currentPage = writable(0);
+
+    const totalPages = derived(
+        [totalItems, itemsPerPage],
+        ([$totalItems, $itemsPerPage]) => {
+            if ($itemsPerPage === 0) return 0;
+            return Math.round($totalItems / $itemsPerPage);
+        });
+
+    const methods = {};
+
+    methods.first = function() {
+        currentPage.update(_ => 1);
+        currentItems.set(get_store_value(itemsPerPage));
+    };
+
+    methods.prev = function() {
+        let page = get_store_value(currentPage) - 1;
+        if (page > 0) {
+            currentPage.set(page);
+            currentItems.set(page * get_store_value(itemsPerPage));
+        }
+    };
+
+    methods.prevItem = function() {
+        let prev = get_store_value(currentItems) - 1;
+        if (prev < 1) return;
+        let prevPage = Math.ceil(prev / get_store_value(itemsPerPage));
+        currentItems.set(prev);
+        if (prevPage < get_store_value(currentPage) && prevPage > 0) {
+            currentPage.set(prevPage);
+        }
+    };
+
+    methods.goto = function(page) {
+        if (page < 1 || page > get_store_value(totalPages)) return;
+        if (page === get_store_value(currentPage)) return;
+        currentPage.set(page);
+        currentItems.set(page * get_store_value(itemsPerPage));
+    };
+
+    methods.next = function() {
+        let page = get_store_value(currentPage) + 1;
+        if (page <= get_store_value(totalPages)) {
+            currentPage.set(page);
+            currentItems.set(page * get_store_value(itemsPerPage));
+        }
+    };
+
+    methods.nextItem = function() {
+        let next = get_store_value(currentItems) + 1;
+        if (next > get_store_value(totalItems)) return;
+        currentItems.set(next);
+        let nextPage = Math.ceil(next / get_store_value(itemsPerPage));
+        if (nextPage <= get_store_value(totalPages)) {
+            currentPage.set(nextPage);
+        }
+    };
+
+    methods.last = function() {
+        let page = Math.round(get_store_value(totalItems) / get_store_value(itemsPerPage));
+        currentPage.set(page);
+        let limit = page * get_store_value(itemsPerPage);
+        let total = get_store_value(totalItems);
+        if (limit > total) limit = total;
+        currentItems.set(limit);
+    };
+
+    methods.update = function(meta) {
+        if (meta.hasOwnProperty('total')) totalItems.set(meta.total);
+        if (meta.hasOwnProperty('size')) itemsPerPage.set(meta.size);
+        if (meta.hasOwnProperty('page')) methods.goto(meta.page);
+        if (meta.hasOwnProperty('skip')) {
+            let { limit, skip } = meta;
+            currentPage.set(Math.round(skip / limit));
+            currentItems.set(limit);
+        }
+    };
+
+    methods.reset = function() {
+        itemsPerPage.set(10);
+        totalItems.set(0);
+        currentPage.set(0);
+        currentItems.set(0);
+    };
+
     /* src/components/List.svelte generated by Svelte v3.20.1 */
+
     const file$2 = "src/components/List.svelte";
 
     function get_each_context(ctx, list, i) {
@@ -1430,7 +1585,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (150:4) {:else}
+    // (154:4) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -1438,8 +1593,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = "Loading...";
-    			attr_dev(div, "class", "loader svelte-1d3txqm");
-    			add_location(div, file$2, 150, 8, 3692);
+    			attr_dev(div, "class", "loader svelte-cwxjr9");
+    			add_location(div, file$2, 154, 8, 3958);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1456,29 +1611,29 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(150:4) {:else}",
+    		source: "(154:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (148:4) {#if $error}
+    // (152:4) {#if $error}
     function create_if_block_2(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "error svelte-1d3txqm");
-    			add_location(div, file$2, 148, 8, 3632);
+    			attr_dev(div, "class", "error svelte-cwxjr9");
+    			add_location(div, file$2, 152, 8, 3898);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			div.innerHTML = /*$error*/ ctx[4];
+    			div.innerHTML = /*$error*/ ctx[5];
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$error*/ 16) div.innerHTML = /*$error*/ ctx[4];		},
+    			if (dirty & /*$error*/ 32) div.innerHTML = /*$error*/ ctx[5];		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
@@ -1490,14 +1645,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(148:4) {#if $error}",
+    		source: "(152:4) {#if $error}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (136:0) {#if $incidentItems && $incidentItems.length}
+    // (140:0) {#if $incidentItems && $incidentItems.length}
     function create_if_block_1(ctx) {
     	let each_1_anchor;
     	let current;
@@ -1530,7 +1685,7 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$activeMapItem, setActiveMapItem, $incidentItems*/ 12) {
+    			if (dirty & /*$activeMapItem, setActiveMapItem, $incidentItems*/ 20) {
     				each_value = /*$incidentItems*/ ctx[2];
     				validate_each_argument(each_value);
     				let i;
@@ -1586,14 +1741,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(136:0) {#if $incidentItems && $incidentItems.length}",
+    		source: "(140:0) {#if $incidentItems && $incidentItems.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (137:2) {#each $incidentItems as listItem, index}
+    // (141:2) {#each $incidentItems as listItem, index}
     function create_each_block(ctx) {
     	let div2;
     	let div1;
@@ -1642,27 +1797,27 @@ var app = (function () {
     			span2 = element("span");
     			t7 = text(t7_value);
     			t8 = space();
-    			attr_dev(span0, "class", "description svelte-1d3txqm");
-    			add_location(span0, file$2, 139, 12, 3306);
-    			attr_dev(small0, "class", "svelte-1d3txqm");
-    			add_location(small0, file$2, 141, 16, 3409);
+    			attr_dev(span0, "class", "description svelte-cwxjr9");
+    			add_location(span0, file$2, 143, 12, 3572);
+    			attr_dev(small0, "class", "svelte-cwxjr9");
+    			add_location(small0, file$2, 145, 16, 3675);
     			attr_dev(span1, "class", "date");
-    			add_location(span1, file$2, 141, 43, 3436);
-    			attr_dev(small1, "class", "svelte-1d3txqm");
-    			add_location(small1, file$2, 141, 85, 3478);
+    			add_location(span1, file$2, 145, 43, 3702);
+    			attr_dev(small1, "class", "svelte-cwxjr9");
+    			add_location(small1, file$2, 145, 85, 3744);
     			attr_dev(span2, "class", "address");
-    			add_location(span2, file$2, 141, 103, 3496);
-    			attr_dev(div0, "class", "meta svelte-1d3txqm");
-    			add_location(div0, file$2, 140, 12, 3374);
-    			attr_dev(div1, "class", "list-item svelte-1d3txqm");
-    			add_location(div1, file$2, 138, 8, 3270);
+    			add_location(span2, file$2, 145, 103, 3762);
+    			attr_dev(div0, "class", "meta svelte-cwxjr9");
+    			add_location(div0, file$2, 144, 12, 3640);
+    			attr_dev(div1, "class", "list-item svelte-cwxjr9");
+    			add_location(div1, file$2, 142, 8, 3536);
 
-    			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[13]
+    			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[4] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-1d3txqm");
+    			: "") + " svelte-cwxjr9");
 
     			attr_dev(div2, "id", div2_id_value = "list-item-" + /*index*/ ctx[13]);
-    			add_location(div2, file$2, 137, 4, 3083);
+    			add_location(div2, file$2, 141, 4, 3349);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div2, anchor);
@@ -1690,9 +1845,9 @@ var app = (function () {
     			if ((!current || dirty & /*$incidentItems*/ 4) && t3_value !== (t3_value = /*listItem*/ ctx[11].date + "")) set_data_dev(t3, t3_value);
     			if ((!current || dirty & /*$incidentItems*/ 4) && t7_value !== (t7_value = /*listItem*/ ctx[11].address + "")) set_data_dev(t7, t7_value);
 
-    			if (!current || dirty & /*$activeMapItem*/ 8 && div2_class_value !== (div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[13]
+    			if (!current || dirty & /*$activeMapItem*/ 16 && div2_class_value !== (div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[4] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-1d3txqm")) {
+    			: "") + " svelte-cwxjr9")) {
     				attr_dev(div2, "class", div2_class_value);
     			}
     		},
@@ -1722,70 +1877,123 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(137:2) {#each $incidentItems as listItem, index}",
+    		source: "(141:2) {#each $incidentItems as listItem, index}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (161:0) {#if visible}
+    // (165:0) {#if visible}
     function create_if_block(ctx) {
-    	let div;
+    	let div2;
+    	let div1;
     	let button0;
     	let t1;
     	let button1;
-    	let div_transition;
+    	let t3;
+    	let div0;
+    	let span0;
+    	let t4;
+    	let t5;
+    	let span1;
+    	let t6;
+    	let t7;
+    	let button2;
+    	let t9;
+    	let button3;
+    	let div2_transition;
     	let current;
     	let dispose;
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			div2 = element("div");
+    			div1 = element("div");
     			button0 = element("button");
-    			button0.textContent = "Prev";
+    			button0.textContent = "First";
     			t1 = space();
     			button1 = element("button");
-    			button1.textContent = "Next";
-    			attr_dev(button0, "class", "svelte-1d3txqm");
-    			add_location(button0, file$2, 162, 4, 4134);
-    			attr_dev(button1, "class", "svelte-1d3txqm");
-    			add_location(button1, file$2, 163, 4, 4178);
-    			attr_dev(div, "class", "pagination svelte-1d3txqm");
-    			add_location(div, file$2, 161, 2, 4061);
+    			button1.textContent = "Prev";
+    			t3 = space();
+    			div0 = element("div");
+    			span0 = element("span");
+    			t4 = text(/*$currentPage*/ ctx[3]);
+    			t5 = text(" of ");
+    			span1 = element("span");
+    			t6 = text(/*$totalPages*/ ctx[6]);
+    			t7 = space();
+    			button2 = element("button");
+    			button2.textContent = "Next";
+    			t9 = space();
+    			button3 = element("button");
+    			button3.textContent = "Last";
+    			attr_dev(button0, "class", "svelte-cwxjr9");
+    			add_location(button0, file$2, 167, 8, 4429);
+    			attr_dev(button1, "class", "svelte-cwxjr9");
+    			add_location(button1, file$2, 168, 8, 4488);
+    			add_location(span0, file$2, 170, 12, 4577);
+    			add_location(span1, file$2, 170, 43, 4608);
+    			attr_dev(div0, "class", "count svelte-cwxjr9");
+    			add_location(div0, file$2, 169, 8, 4545);
+    			attr_dev(button2, "class", "svelte-cwxjr9");
+    			add_location(button2, file$2, 172, 8, 4658);
+    			attr_dev(button3, "class", "svelte-cwxjr9");
+    			add_location(button3, file$2, 173, 8, 4715);
+    			attr_dev(div1, "class", "pagination svelte-cwxjr9");
+    			add_location(div1, file$2, 166, 4, 4396);
+    			attr_dev(div2, "class", "footer svelte-cwxjr9");
+    			add_location(div2, file$2, 165, 2, 4327);
     		},
     		m: function mount(target, anchor, remount) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, button0);
-    			append_dev(div, t1);
-    			append_dev(div, button1);
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div1);
+    			append_dev(div1, button0);
+    			append_dev(div1, t1);
+    			append_dev(div1, button1);
+    			append_dev(div1, t3);
+    			append_dev(div1, div0);
+    			append_dev(div0, span0);
+    			append_dev(span0, t4);
+    			append_dev(div0, t5);
+    			append_dev(div0, span1);
+    			append_dev(span1, t6);
+    			append_dev(div1, t7);
+    			append_dev(div1, button2);
+    			append_dev(div1, t9);
+    			append_dev(div1, button3);
     			current = true;
     			if (remount) run_all(dispose);
 
     			dispose = [
-    				listen_dev(button0, "click", /*goPrev*/ ctx[6], false, false, false),
-    				listen_dev(button1, "click", /*goNext*/ ctx[5], false, false, false)
+    				listen_dev(button0, "click", methods.first, false, false, false),
+    				listen_dev(button1, "click", methods.prev, false, false, false),
+    				listen_dev(button2, "click", methods.next, false, false, false),
+    				listen_dev(button3, "click", methods.last, false, false, false)
     			];
     		},
-    		p: noop,
+    		p: function update(ctx, dirty) {
+    			if (!current || dirty & /*$currentPage*/ 8) set_data_dev(t4, /*$currentPage*/ ctx[3]);
+    			if (!current || dirty & /*$totalPages*/ 64) set_data_dev(t6, /*$totalPages*/ ctx[6]);
+    		},
     		i: function intro(local) {
     			if (current) return;
 
     			add_render_callback(() => {
-    				if (!div_transition) div_transition = create_bidirectional_transition(div, fly, { y: 40, duration: 600 }, true);
-    				div_transition.run(1);
+    				if (!div2_transition) div2_transition = create_bidirectional_transition(div2, fly, { y: 40, duration: 600 }, true);
+    				div2_transition.run(1);
     			});
 
     			current = true;
     		},
     		o: function outro(local) {
-    			if (!div_transition) div_transition = create_bidirectional_transition(div, fly, { y: 40, duration: 600 }, false);
-    			div_transition.run(0);
+    			if (!div2_transition) div2_transition = create_bidirectional_transition(div2, fly, { y: 40, duration: 600 }, false);
+    			div2_transition.run(0);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    			if (detaching && div_transition) div_transition.end();
+    			if (detaching) detach_dev(div2);
+    			if (detaching && div2_transition) div2_transition.end();
     			run_all(dispose);
     		}
     	};
@@ -1794,7 +2002,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(161:0) {#if visible}",
+    		source: "(165:0) {#if visible}",
     		ctx
     	});
 
@@ -1830,7 +2038,7 @@ var app = (function () {
 
     	function select_block_type(ctx, dirty) {
     		if (/*$incidentItems*/ ctx[2] && /*$incidentItems*/ ctx[2].length) return 0;
-    		if (/*$error*/ ctx[4]) return 1;
+    		if (/*$error*/ ctx[5]) return 1;
     		return 2;
     	}
 
@@ -1862,18 +2070,18 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			attr_dev(a0, "href", "https://github.com/goliatone");
     			attr_dev(a0, "target", "_blank");
-    			add_location(a0, file$2, 155, 40, 3807);
-    			add_location(p0, file$2, 155, 4, 3771);
+    			add_location(a0, file$2, 159, 40, 4073);
+    			add_location(p0, file$2, 159, 4, 4037);
     			attr_dev(a1, "href", "/about");
     			attr_dev(a1, "target", "_blank");
-    			add_location(a1, file$2, 156, 24, 3904);
-    			add_location(p1, file$2, 156, 4, 3884);
-    			add_location(i, file$2, 157, 4, 3960);
-    			attr_dev(div0, "class", "tail svelte-1d3txqm");
-    			add_location(div0, file$2, 154, 2, 3748);
+    			add_location(a1, file$2, 160, 24, 4170);
+    			add_location(p1, file$2, 160, 4, 4150);
+    			add_location(i, file$2, 161, 4, 4226);
+    			attr_dev(div0, "class", "tail svelte-cwxjr9");
+    			add_location(div0, file$2, 158, 2, 4014);
     			attr_dev(div1, "id", "list-items");
-    			attr_dev(div1, "class", "svelte-1d3txqm");
-    			add_location(div1, file$2, 131, 0, 2908);
+    			attr_dev(div1, "class", "svelte-cwxjr9");
+    			add_location(div1, file$2, 135, 0, 3174);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1986,15 +2194,23 @@ var app = (function () {
 
     function instance$2($$self, $$props, $$invalidate) {
     	let $incidentItems;
+    	let $metadata;
+    	let $currentPage;
     	let $activeMapItem;
     	let $error;
+    	let $totalPages;
     	validate_store(incidentItems, "incidentItems");
     	component_subscribe($$self, incidentItems, $$value => $$invalidate(2, $incidentItems = $$value));
+    	validate_store(metadata, "metadata");
+    	component_subscribe($$self, metadata, $$value => $$invalidate(7, $metadata = $$value));
+    	validate_store(currentPage, "currentPage");
+    	component_subscribe($$self, currentPage, $$value => $$invalidate(3, $currentPage = $$value));
     	validate_store(activeMapItem, "activeMapItem");
-    	component_subscribe($$self, activeMapItem, $$value => $$invalidate(3, $activeMapItem = $$value));
+    	component_subscribe($$self, activeMapItem, $$value => $$invalidate(4, $activeMapItem = $$value));
     	validate_store(error, "error");
-    	component_subscribe($$self, error, $$value => $$invalidate(4, $error = $$value));
-    	let page = 1;
+    	component_subscribe($$self, error, $$value => $$invalidate(5, $error = $$value));
+    	validate_store(totalPages, "totalPages");
+    	component_subscribe($$self, totalPages, $$value => $$invalidate(6, $totalPages = $$value));
     	let listRef;
 
     	// Update list scroll position when active list item is updated via map
@@ -2008,16 +2224,6 @@ var app = (function () {
     			});
     		}
     	});
-
-    	function goNext() {
-    		page++;
-    		incidents$1.listItems(activeCity.name, { page, size: 200 });
-    	}
-
-    	function goPrev() {
-    		page--;
-    		incidents$1.listItems(activeCity.name, { page, size: 200 });
-    	}
 
     	/**
      * Remove listener on unmount
@@ -2051,23 +2257,29 @@ var app = (function () {
     		incidents: incidents$1,
     		incidentItems,
     		error,
+    		metadata,
     		activeListItem,
     		activeMapItem,
     		activeCity,
-    		page,
+    		pagination: methods,
+    		currentPage,
+    		totalPages,
+    		totalItems,
+    		currentItems,
+    		itemsPerPage,
     		listRef,
     		unsubscribeActiveListItem,
-    		goNext,
-    		goPrev,
     		setActiveMapItem: setActiveMapItem$1,
     		visible,
     		$incidentItems,
+    		$metadata,
+    		$currentPage,
     		$activeMapItem,
-    		$error
+    		$error,
+    		$totalPages
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("page" in $$props) page = $$props.page;
     		if ("listRef" in $$props) $$invalidate(0, listRef = $$props.listRef);
     		if ("visible" in $$props) $$invalidate(1, visible = $$props.visible);
     	};
@@ -2080,17 +2292,25 @@ var app = (function () {
     		if ($$self.$$.dirty & /*$incidentItems*/ 4) {
     			 $$invalidate(1, visible = $incidentItems && $incidentItems.length);
     		}
+
+    		if ($$self.$$.dirty & /*$metadata*/ 128) {
+    			 methods.update($metadata);
+    		}
+
+    		if ($$self.$$.dirty & /*$currentPage*/ 8) {
+    			 incidents$1.listItems(activeCity.name, { page: $currentPage, size: 200 });
+    		}
     	};
 
     	return [
     		listRef,
     		visible,
     		$incidentItems,
+    		$currentPage,
     		$activeMapItem,
     		$error,
-    		goNext,
-    		goPrev,
-    		page,
+    		$totalPages,
+    		$metadata,
     		unsubscribeActiveListItem,
     		click_handler,
     		div1_binding

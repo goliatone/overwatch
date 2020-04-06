@@ -37,10 +37,6 @@ function dev:test {
     pushd backend
     npm run test
     popd
-
-    pushd frontend
-    npm run test 
-    popd
 } 
 
 function dev:frontend {

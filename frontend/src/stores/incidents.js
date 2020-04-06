@@ -5,6 +5,11 @@ import { writable } from 'svelte/store';
 const { subscribe, set, update } = writable([]);
 
 export const error = writable('');
+export const metadata = writable({
+    page: 1,
+    size: 100,
+    count: 200
+});
 export const incidentItems = writable([]);
 
 const incidents = _ => ({
@@ -18,6 +23,7 @@ const incidents = _ => ({
             let data = response.data;
             let meta = response.meta;
             set(data);
+            metadata.set(meta);
             incidentItems.set(data);
             return data;
         } catch (e) {

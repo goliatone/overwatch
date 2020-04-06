@@ -5,11 +5,12 @@
     
     import Header from './Header.svelte';
     import debounce from '../utils/debounce';
-    import incidents, {incidentItems, error} from '../stores/incidents';
+    import incidents, {incidentItems, error, metadata} from '../stores/incidents';
     import { activeListItem, activeMapItem } from '../stores.js';
     import { activeCity } from '../consts.js';
 
-    let page = 1;
+    import pagination, {currentPage, totalPages, totalItems, currentItems, itemsPerPage} from '../stores/pagination';
+
     let listRef;
 
     // Update list scroll position when active list item is updated via map
@@ -25,16 +26,6 @@
         }
     });
 
-    function goNext() {
-        page++;
-		incidents.listItems(activeCity.name, {page, size:200});
-    }
-
-    function goPrev() {
-        page--;
-		incidents.listItems(activeCity.name, {page, size:200});
-    }
-
     function setActiveMapItem(index) {
         activeMapItem.set(index);
     }
@@ -47,6 +38,8 @@
     let visible = false;
 
     $: visible = $incidentItems && $incidentItems.length;
+    $: pagination.update($metadata);
+    $: incidents.listItems(activeCity.name, {page: $currentPage, size:200});
 </script>
 
 <style>
@@ -109,7 +102,7 @@
         padding-bottom: 40px;
     }
 
-    .pagination {
+    .footer {
         /* position: absolute; */
         position: -webkit-sticky;
         position: sticky; 
@@ -120,13 +113,24 @@
         padding: 20px 40px;
     }
 
-    .pagination > button:first-child {
-        margin-right: 4%;
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 300px;
+        margin: 0 auto;
     }
 
     .pagination > button {
-        width: 46%;
+       font-size: 12px;
+       padding: 4px 10px;
     }
+    .pagination .count {
+        color: #f6f6fc;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 25px;
+    } 
 </style>
 
 <div id="list-items" bind:this="{listRef}">
@@ -159,9 +163,16 @@
   </div>
 
 {#if visible}
-  <div class="pagination" transition:fly="{{ y: 40, duration: 600 }}">
-    <button on:click={goPrev}>Prev</button>
-    <button on:click={goNext}>Next</button>
+  <div class="footer" transition:fly="{{ y: 40, duration: 600 }}">
+    <div class="pagination">
+        <button on:click={pagination.first}>First</button>
+        <button on:click={pagination.prev}>Prev</button>
+        <div class="count">
+            <span>{$currentPage}</span> of <span>{$totalPages}</span>
+        </div>
+        <button on:click={pagination.next}>Next</button>
+        <button on:click={pagination.last}>Last</button>
+    </div>
   </div>
 {/if}
 

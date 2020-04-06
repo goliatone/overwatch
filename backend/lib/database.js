@@ -68,7 +68,8 @@ class Data {
             meta: {
                 page: page,
                 size: size,
-                count: this.count
+                count: out.length,
+                total: this.count
             }
         };
 
