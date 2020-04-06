@@ -186,6 +186,7 @@
 
   <div class="tail">
     <p>Project by Emiliano Burgos a.k.a <a href="https://github.com/goliatone" target="_blank">goliatone</a></p>
+    <p>Read more in the <a href="/about" target="_blank">about page</a></p>
     <i>List of crimes reported in Sacramento during 01/01/06 and 01/02/06.</i>
   </div>
 
