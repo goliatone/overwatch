@@ -1,6 +1,6 @@
 <script>
     import inView from 'in-view';
-    import { onMount, onDestroy } from 'svelte';
+    import { onDestroy } from 'svelte';
     import { fly, fade } from 'svelte/transition';
     
     import Header from './Header.svelte';
@@ -9,30 +9,8 @@
     import { activeListItem, activeMapItem } from '../stores.js';
     import { activeCity } from '../consts.js';
 
-    // Define the ref
+    let page = 1;
     let listRef;
-
-    function initialize() {
-        // Set a nicer offset so it's not a hard cutoff
-        inView.offset(130);
-
-        // listRef.addEventListener('scroll', debounce(_=> {
-        //     // Active list item is top-most fully-visible item
-        //    const visibleListItems = Array.from(
-        //         document.getElementsByClassName('list-item')
-        //     ).map(inView.is);
-
-        //     // If it's a new one, update active list item
-        //     const topMostVisible = visibleListItems.indexOf(true);
-        //     if (topMostVisible !== $activeMapItem) {
-        //         activeMapItem.set(topMostVisible);
-        //     }
-        // }, 500));
-    }
-
-    function setActiveMapItem(index) {
-        activeMapItem.set(index);
-    }
 
     // Update list scroll position when active list item is updated via map
     const unsubscribeActiveListItem = activeListItem.subscribe(newActiveListItem => {
@@ -40,19 +18,12 @@
             const activeItem  =document.getElementById(
                 `list-item-${newActiveListItem}`
             );
-            //10157 - 10035
-            //10517  - 10391
-            //11001 - 10876
-            console.log('item %s offset of %s',newActiveListItem, activeItem.offsetTop);
-            // listRef.scrollTop = activeItem.offsetTop - 130;
             listRef.scrollTo({
                 top: activeItem.offsetTop - 130,
                 behavior: 'smooth'
             });
         }
     });
-
-    let page = 1;
 
     function goNext() {
         page++;
@@ -64,11 +35,9 @@
 		incidents.listItems(activeCity.name, {page, size:200});
     }
 
-    /**
-     * Livecycle handler, register map on first
-     * render.
-     */ 
-    onMount(initialize);
+    function setActiveMapItem(index) {
+        activeMapItem.set(index);
+    }
 
     /**
      * Remove listener on unmount
@@ -78,10 +47,6 @@
     let visible = false;
 
     $: visible = $incidentItems && $incidentItems.length;
-
-    $: {
-        console.log('$activeMapItem', $activeMapItem);
-    }
 </script>
 
 <style>
