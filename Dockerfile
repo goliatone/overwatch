@@ -21,6 +21,7 @@ RUN cd /tmp && npm install --production
 RUN cp -a /tmp/node_modules /usr/src/app/
 
 COPY ./backend/ /usr/src/app
+COPY ./README.md /usr/src/README.md
 
 #compile frontend
 COPY ./frontend/ /tmp/frontend
