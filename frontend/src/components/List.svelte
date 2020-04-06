@@ -185,9 +185,8 @@
 {/if}
 
   <div class="tail">
-    <i>
-      List of crimes reported in Sacramento during 01/01/06 and 01/02/06
-    </i>
+    <p>Project by Emiliano Burgos a.k.a <a href="https://github.com/goliatone" target="_blank">goliatone</a></p>
+    <i>List of crimes reported in Sacramento during 01/01/06 and 01/02/06.</i>
   </div>
 
 {#if visible}

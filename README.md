@@ -22,11 +22,9 @@ http://localhost:1981
 
 If your docker uses an IP then replace `localhost` by your docker's IP e.g. `http://191.168.99.100:1981` 
 
-## Development
+## Project Structure
 
-### Project Structure
-
-Main directory **crime-visualization**
+The project consists of a backend application and a frontend client.
 
 ### Tasks
 
@@ -61,42 +59,11 @@ https://support.spatialkey.com/spatialkey-sample-csv-data/
 
 ### Environment variables
 
-* `NODE_APP_PORT`
-* `NODE_REPL_PORT`
+* `NODE_APP_PORT`: 1981
+* `NODE_REPL_PORT`: 9090
+* `NODE_APP_HOST`: http://localhost:1981
 
-## Docker
 
-NOTE: Ensure that the ports you have specified in the **docker-compose.yml** file, the **Dockerfile**, and `.envset` are the same.
-
-### Dockerfile
-
-### Docker Compose
-
-```
-version: '3'
-
-services:
-  server:
-    build: .
-    image: goliatone/svelte-front-end-template
-    hostname: Svelte Front End Template-{{NODE_ENV}}
-    command: dumb-init node index.js
-    ports:
-      - "{{NODE_APP_PORT}}:{{NODE_APP_PORT}}"
-      - "{{NODE_REPL_PORT}}:{{NODE_REPL_PORT}}"
-    environment:
-      - DEBUG=svelte-front-end-template
-      - NODE_ENV={{NODE_ENV}}
-      - NODE_APP_ID={{NODE_APP_ID}}
-      - NODE_APP_PORT={{NODE_APP_PORT}}
-      - NODE_REPL_PORT={{NODE_REPL_PORT}}
-      - NODE_REPL_ENABLED={{NODE_REPL_ENABLED}}
-    restart: always
-    logging:
-      options:
-        max-size: "50m"
-        max-file: "3"
-```
 
 ## License
 ® License MIT 2017 by goliatone

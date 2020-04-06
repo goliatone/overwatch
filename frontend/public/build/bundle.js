@@ -657,7 +657,7 @@ var app = (function () {
     return mapboxgl;
 
     })));
-
+    //# sourceMappingURL=mapbox-gl.js.map
     });
 
     const subscriber_queue = [];
@@ -1644,7 +1644,7 @@ var app = (function () {
     	return block;
     }
 
-    // (193:0) {#if visible}
+    // (192:0) {#if visible}
     function create_if_block(ctx) {
     	let div;
     	let button0;
@@ -1663,11 +1663,11 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "Next";
     			attr_dev(button0, "class", "svelte-i0ih5m");
-    			add_location(button0, file$2, 194, 4, 4945);
+    			add_location(button0, file$2, 193, 4, 5047);
     			attr_dev(button1, "class", "svelte-i0ih5m");
-    			add_location(button1, file$2, 195, 4, 4989);
+    			add_location(button1, file$2, 194, 4, 5091);
     			attr_dev(div, "class", "pagination svelte-i0ih5m");
-    			add_location(div, file$2, 193, 2, 4872);
+    			add_location(div, file$2, 192, 2, 4974);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div, anchor);
@@ -1709,7 +1709,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(193:0) {#if visible}",
+    		source: "(192:0) {#if visible}",
     		ctx
     	});
 
@@ -1723,8 +1723,12 @@ var app = (function () {
     	let if_block0;
     	let t1;
     	let div0;
+    	let p;
+    	let t2;
+    	let a;
+    	let t4;
     	let i;
-    	let t3;
+    	let t6;
     	let current;
 
     	const header = new Header({
@@ -1753,11 +1757,20 @@ var app = (function () {
     			if_block0.c();
     			t1 = space();
     			div0 = element("div");
+    			p = element("p");
+    			t2 = text("Project by Emiliano Burgos a.k.a ");
+    			a = element("a");
+    			a.textContent = "goliatone";
+    			t4 = space();
     			i = element("i");
-    			i.textContent = "List of crimes reported in Sacramento during 01/01/06 and 01/02/06";
-    			t3 = space();
+    			i.textContent = "List of crimes reported in Sacramento during 01/01/06 and 01/02/06.";
+    			t6 = space();
     			if (if_block1) if_block1.c();
-    			add_location(i, file$2, 187, 4, 4760);
+    			attr_dev(a, "href", "https://github.com/goliatone");
+    			attr_dev(a, "target", "_blank");
+    			add_location(a, file$2, 187, 40, 4796);
+    			add_location(p, file$2, 187, 4, 4760);
+    			add_location(i, file$2, 188, 4, 4873);
     			attr_dev(div0, "class", "tail svelte-i0ih5m");
     			add_location(div0, file$2, 186, 2, 4737);
     			attr_dev(div1, "id", "list-items");
@@ -1774,8 +1787,12 @@ var app = (function () {
     			if_blocks[current_block_type_index].m(div1, null);
     			append_dev(div1, t1);
     			append_dev(div1, div0);
+    			append_dev(div0, p);
+    			append_dev(p, t2);
+    			append_dev(p, a);
+    			append_dev(div0, t4);
     			append_dev(div0, i);
-    			append_dev(div1, t3);
+    			append_dev(div1, t6);
     			if (if_block1) if_block1.m(div1, null);
     			/*div1_binding*/ ctx[10](div1);
     			current = true;
