@@ -126,8 +126,14 @@
         line-height: 1em;
     }
 
+    .error,
     .loader {
         margin: 30px 40px;
+    }
+
+    .error {
+        color: #f14668;
+        font-weight: 700;
     }
 
     .tail {
@@ -171,8 +177,8 @@
     </div>
   {/each}
 {:else}
-    {if error}
-        <div class="error">{error}</div>
+    {#if $error}
+        <div class="error">{@html $error}</div>
     {:else}
         <div class="loader">Loading...</div>
     {/if}

@@ -4,7 +4,7 @@ import { api } from '../services/api';
 import { writable } from 'svelte/store';
 const { subscribe, set, update } = writable([]);
 
-const error = writable('');
+export const error = writable('');
 export const incidentItems = writable([]);
 
 const incidents = _ => ({
@@ -22,7 +22,10 @@ const incidents = _ => ({
             return data;
         } catch (e) {
             set([]);
-            error.set(`Error accessing API. Details: ${e.message}`);
+            error.set(`
+                <h2>Error accessing API</h2>
+                <p>Details: ${e.message}</p>
+            `);
             return e;
         }
     }
