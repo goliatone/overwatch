@@ -51,10 +51,26 @@ $ npm test
 #### Frontend
 
 
-
 ### Tasks
 
 This projects ships with a [taskfile](https://medium.com/@adrian_cooney/introducing-the-taskfile-5ddfe7ed83bd) in order to help with some tasks used during development and- in a regular project- deployments. 
+
+```
+Tasks:
+     1  data:json
+     2  dev:certs:create
+     3  dev:certs:keychain
+     4  dev:clean
+     5  dev:docker
+     6  dev:frontend
+     7  dev:install
+     8  dev:run
+     9  dev:test
+    10  help
+    11  release:bundle
+    12  release:docker
+    13  release:run
+```    
 
 
 ### Data
