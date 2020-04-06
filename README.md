@@ -26,6 +26,32 @@ If your docker uses an IP then replace `localhost` by your docker's IP e.g. `htt
 
 The project consists of a backend application and a frontend client.
 
+## Development 
+
+For local development you need to have Node.js **v9.2.0** or higher installed.
+
+### Backend
+
+The **./backend** directory contains all server related project files.
+
+#### Tests
+
+To run tests you need to start the server first:
+
+```
+$ npm start
+```
+
+You can then run tests with the command:
+
+```
+$ npm test 
+```
+
+#### Frontend
+
+
+
 ### Tasks
 
 This projects ships with a [taskfile](https://medium.com/@adrian_cooney/introducing-the-taskfile-5ddfe7ed83bd) in order to help with some tasks used during development and- in a regular project- deployments. 
