@@ -19,15 +19,8 @@ class Api {
 
         Object.assign(this, config);
 
-        let baseUrl;
-
-        baseUrl = this.loadConfigItem('dataviz.api.url', config.url);
-
-        baseUrl = this._clean(baseUrl);
-
-        if (!baseUrl) baseUrl = this._clean(location.href);
-
-        this.baseUrl = baseUrl;
+        let baseUrl = this.loadConfigItem('dataviz.api.url', config.url);
+        this.baseUrl = this._clean(baseUrl);
 
         this.token = this.loadConfigItem('dataviz.api.token', config.token);
     }
@@ -64,6 +57,6 @@ class Api {
 export default Api;
 
 export let api = new Api({
-    url: 'http://localhost:1981',
+    url: location.href,
     token: '0a6fd546-9699-4fc3-8ba6-f878b11f0396'
 });
