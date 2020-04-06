@@ -657,7 +657,7 @@ var app = (function () {
     return mapboxgl;
 
     })));
-    //# sourceMappingURL=mapbox-gl.js.map
+
     });
 
     const subscriber_queue = [];
@@ -776,6 +776,7 @@ var app = (function () {
 
     const { subscribe: subscribe$1, set, update: update$1 } = writable([]);
 
+    const error = writable('');
     const incidentItems = writable([]);
 
     const incidents = _ => ({
@@ -784,13 +785,21 @@ var app = (function () {
         subscribe: subscribe$1,
         items: incidentItems,
         async listItems(city, query = { page: 1, size: 100 }) {
-            let response = await api.list(city, query);
-            let data = response.data;
-            let meta = response.meta;
-            set(data);
-            incidentItems.set(data);
-
-            return data;
+            try {
+                let response = await api.list(city, query);
+                let data = response.data;
+                let meta = response.meta;
+                set(data);
+                incidentItems.set(data);
+                return data;
+            } catch (e) {
+                set([]);
+                error.set(`
+                <h2>Error accessing API</h2>
+                <p>Details: ${e.message}</p>
+            `);
+                return e;
+            }
         }
     });
 
@@ -1135,12 +1144,13 @@ var app = (function () {
     			h2 = element("h2");
     			h2.textContent = "Overwatch";
     			if (img.src !== (img_src_value = "/images/eye-0" + /*frameNumber*/ ctx[0] + ".svg")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "logo");
     			attr_dev(img, "class", "svelte-aemn9v");
     			add_location(img, file$1, 95, 27, 2078);
     			attr_dev(span, "class", "logo svelte-aemn9v");
     			add_location(span, file$1, 95, 8, 2059);
     			attr_dev(h2, "class", "svelte-aemn9v");
-    			add_location(h2, file$1, 96, 8, 2137);
+    			add_location(h2, file$1, 96, 8, 2148);
     			attr_dev(div0, "class", "title svelte-aemn9v");
     			add_location(div0, file$1, 94, 4, 2031);
     			attr_dev(div1, "class", "head svelte-aemn9v");
@@ -1332,12 +1342,12 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
-    	child_ctx[12] = i;
+    	child_ctx[11] = list[i];
+    	child_ctx[13] = i;
     	return child_ctx;
     }
 
-    // (173:0) {:else}
+    // (182:4) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -1345,8 +1355,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = "Loading...";
-    			attr_dev(div, "class", "loader svelte-1cy6dn8");
-    			add_location(div, file$2, 173, 4, 4511);
+    			attr_dev(div, "class", "loader svelte-i0ih5m");
+    			add_location(div, file$2, 182, 8, 4681);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1363,14 +1373,48 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(173:0) {:else}",
+    		source: "(182:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (162:0) {#if $incidentItems && $incidentItems.length}
+    // (180:4) {#if $error}
+    function create_if_block_2(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			attr_dev(div, "class", "error svelte-i0ih5m");
+    			add_location(div, file$2, 180, 8, 4621);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			div.innerHTML = /*$error*/ ctx[4];
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$error*/ 16) div.innerHTML = /*$error*/ ctx[4];		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2.name,
+    		type: "if",
+    		source: "(180:4) {#if $error}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (168:0) {#if $incidentItems && $incidentItems.length}
     function create_if_block_1(ctx) {
     	let each_1_anchor;
     	let current;
@@ -1459,31 +1503,31 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(162:0) {#if $incidentItems && $incidentItems.length}",
+    		source: "(168:0) {#if $incidentItems && $incidentItems.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (163:2) {#each $incidentItems as listItem, index}
+    // (169:2) {#each $incidentItems as listItem, index}
     function create_each_block(ctx) {
     	let div2;
     	let div1;
     	let span0;
-    	let t0_value = /*listItem*/ ctx[10].description + "";
+    	let t0_value = /*listItem*/ ctx[11].description + "";
     	let t0;
     	let t1;
     	let div0;
     	let small0;
     	let span1;
-    	let t3_value = /*listItem*/ ctx[10].date + "";
+    	let t3_value = /*listItem*/ ctx[11].date + "";
     	let t3;
     	let t4;
     	let small1;
     	let t6;
     	let span2;
-    	let t7_value = /*listItem*/ ctx[10].address + "";
+    	let t7_value = /*listItem*/ ctx[11].address + "";
     	let t7;
     	let t8;
     	let div2_class_value;
@@ -1493,7 +1537,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler(...args) {
-    		return /*click_handler*/ ctx[8](/*index*/ ctx[12], ...args);
+    		return /*click_handler*/ ctx[9](/*index*/ ctx[13], ...args);
     	}
 
     	const block = {
@@ -1515,25 +1559,25 @@ var app = (function () {
     			span2 = element("span");
     			t7 = text(t7_value);
     			t8 = space();
-    			attr_dev(span0, "class", "description svelte-1cy6dn8");
-    			add_location(span0, file$2, 165, 12, 4206);
-    			add_location(small0, file$2, 167, 16, 4309);
+    			attr_dev(span0, "class", "description svelte-i0ih5m");
+    			add_location(span0, file$2, 171, 12, 4295);
+    			add_location(small0, file$2, 173, 16, 4398);
     			attr_dev(span1, "class", "date");
-    			add_location(span1, file$2, 167, 43, 4336);
-    			add_location(small1, file$2, 167, 85, 4378);
+    			add_location(span1, file$2, 173, 43, 4425);
+    			add_location(small1, file$2, 173, 85, 4467);
     			attr_dev(span2, "class", "address");
-    			add_location(span2, file$2, 167, 103, 4396);
-    			attr_dev(div0, "class", "meta svelte-1cy6dn8");
-    			add_location(div0, file$2, 166, 12, 4274);
-    			attr_dev(div1, "class", "list-item svelte-1cy6dn8");
-    			add_location(div1, file$2, 164, 8, 4170);
+    			add_location(span2, file$2, 173, 103, 4485);
+    			attr_dev(div0, "class", "meta svelte-i0ih5m");
+    			add_location(div0, file$2, 172, 12, 4363);
+    			attr_dev(div1, "class", "list-item svelte-i0ih5m");
+    			add_location(div1, file$2, 170, 8, 4259);
 
-    			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[12]
+    			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-1cy6dn8");
+    			: "") + " svelte-i0ih5m");
 
-    			attr_dev(div2, "id", div2_id_value = "list-item-" + /*index*/ ctx[12]);
-    			add_location(div2, file$2, 163, 4, 3983);
+    			attr_dev(div2, "id", div2_id_value = "list-item-" + /*index*/ ctx[13]);
+    			add_location(div2, file$2, 169, 4, 4072);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div2, anchor);
@@ -1557,13 +1601,13 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if ((!current || dirty & /*$incidentItems*/ 4) && t0_value !== (t0_value = /*listItem*/ ctx[10].description + "")) set_data_dev(t0, t0_value);
-    			if ((!current || dirty & /*$incidentItems*/ 4) && t3_value !== (t3_value = /*listItem*/ ctx[10].date + "")) set_data_dev(t3, t3_value);
-    			if ((!current || dirty & /*$incidentItems*/ 4) && t7_value !== (t7_value = /*listItem*/ ctx[10].address + "")) set_data_dev(t7, t7_value);
+    			if ((!current || dirty & /*$incidentItems*/ 4) && t0_value !== (t0_value = /*listItem*/ ctx[11].description + "")) set_data_dev(t0, t0_value);
+    			if ((!current || dirty & /*$incidentItems*/ 4) && t3_value !== (t3_value = /*listItem*/ ctx[11].date + "")) set_data_dev(t3, t3_value);
+    			if ((!current || dirty & /*$incidentItems*/ 4) && t7_value !== (t7_value = /*listItem*/ ctx[11].address + "")) set_data_dev(t7, t7_value);
 
-    			if (!current || dirty & /*$activeMapItem*/ 8 && div2_class_value !== (div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[12]
+    			if (!current || dirty & /*$activeMapItem*/ 8 && div2_class_value !== (div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-1cy6dn8")) {
+    			: "") + " svelte-i0ih5m")) {
     				attr_dev(div2, "class", div2_class_value);
     			}
     		},
@@ -1593,14 +1637,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(163:2) {#each $incidentItems as listItem, index}",
+    		source: "(169:2) {#each $incidentItems as listItem, index}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (183:0) {#if visible}
+    // (193:0) {#if visible}
     function create_if_block(ctx) {
     	let div;
     	let button0;
@@ -1618,12 +1662,12 @@ var app = (function () {
     			t1 = space();
     			button1 = element("button");
     			button1.textContent = "Next";
-    			attr_dev(button0, "class", "svelte-1cy6dn8");
-    			add_location(button0, file$2, 184, 4, 4765);
-    			attr_dev(button1, "class", "svelte-1cy6dn8");
-    			add_location(button1, file$2, 185, 4, 4809);
-    			attr_dev(div, "class", "pagination svelte-1cy6dn8");
-    			add_location(div, file$2, 183, 2, 4692);
+    			attr_dev(button0, "class", "svelte-i0ih5m");
+    			add_location(button0, file$2, 194, 4, 4945);
+    			attr_dev(button1, "class", "svelte-i0ih5m");
+    			add_location(button1, file$2, 195, 4, 4989);
+    			attr_dev(div, "class", "pagination svelte-i0ih5m");
+    			add_location(div, file$2, 193, 2, 4872);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div, anchor);
@@ -1634,8 +1678,8 @@ var app = (function () {
     			if (remount) run_all(dispose);
 
     			dispose = [
-    				listen_dev(button0, "click", /*goPrev*/ ctx[5], false, false, false),
-    				listen_dev(button1, "click", /*goNext*/ ctx[4], false, false, false)
+    				listen_dev(button0, "click", /*goPrev*/ ctx[6], false, false, false),
+    				listen_dev(button1, "click", /*goNext*/ ctx[5], false, false, false)
     			];
     		},
     		p: noop,
@@ -1665,7 +1709,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(183:0) {#if visible}",
+    		source: "(193:0) {#if visible}",
     		ctx
     	});
 
@@ -1688,12 +1732,13 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	const if_block_creators = [create_if_block_1, create_else_block];
+    	const if_block_creators = [create_if_block_1, create_if_block_2, create_else_block];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
     		if (/*$incidentItems*/ ctx[2] && /*$incidentItems*/ ctx[2].length) return 0;
-    		return 1;
+    		if (/*$error*/ ctx[4]) return 1;
+    		return 2;
     	}
 
     	current_block_type_index = select_block_type(ctx);
@@ -1712,12 +1757,12 @@ var app = (function () {
     			i.textContent = "List of crimes reported in Sacramento during 01/01/06 and 01/02/06";
     			t3 = space();
     			if (if_block1) if_block1.c();
-    			add_location(i, file$2, 177, 4, 4580);
-    			attr_dev(div0, "class", "tail svelte-1cy6dn8");
-    			add_location(div0, file$2, 176, 2, 4557);
+    			add_location(i, file$2, 187, 4, 4760);
+    			attr_dev(div0, "class", "tail svelte-i0ih5m");
+    			add_location(div0, file$2, 186, 2, 4737);
     			attr_dev(div1, "id", "list-items");
-    			attr_dev(div1, "class", "svelte-1cy6dn8");
-    			add_location(div1, file$2, 157, 0, 3808);
+    			attr_dev(div1, "class", "svelte-i0ih5m");
+    			add_location(div1, file$2, 163, 0, 3897);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1732,7 +1777,7 @@ var app = (function () {
     			append_dev(div0, i);
     			append_dev(div1, t3);
     			if (if_block1) if_block1.m(div1, null);
-    			/*div1_binding*/ ctx[9](div1);
+    			/*div1_binding*/ ctx[10](div1);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -1801,7 +1846,7 @@ var app = (function () {
     			destroy_component(header);
     			if_blocks[current_block_type_index].d();
     			if (if_block1) if_block1.d();
-    			/*div1_binding*/ ctx[9](null);
+    			/*div1_binding*/ ctx[10](null);
     		}
     	};
 
@@ -1848,10 +1893,13 @@ var app = (function () {
     function instance$2($$self, $$props, $$invalidate) {
     	let $incidentItems;
     	let $activeMapItem;
+    	let $error;
     	validate_store(incidentItems, "incidentItems");
     	component_subscribe($$self, incidentItems, $$value => $$invalidate(2, $incidentItems = $$value));
     	validate_store(activeMapItem, "activeMapItem");
     	component_subscribe($$self, activeMapItem, $$value => $$invalidate(3, $activeMapItem = $$value));
+    	validate_store(error, "error");
+    	component_subscribe($$self, error, $$value => $$invalidate(4, $error = $$value));
     	let listRef;
 
     	// Update list scroll position when active list item is updated via map
@@ -1911,6 +1959,7 @@ var app = (function () {
     		Header,
     		incidents: incidents$1,
     		incidentItems,
+    		error,
     		activeListItem,
     		activeMapItem,
     		activeCity,
@@ -1924,7 +1973,8 @@ var app = (function () {
     		goPrev,
     		visible,
     		$incidentItems,
-    		$activeMapItem
+    		$activeMapItem,
+    		$error
     	});
 
     	$$self.$inject_state = $$props => {
@@ -1948,6 +1998,7 @@ var app = (function () {
     		visible,
     		$incidentItems,
     		$activeMapItem,
+    		$error,
     		goNext,
     		goPrev,
     		page,

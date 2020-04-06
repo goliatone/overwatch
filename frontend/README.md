@@ -10,6 +10,10 @@ MapBox security:
 * [Access Tokens](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/)
 * [How To Use MapBox Securely](https://docs.mapbox.com/help/troubleshooting/how-to-use-mapbox-securely/)
 
+## Resources
+
+* Logo from [The Noun Project](https://thenounproject.com/designvector10/)
+
 ## TODO
 
 - [x] Show MapBox map 
