@@ -1,6 +1,6 @@
 'use strict';
 const ejs = require('ejs');
-// const flru = require('flru');
+const flru = require('flru');
 const { join } = require('path');
 const fs = require('fs');
 
@@ -12,7 +12,7 @@ module.exports.init = function(server, config) {
      */
     const views = join(__dirname, '../views');
 
-    // ejs.cache = flru(100); // LRU cache with 100-item limit
+    ejs.cache = flru(100); // LRU cache with 100-item limit
 
     /**
      * Add our renderer _engine_ :)
