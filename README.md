@@ -1,4 +1,6 @@
-## Crime Visualization
+# Crime Visualization
+
+## Run Project
 
 To run the project you need Docker installed and available from your terminal.
 
@@ -20,11 +22,18 @@ The application should be available in the [following url](http://localhost:1981
 http://localhost:1981
 ```
 
-If your docker uses an IP then replace `localhost` by your docker's IP e.g. `http://191.168.99.100:1981` 
+If your docker uses an IP then replace `localhost` by your docker's IP e.g. `http://191.168.99.100:1981`
+
+Once the web server is running you have the main page with the data visualization and this file in the following [url](http://localhost:1981/about).
 
 ## Project Structure
 
-The project consists of a backend application and a frontend client.
+The project consists of a backend application and a frontend client created from a template using the [cr](https://github.com/goliatone/core.io-cli) [generator](https://github.com/goliatone/core.io-cli-view-generator) tool that I developed to bootstrap projects quickly.
+
+The backend uses the [core.io](https://coreio.tech/) framework that I also developed and use for my personal projects (NOTE: I just noticed the certs in the website are expired :sad_face:)
+
+Then frontend uses [svelte](https://svelte.dev) and [MapBox](https://www.mapbox.com/). Svelte is [great](https://github.com/feltcoop/why-svelte) in general but specifically to get something running quickly made the most sense to me.
+
 
 ## Development 
 
@@ -108,4 +117,5 @@ https://support.spatialkey.com/spatialkey-sample-csv-data/
 
 
 ## License
-® License MIT 2017 by goliatone
+
+® License MIT 2020 by goliatone
