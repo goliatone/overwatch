@@ -5,7 +5,7 @@
     
     import Header from './Header.svelte';
 
-    import incidents, {incidentItems} from '../stores/incidents';
+    import incidents, {incidentItems, error} from '../stores/incidents';
     import { activeListItem, activeMapItem } from '../stores.js';
     import { activeCity } from '../consts.js';
 
@@ -171,7 +171,11 @@
     </div>
   {/each}
 {:else}
-    <div class="loader">Loading...</div>
+    {if error}
+        <div class="error">{error}</div>
+    {:else}
+        <div class="loader">Loading...</div>
+    {/if}
 {/if}
 
   <div class="tail">
