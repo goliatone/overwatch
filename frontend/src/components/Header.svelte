@@ -14,17 +14,19 @@
     let tid;
 
     export let doAnimate = false;
+    export let showVersion = true;
 
     export function start() {
         doAnimate = true;
         maxCycles = random(2, 8);
         nextAnimation = random(1000, 30000);
-        requestAnimationFrame(step)
+        requestAnimationFrame(step);
     }
 
     export function stop() {
         doAnimate = false;
         frameNumber = 2;
+        showVersion = false;
         // clearTimeout(tid);
         // if(nextAnimation) tid = setTimeout(start, nextAnimation);
     }
@@ -51,7 +53,7 @@
 
         if(doAnimate) {
             if(cycles <= maxCycles) requestAnimationFrame(step);
-            else  stop();
+            else stop();
         }
     }
 
@@ -59,7 +61,7 @@
         if(doAnimate) start();
     }
 
-    window.animateEye = step;
+    window.animateEye = step;   
 
 </script>
 
@@ -83,6 +85,23 @@
         padding-right: 6px;
     }
 
+    .version {
+        font-weight: 700;
+        font-size: .5em;
+        padding: 5px 10px;
+        color: #f6f6fc;
+        background-color: #00d1b2;
+        height: 10px;
+        border-radius: 3px;
+        margin-left: 20px;
+        transition: opacity 1s ease-in-out;
+        opacity: 1;
+    }
+
+    .hide {
+        opacity: 0;
+    }
+
     h2 {
         font-family: Helvetica, Arial, sans-serif;
         text-transform: capitalize;
@@ -95,5 +114,6 @@
     <div class="title">
         <span class="logo"><img src="/images/eye-0{frameNumber}.svg" alt="logo"/></span>
         <h2>Overwatch</h2>
+        <div class="version {showVersion ? '' : 'hide'}">v0.0.7</div>
     </div>
   </div>

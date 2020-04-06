@@ -1162,56 +1162,72 @@ var app = (function () {
     const file$1 = "src/components/Header.svelte";
 
     function create_fragment$1(ctx) {
+    	let div2;
     	let div1;
-    	let div0;
     	let span;
     	let img;
     	let img_src_value;
     	let t0;
     	let h2;
+    	let t2;
+    	let div0;
+    	let t3;
+    	let div0_class_value;
 
     	const block = {
     		c: function create() {
+    			div2 = element("div");
     			div1 = element("div");
-    			div0 = element("div");
     			span = element("span");
     			img = element("img");
     			t0 = space();
     			h2 = element("h2");
     			h2.textContent = "Overwatch";
-    			if (img.src !== (img_src_value = "/images/eye-0" + /*frameNumber*/ ctx[0] + ".svg")) attr_dev(img, "src", img_src_value);
+    			t2 = space();
+    			div0 = element("div");
+    			t3 = text("v0.0.7");
+    			if (img.src !== (img_src_value = "/images/eye-0" + /*frameNumber*/ ctx[1] + ".svg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "logo");
-    			attr_dev(img, "class", "svelte-aemn9v");
-    			add_location(img, file$1, 95, 27, 2078);
-    			attr_dev(span, "class", "logo svelte-aemn9v");
-    			add_location(span, file$1, 95, 8, 2059);
-    			attr_dev(h2, "class", "svelte-aemn9v");
-    			add_location(h2, file$1, 96, 8, 2148);
-    			attr_dev(div0, "class", "title svelte-aemn9v");
-    			add_location(div0, file$1, 94, 4, 2031);
-    			attr_dev(div1, "class", "head svelte-aemn9v");
-    			add_location(div1, file$1, 93, 0, 2008);
+    			attr_dev(img, "class", "svelte-urojep");
+    			add_location(img, file$1, 114, 27, 2484);
+    			attr_dev(span, "class", "logo svelte-urojep");
+    			add_location(span, file$1, 114, 8, 2465);
+    			attr_dev(h2, "class", "svelte-urojep");
+    			add_location(h2, file$1, 115, 8, 2554);
+    			attr_dev(div0, "class", div0_class_value = "version " + (/*showVersion*/ ctx[0] ? "" : "hide") + " svelte-urojep");
+    			add_location(div0, file$1, 116, 8, 2581);
+    			attr_dev(div1, "class", "title svelte-urojep");
+    			add_location(div1, file$1, 113, 4, 2437);
+    			attr_dev(div2, "class", "head svelte-urojep");
+    			add_location(div2, file$1, 112, 0, 2414);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div1, anchor);
-    			append_dev(div1, div0);
-    			append_dev(div0, span);
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div1);
+    			append_dev(div1, span);
     			append_dev(span, img);
-    			append_dev(div0, t0);
-    			append_dev(div0, h2);
+    			append_dev(div1, t0);
+    			append_dev(div1, h2);
+    			append_dev(div1, t2);
+    			append_dev(div1, div0);
+    			append_dev(div0, t3);
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*frameNumber*/ 1 && img.src !== (img_src_value = "/images/eye-0" + /*frameNumber*/ ctx[0] + ".svg")) {
+    			if (dirty & /*frameNumber*/ 2 && img.src !== (img_src_value = "/images/eye-0" + /*frameNumber*/ ctx[1] + ".svg")) {
     				attr_dev(img, "src", img_src_value);
+    			}
+
+    			if (dirty & /*showVersion*/ 1 && div0_class_value !== (div0_class_value = "version " + (/*showVersion*/ ctx[0] ? "" : "hide") + " svelte-urojep")) {
+    				attr_dev(div0, "class", div0_class_value);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div1);
+    			if (detaching) detach_dev(div2);
     		}
     	};
 
@@ -1243,17 +1259,19 @@ var app = (function () {
     	let nextAnimation;
     	let tid;
     	let { doAnimate = false } = $$props;
+    	let { showVersion = true } = $$props;
 
     	function start() {
-    		$$invalidate(1, doAnimate = true);
+    		$$invalidate(2, doAnimate = true);
     		maxCycles = random(2, 8);
     		nextAnimation = random(1000, 30000);
     		requestAnimationFrame(step);
     	}
 
     	function stop() {
-    		$$invalidate(1, doAnimate = false);
-    		$$invalidate(0, frameNumber = 2);
+    		$$invalidate(2, doAnimate = false);
+    		$$invalidate(1, frameNumber = 2);
+    		$$invalidate(0, showVersion = false);
     	} // clearTimeout(tid);
     	// if(nextAnimation) tid = setTimeout(start, nextAnimation);
 
@@ -1266,9 +1284,9 @@ var app = (function () {
 
     			if (frameNumber >= totalFrames) {
     				cycles++;
-    				$$invalidate(0, frameNumber = 1);
+    				$$invalidate(1, frameNumber = 1);
     			} else {
-    				$$invalidate(0, frameNumber = frameNumber + 1);
+    				$$invalidate(1, frameNumber = frameNumber + 1);
     			}
     		}
 
@@ -1278,7 +1296,7 @@ var app = (function () {
     	}
 
     	window.animateEye = step;
-    	const writable_props = ["doAnimate"];
+    	const writable_props = ["doAnimate", "showVersion"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Header> was created with unknown prop '${key}'`);
@@ -1288,7 +1306,8 @@ var app = (function () {
     	validate_slots("Header", $$slots, []);
 
     	$$self.$set = $$props => {
-    		if ("doAnimate" in $$props) $$invalidate(1, doAnimate = $$props.doAnimate);
+    		if ("doAnimate" in $$props) $$invalidate(2, doAnimate = $$props.doAnimate);
+    		if ("showVersion" in $$props) $$invalidate(0, showVersion = $$props.showVersion);
     	};
 
     	$$self.$capture_state = () => ({
@@ -1303,6 +1322,7 @@ var app = (function () {
     		nextAnimation,
     		tid,
     		doAnimate,
+    		showVersion,
     		start,
     		stop,
     		random,
@@ -1312,12 +1332,13 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("lastUpdated" in $$props) lastUpdated = $$props.lastUpdated;
     		if ("timeSinceLastUpdate" in $$props) timeSinceLastUpdate = $$props.timeSinceLastUpdate;
-    		if ("frameNumber" in $$props) $$invalidate(0, frameNumber = $$props.frameNumber);
+    		if ("frameNumber" in $$props) $$invalidate(1, frameNumber = $$props.frameNumber);
     		if ("cycles" in $$props) cycles = $$props.cycles;
     		if ("maxCycles" in $$props) maxCycles = $$props.maxCycles;
     		if ("nextAnimation" in $$props) nextAnimation = $$props.nextAnimation;
     		if ("tid" in $$props) tid = $$props.tid;
-    		if ("doAnimate" in $$props) $$invalidate(1, doAnimate = $$props.doAnimate);
+    		if ("doAnimate" in $$props) $$invalidate(2, doAnimate = $$props.doAnimate);
+    		if ("showVersion" in $$props) $$invalidate(0, showVersion = $$props.showVersion);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1325,20 +1346,26 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*doAnimate*/ 2) {
+    		if ($$self.$$.dirty & /*doAnimate*/ 4) {
     			 {
     				if (doAnimate) start();
     			}
     		}
     	};
 
-    	return [frameNumber, doAnimate, start, stop];
+    	return [showVersion, frameNumber, doAnimate, start, stop];
     }
 
     class Header extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { doAnimate: 1, start: 2, stop: 3 });
+
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+    			doAnimate: 2,
+    			showVersion: 0,
+    			start: 3,
+    			stop: 4
+    		});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1356,8 +1383,16 @@ var app = (function () {
     		throw new Error("<Header>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
+    	get showVersion() {
+    		throw new Error("<Header>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set showVersion(value) {
+    		throw new Error("<Header>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
     	get start() {
-    		return this.$$.ctx[2];
+    		return this.$$.ctx[3];
     	}
 
     	set start(value) {
@@ -1365,7 +1400,7 @@ var app = (function () {
     	}
 
     	get stop() {
-    		return this.$$.ctx[3];
+    		return this.$$.ctx[4];
     	}
 
     	set stop(value) {
