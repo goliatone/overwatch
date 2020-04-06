@@ -738,9 +738,9 @@ var app = (function () {
 
             baseUrl = this.loadConfigItem('dataviz.api.url', config.url);
 
-            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
-            }
+            baseUrl = this._clean(baseUrl);
+
+            if (!baseUrl) baseUrl = this._clean(location.href);
 
             this.baseUrl = baseUrl;
 
@@ -766,6 +766,13 @@ var app = (function () {
                     'Authorization': `Bearer ${token}`
                 }
             }).then(res => res.json());
+        }
+
+        _clean(baseUrl = '') {
+            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
+            }
+            return baseUrl;
         }
     }
 
