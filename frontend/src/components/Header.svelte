@@ -93,7 +93,7 @@
 
 <div class="head">
     <div class="title">
-        <span class="logo"><img src="/images/eye-0{frameNumber}.svg"/></span>
+        <span class="logo"><img src="/images/eye-0{frameNumber}.svg" alt="logo"/></span>
         <h2>Overwatch</h2>
     </div>
   </div>
