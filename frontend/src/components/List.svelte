@@ -1,7 +1,7 @@
 <script>
     import inView from 'in-view';
     import { onMount, onDestroy } from 'svelte';
-    import { fly } from 'svelte/transition';
+    import { fly, fade } from 'svelte/transition';
     
     import Header from './Header.svelte';
 
@@ -28,18 +28,18 @@
         // Set a nicer offset so it's not a hard cutoff
         inView.offset(110);
 
-        listRef.addEventListener('scroll', debounce(_=> {
-            // Active list item is top-most fully-visible item
-           const visibleListItems = Array.from(
-                document.getElementsByClassName('list-item')
-            ).map(inView.is);
+        // listRef.addEventListener('scroll', debounce(_=> {
+        //     // Active list item is top-most fully-visible item
+        //    const visibleListItems = Array.from(
+        //         document.getElementsByClassName('list-item')
+        //     ).map(inView.is);
 
-            // If it's a new one, update active list item
-            const topMostVisible = visibleListItems.indexOf(true);
-            if (topMostVisible !== $activeMapItem) {
-                activeMapItem.set(topMostVisible);
-            }
-        }, 500));
+        //     // If it's a new one, update active list item
+        //     const topMostVisible = visibleListItems.indexOf(true);
+        //     if (topMostVisible !== $activeMapItem) {
+        //         activeMapItem.set(topMostVisible);
+        //     }
+        // }, 500));
     }
 
     function setActiveMapItem(index) {
@@ -157,11 +157,11 @@
 
 <div id="list-items" bind:this="{listRef}">
   
-  <Header doAnimate={visible}/>
+  <Header doAnimate={!visible}/>
 
 {#if $incidentItems && $incidentItems.length}
   {#each $incidentItems as listItem, index}
-    <div on:click={_=>setActiveMapItem(index)} class="list-item-wrapper {$activeMapItem === index ? 'active': ''}" id="list-item-{index}">
+    <div on:click={_=>setActiveMapItem(index)} class="list-item-wrapper {$activeMapItem === index ? 'active': ''}" id="list-item-{index}" transition:fly="{{ y: 60, duration: 400 }}">
         <div class="list-item">
             <span class="description">{listItem.description}</span>
             <div class="meta">

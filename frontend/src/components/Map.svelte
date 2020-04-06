@@ -175,7 +175,6 @@
 
     $: {
         if($incidentItems.length) {
-            console.log('update data source...');
             updateDataSource($incidentItems);
         }
     };

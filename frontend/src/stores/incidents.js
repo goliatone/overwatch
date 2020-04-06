@@ -15,8 +15,6 @@ const incidents = _ => ({
         let response = await api.list(city, query);
         let data = response.data;
         let meta = response.meta;
-        console.log(data, meta);
-
         set(data);
         incidentItems.set(data);
 
