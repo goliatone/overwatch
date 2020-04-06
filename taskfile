@@ -127,9 +127,9 @@ function release:run {
     reset=`tput sgr0`
     echo "  ${green}The application should open in the browser."
     echo "  ${green}If not click this link:"
-    echo "  ${green}http://localhost:1981${reset}"
+    echo "  ${green}http://localhost:1981/about${reset}"
     sleep 2s
-    open http://localhost:1981
+    open http://localhost:1981/about
 }
 
 function help {
