@@ -7,7 +7,7 @@
         "test": "./node_modules/.bin/bogota",
         "dtest": "watch bogota tests/",
         "cover": "./node_modules/.bin/nyc npm test",
-        "start": "node index.js"
+        "start": "envset development -- node index.js"
     },
     "author": "burgosemi@gmail.com",
     "dependencies": {
@@ -26,6 +26,7 @@
     "devDependencies": {
         "bogota": "^2.0.4",
         "csv2json": "^2.0.2",
+        "envset": "^0.9.0",
         "nyc": "^10.3.2",
         "sinon": "^7.3.2",
         "superagent": "^5.2.2",
