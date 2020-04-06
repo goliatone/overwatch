@@ -21,7 +21,10 @@
         return {
             type: 'Feature',
             properties: {
-                description: `<b>${address}</b><br/>${description}`,
+                description: `
+                    <h3>${description}</h3>
+                    <p>${address}</p>
+                `,
                 id: index
             },
             geometry: {
@@ -158,9 +161,13 @@
         const popUps = document.getElementsByClassName('mapboxgl-popup');
             if (popUps[0]) popUps[0].remove();
 
+        let description = `
+            <h3>${item.description}</h3>
+            <p>${item.address}</p>
+        `;
         new mapboxgl.Popup()
             .setLngLat(item.coordinates)
-            .setHTML(item.description)
+            .setHTML(description)
             .addTo(map);
     }
 

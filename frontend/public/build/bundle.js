@@ -843,7 +843,7 @@ var app = (function () {
     			add_location(link, file, 1, 4, 18);
     			attr_dev(div, "id", "map");
     			attr_dev(div, "class", "svelte-1p8ikqa");
-    			add_location(div, file, 225, 0, 5843);
+    			add_location(div, file, 232, 0, 6016);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -878,7 +878,10 @@ var app = (function () {
     	return {
     		type: "Feature",
     		properties: {
-    			description: `<b>${address}</b><br/>${description}`,
+    			description: `
+                    <h3>${description}</h3>
+                    <p>${address}</p>
+                `,
     			id: index
     		},
     		geometry: { type: "Point", coordinates }
@@ -1021,7 +1024,13 @@ var app = (function () {
     	function showPopup(item) {
     		const popUps = document.getElementsByClassName("mapboxgl-popup");
     		if (popUps[0]) popUps[0].remove();
-    		new mapboxGl.Popup().setLngLat(item.coordinates).setHTML(item.description).addTo(map);
+
+    		let description = `
+            <h3>${item.description}</h3>
+            <p>${item.address}</p>
+        `;
+
+    		new mapboxGl.Popup().setLngLat(item.coordinates).setHTML(description).addTo(map);
     	}
 
     	function flyTo(coordinates) {
