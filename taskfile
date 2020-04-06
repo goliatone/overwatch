@@ -100,6 +100,12 @@ function release:docker {
 function release:run {
     NAME=goliatone/crime-visualization-backend:latest
     docker run -it --rm --env-file ./backend/.envset -p 1981:1981 -p 9090:9090 -d "$NAME"
+    green=`tput setaf 2`
+    reset=`tput sgr0`
+    echo "  ${green}The application should open in the browser."
+    echo "  ${green}If not click this link:"
+    echo "  ${green}http://localhost:1981${reset}"
+    sleep 2s
     open http://localhost:1981
 }
 
