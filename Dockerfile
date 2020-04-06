@@ -25,6 +25,7 @@ COPY ./backend/ /usr/src/app
 #compile frontend
 COPY ./frontend/ /tmp/frontend
 RUN cd /tmp/frontend && npm i  && \
+    npm run build && \
     mkdir -p ./usr/src/app/modules/server/public/build && \
     cp -r /tmp/frontend/public/* /usr/src/app/modules/server/public && \
     rm -f /usr/src/app/modules/server/public/index.html
