@@ -1,12 +1,20 @@
 'use strict';
-
 const { resolve } = require('path');
+const { readFileSync } = require('fs');
 
 module.exports = {
     host: process.env.NODE_APP_HOST,
     port: process.env.NODE_APP_PORT || 1345,
     env: process.env.NODE_ENV || 'production',
-    https: false, //
+    https: false,
+    /**
+     * !NOTE: This is only for local development!!
+     */
+    // https: true,
+    // options: {
+    //     key: readFileSync('../ops/certs/crimeviz-localhost.key'),
+    //     cert: readFileSync('../ops/certs/crimeviz-localhost.crt'),
+    // },
     dependencies: ['persistence'],
     info: {
         version: '${package.version}',
