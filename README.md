@@ -1,10 +1,26 @@
 ## Crime Visualization
 
-This is a sample project. To get started:
+To run the project you need Docker installed and available from your terminal.
+
+Build Docker image:
 
 ```
-$ npm i svelte-front-end-template
+$ ./taskfile release:docker
 ```
+
+Run Docker container:
+
+```
+$ ./taskfile release:run
+```
+
+The application should be available in the [following url](http://localhost:1981):
+
+```
+http://localhost:1981
+```
+
+If your docker uses an IP then replace `localhost` by your docker's IP e.g. `http://191.168.99.100:1981` 
 
 ## Development
 
