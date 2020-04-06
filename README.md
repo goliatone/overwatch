@@ -35,6 +35,66 @@ The backend uses the [core.io](https://coreio.tech/) framework that I also devel
 Then frontend uses [svelte](https://svelte.dev) and [MapBox](https://www.mapbox.com/). Svelte is [great](https://github.com/feltcoop/why-svelte) in general but specifically to get something running quickly made the most sense to me.
 
 
+## Backend
+
+The backend exposes an API with a single endpoint available at:
+
+```
+$ curl 'http://localhost:1981/api/v1/crime/sacramento?page=1&size=2' -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer 0a6fd546-9699-4fc3-8ba6-f878b11f0396'
+```
+We send an authentication token otherwise we would get a 401 error however the implementation is very naive and not for real world purpose but good for the exercise. 
+
+Our response payload will look something like this:
+
+```json 
+{
+  "status": true,
+  "data": [
+    {
+      "id": 1,
+      "date": "1/1/06 0:00",
+      "timestamp": "2006-01-01T08:00:00.000Z",
+      "address": "3108 occidental dr",
+      "beat": "3C",
+      "grid": 1115,
+      "description": "10851(a)vc take veh w/o owner",
+      "code": "2404",
+      "coordinates": [
+        -121.3914158,
+        38.55042047
+      ]
+    },
+    {
+      "id": 2,
+      "date": "1/1/06 0:00",
+      "timestamp": "2006-01-01T08:00:00.000Z",
+      "address": "2082 expedition way",
+      "beat": "5A",
+      "grid": 1512,
+      "description": "459 pc  burglary residence",
+      "code": "2204",
+      "coordinates": [
+        -121.4901858,
+        38.47350069
+      ]
+    }
+  ],
+  "meta": {
+    "page": "1",
+    "size": "2",
+    "count": 7584
+  }
+}
+```
+
+The API implements basic pagination. I wanted to implement querying and filtering but did not have enough time.
+
+The application does not use a database, we read all data from a JSON file that the server loads on boot.
+
+## Frontend
+
+![preview](/assets/frontend-preview.png)
+
 ## Development 
 
 For local development you need to have Node.js **v9.2.0** or higher installed.
