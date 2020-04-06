@@ -1354,7 +1354,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (182:4) {:else}
+    // (186:4) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -1362,8 +1362,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = "Loading...";
-    			attr_dev(div, "class", "loader svelte-i0ih5m");
-    			add_location(div, file$2, 182, 8, 4681);
+    			attr_dev(div, "class", "loader svelte-1d3txqm");
+    			add_location(div, file$2, 186, 8, 4744);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1380,22 +1380,22 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(182:4) {:else}",
+    		source: "(186:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (180:4) {#if $error}
+    // (184:4) {#if $error}
     function create_if_block_2(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "error svelte-i0ih5m");
-    			add_location(div, file$2, 180, 8, 4621);
+    			attr_dev(div, "class", "error svelte-1d3txqm");
+    			add_location(div, file$2, 184, 8, 4684);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1414,14 +1414,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(180:4) {#if $error}",
+    		source: "(184:4) {#if $error}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (168:0) {#if $incidentItems && $incidentItems.length}
+    // (172:0) {#if $incidentItems && $incidentItems.length}
     function create_if_block_1(ctx) {
     	let each_1_anchor;
     	let current;
@@ -1510,14 +1510,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(168:0) {#if $incidentItems && $incidentItems.length}",
+    		source: "(172:0) {#if $incidentItems && $incidentItems.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (169:2) {#each $incidentItems as listItem, index}
+    // (173:2) {#each $incidentItems as listItem, index}
     function create_each_block(ctx) {
     	let div2;
     	let div1;
@@ -1566,25 +1566,27 @@ var app = (function () {
     			span2 = element("span");
     			t7 = text(t7_value);
     			t8 = space();
-    			attr_dev(span0, "class", "description svelte-i0ih5m");
-    			add_location(span0, file$2, 171, 12, 4295);
-    			add_location(small0, file$2, 173, 16, 4398);
+    			attr_dev(span0, "class", "description svelte-1d3txqm");
+    			add_location(span0, file$2, 175, 12, 4358);
+    			attr_dev(small0, "class", "svelte-1d3txqm");
+    			add_location(small0, file$2, 177, 16, 4461);
     			attr_dev(span1, "class", "date");
-    			add_location(span1, file$2, 173, 43, 4425);
-    			add_location(small1, file$2, 173, 85, 4467);
+    			add_location(span1, file$2, 177, 43, 4488);
+    			attr_dev(small1, "class", "svelte-1d3txqm");
+    			add_location(small1, file$2, 177, 85, 4530);
     			attr_dev(span2, "class", "address");
-    			add_location(span2, file$2, 173, 103, 4485);
-    			attr_dev(div0, "class", "meta svelte-i0ih5m");
-    			add_location(div0, file$2, 172, 12, 4363);
-    			attr_dev(div1, "class", "list-item svelte-i0ih5m");
-    			add_location(div1, file$2, 170, 8, 4259);
+    			add_location(span2, file$2, 177, 103, 4548);
+    			attr_dev(div0, "class", "meta svelte-1d3txqm");
+    			add_location(div0, file$2, 176, 12, 4426);
+    			attr_dev(div1, "class", "list-item svelte-1d3txqm");
+    			add_location(div1, file$2, 174, 8, 4322);
 
     			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-i0ih5m");
+    			: "") + " svelte-1d3txqm");
 
     			attr_dev(div2, "id", div2_id_value = "list-item-" + /*index*/ ctx[13]);
-    			add_location(div2, file$2, 169, 4, 4072);
+    			add_location(div2, file$2, 173, 4, 4135);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div2, anchor);
@@ -1614,7 +1616,7 @@ var app = (function () {
 
     			if (!current || dirty & /*$activeMapItem*/ 8 && div2_class_value !== (div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[3] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-i0ih5m")) {
+    			: "") + " svelte-1d3txqm")) {
     				attr_dev(div2, "class", div2_class_value);
     			}
     		},
@@ -1644,14 +1646,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(169:2) {#each $incidentItems as listItem, index}",
+    		source: "(173:2) {#each $incidentItems as listItem, index}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (193:0) {#if visible}
+    // (197:0) {#if visible}
     function create_if_block(ctx) {
     	let div;
     	let button0;
@@ -1669,12 +1671,12 @@ var app = (function () {
     			t1 = space();
     			button1 = element("button");
     			button1.textContent = "Next";
-    			attr_dev(button0, "class", "svelte-i0ih5m");
-    			add_location(button0, file$2, 194, 4, 5123);
-    			attr_dev(button1, "class", "svelte-i0ih5m");
-    			add_location(button1, file$2, 195, 4, 5167);
-    			attr_dev(div, "class", "pagination svelte-i0ih5m");
-    			add_location(div, file$2, 193, 2, 5050);
+    			attr_dev(button0, "class", "svelte-1d3txqm");
+    			add_location(button0, file$2, 198, 4, 5186);
+    			attr_dev(button1, "class", "svelte-1d3txqm");
+    			add_location(button1, file$2, 199, 4, 5230);
+    			attr_dev(div, "class", "pagination svelte-1d3txqm");
+    			add_location(div, file$2, 197, 2, 5113);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div, anchor);
@@ -1716,7 +1718,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(193:0) {#if visible}",
+    		source: "(197:0) {#if visible}",
     		ctx
     	});
 
@@ -1784,18 +1786,18 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			attr_dev(a0, "href", "https://github.com/goliatone");
     			attr_dev(a0, "target", "_blank");
-    			add_location(a0, file$2, 187, 40, 4796);
-    			add_location(p0, file$2, 187, 4, 4760);
+    			add_location(a0, file$2, 191, 40, 4859);
+    			add_location(p0, file$2, 191, 4, 4823);
     			attr_dev(a1, "href", "/about");
     			attr_dev(a1, "target", "_blank");
-    			add_location(a1, file$2, 188, 24, 4893);
-    			add_location(p1, file$2, 188, 4, 4873);
-    			add_location(i, file$2, 189, 4, 4949);
-    			attr_dev(div0, "class", "tail svelte-i0ih5m");
-    			add_location(div0, file$2, 186, 2, 4737);
+    			add_location(a1, file$2, 192, 24, 4956);
+    			add_location(p1, file$2, 192, 4, 4936);
+    			add_location(i, file$2, 193, 4, 5012);
+    			attr_dev(div0, "class", "tail svelte-1d3txqm");
+    			add_location(div0, file$2, 190, 2, 4800);
     			attr_dev(div1, "id", "list-items");
-    			attr_dev(div1, "class", "svelte-i0ih5m");
-    			add_location(div1, file$2, 163, 0, 3897);
+    			attr_dev(div1, "class", "svelte-1d3txqm");
+    			add_location(div1, file$2, 167, 0, 3960);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

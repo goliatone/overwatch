@@ -126,6 +126,10 @@
         line-height: 1em;
     }
 
+    .list-item .meta small {
+        font-weight: bold;
+    }
+
     .error,
     .loader {
         margin: 30px 40px;
