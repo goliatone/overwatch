@@ -4,7 +4,7 @@
     import { fly, fade } from 'svelte/transition';
     
     import Header from './Header.svelte';
-
+    import debounce from '../utils/debounce';
     import incidents, {incidentItems, error} from '../stores/incidents';
     import { activeListItem, activeMapItem } from '../stores.js';
     import { activeCity } from '../consts.js';
@@ -12,21 +12,9 @@
     // Define the ref
     let listRef;
 
-    /**
-     * @see https://codeburst.io/throttling-and-debouncing-in-javascript-b01cad5c8edf
-     */ 
-    function debounce(callback, wait=500) {
-        let timeout;
-        return (...args) => {
-            const context = this;
-            clearTimeout(timeout);
-            timeout = setTimeout(_ => callback.apply(context, args), wait);
-        };
-    }
-
     function initialize() {
         // Set a nicer offset so it's not a hard cutoff
-        inView.offset(110);
+        inView.offset(130);
 
         // listRef.addEventListener('scroll', debounce(_=> {
         //     // Active list item is top-most fully-visible item
@@ -52,8 +40,15 @@
             const activeItem  =document.getElementById(
                 `list-item-${newActiveListItem}`
             );
-
-            listRef.scrollTop = activeItem.offsetTop;
+            //10157 - 10035
+            //10517  - 10391
+            //11001 - 10876
+            console.log('item %s offset of %s',newActiveListItem, activeItem.offsetTop);
+            // listRef.scrollTop = activeItem.offsetTop - 130;
+            listRef.scrollTo({
+                top: activeItem.offsetTop - 130,
+                behavior: 'smooth'
+            });
         }
     });
 
@@ -64,7 +59,7 @@
 		incidents.listItems(activeCity.name, {page, size:200});
     }
 
-    function goPrev(){
+    function goPrev() {
         page--;
 		incidents.listItems(activeCity.name, {page, size:200});
     }
@@ -83,6 +78,10 @@
     let visible = false;
 
     $: visible = $incidentItems && $incidentItems.length;
+
+    $: {
+        console.log('$activeMapItem', $activeMapItem);
+    }
 </script>
 
 <style>

@@ -51,7 +51,7 @@
          */ 
         map.flyTo({ 
             center: features[0].coordinates,
-            essential: true,
+            // essential: true,
             curve: 1,
             // speed: 0.9,
             bearing: 0,
@@ -101,7 +101,7 @@
                 type: 'symbol',
                 source: 'places.source',
                 layout: {
-                    'icon-image': 'police-11',
+                    'icon-image': 'police-15',
                     'icon-size': 2,
                     'icon-allow-overlap': true
                 }
@@ -113,15 +113,9 @@
             map.on('click', 'places', function({ features }) {
                 const match = features[0];
                 const coordinates = match.geometry.coordinates.slice();
-        
-                // Show popup
-                new mapboxgl.Popup()
-                    .setLngLat(coordinates)
-                    .setHTML(match.properties.description)
-                    .addTo(map);
-
-                // Set new active list item
-                activeListItem.set(match.properties.id);
+    
+                setActiveMapItem(match.properties.id);
+                setActiveListItem(match.properties.id);
             });
 
             /**
@@ -138,7 +132,9 @@
                 map.getCanvas().style.cursor = '';
             });
 
-
+            /**
+             * Query backend for our first page of items
+             */ 
             await incidents.listItems('sacramento', {page:1, size:200});
         });
     }
@@ -149,18 +145,45 @@
      */
     const unsubscribeActiveMapItem = activeMapItem.subscribe(newActiveMapItem => {
         if (map) {
-            map.flyTo({ 
-                center: $incidentItems[newActiveMapItem].coordinates,
-                essential: true,
-                curve: 1,
-                // speed: 0.8,
-                bearing: 0,
-                duration: 3200,
-                // zoom: 9,
-                // pitch: 0
-            });
+
+            const item = $incidentItems[newActiveMapItem];
+
+            showPopup(item);
+
+            flyTo(item.coordinates);
         }
     });
+
+    function showPopup(item) {
+        const popUps = document.getElementsByClassName('mapboxgl-popup');
+            if (popUps[0]) popUps[0].remove();
+
+        new mapboxgl.Popup()
+            .setLngLat(item.coordinates)
+            .setHTML(item.description)
+            .addTo(map);
+    }
+
+    function flyTo(coordinates){
+        map.flyTo({ 
+            center: coordinates,
+            // essential: true,
+            curve: 1,
+            // speed: 0.8,
+            bearing: 0,
+            duration: 3200,
+            // zoom: 9,
+            // pitch: 0
+        });
+    }
+
+    function setActiveListItem(id) {
+        activeListItem.set(id);
+    }
+
+    function setActiveMapItem(id) {
+        activeMapItem.set(id);
+    }
 
     /**
      * Livecycle handler, register map on first
