@@ -1,7 +1,5 @@
 'use strict';
 const test = require('tape');
-const pkg = require('../package.json');
-
 const supertest = require('supertest');
 
 const server = supertest.agent('http://localhost:1981');
@@ -9,6 +7,7 @@ const server = supertest.agent('http://localhost:1981');
 test('GET /api/v1/crime/sacramento', t => {
     server
         .get('/api/v1/crime/sacramento')
+        .set({ Authorization: '3addedb5-0511-4b58-9939-7a0976bead18' })
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
@@ -22,10 +21,10 @@ test('GET /api/v1/crime/sacramento', t => {
         });
 });
 
-test.only('GET /api/v1/crime/sacramento?page=2&size=2', t => {
-
+test('GET /api/v1/crime/sacramento?page=2&size=2', t => {
     server
         .get('/api/v1/crime/sacramento?page=2&size=2')
+        .set({ Authorization: '3addedb5-0511-4b58-9939-7a0976bead18' })
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res) {
