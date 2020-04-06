@@ -13,6 +13,7 @@ function dev:clean {
     rm -r backend/*.log
     rm -r ./backend/modules/server/public/build
     rm ./data/*.json
+    rm -r dist
 }
 
 function dev:install {
@@ -65,6 +66,11 @@ function dev:run {
 ##########################################
 # Release build
 ##########################################
+
+function release:bundle {
+    mkdir -p ./dist
+    git archive --format=zip HEAD -o ./dist/visualization_project.zip
+}
 
 function release:docker {
     pushd ./backend || echo "faild pushd"
