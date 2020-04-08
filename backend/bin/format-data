@@ -8,6 +8,8 @@ const methods = require('../lib/data-formatter');
 program
     .version(pkg.version)
     .requiredOption('-d, --data <source>', 'Path to json data file')
+    .option('-s, --start [start]', 'Index to start, use for pagination', 0)
+    .option('-e, --end [end]', 'Index to end, use for pagination', undefined)
     .parse(process.argv);
 
 let data;
@@ -19,6 +21,30 @@ try {
     console.error(error);
     process.exit(1);
 }
+
+data = methods.range(data, program.start, program.end);
+
+
+// let out = {};
+// data.map(item => {
+//     let code = methods.trim(item.ucr_ncic_code);
+//     if (!out[code]) out[code] = [];
+
+//     let codes = out[code];
+
+//     let desc = methods.trim(item.crimedescr);
+//     let index = codes.indexOf(desc);
+
+//     if (index === -1) {
+//         let index = codes.length;
+//         codes[index] = desc;
+//         codes[index + 1] = 1;
+//     } else {
+//         codes[index + 1] = codes[index + 1] + 1;
+//     }
+// });
+
+// return console.log(JSON.stringify(out));
 
 /**
  * Format data:
