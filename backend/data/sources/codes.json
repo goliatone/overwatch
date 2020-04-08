@@ -1,0 +1,786 @@
+{
+    "909": [
+        "192(C)(2)VEH MAN W/O GROSS NEG",
+        2
+    ],
+    "999": [
+        "197 JUSTIFIABLE HOMI-CIVILIAN",
+        1,
+        "187(A) HOMICIDE",
+        1,
+        "664/187(A) ATTEMPTED HOMICIDE",
+        1
+    ],
+    "1099": [
+        "278.5(A)DEPRIVE RIGHT OF CUSTO",
+        1
+    ],
+    "1210": [
+        "211 PC ROBBERY-PURSE SNATCH",
+        20
+    ],
+    "1211": [
+        "211 PC ROBBERY-BANK",
+        1
+    ],
+    "1212": [
+        "215(A) PC CARJACKING",
+        18
+    ],
+    "1299": [
+        "211 PC ROBBERY- BUSINESS",
+        38,
+        "211 PC ROBBERY UNSPECIFIED",
+        99,
+        "212.5(A)ROBBERY-INHAB DWELLING",
+        8,
+        "212.5(B) ROB-VICINITY OF ATM",
+        1
+    ],
+    "1310": [
+        "245(C) AWDW/NO FIREARM/OFFICER",
+        1
+    ],
+    "1313": [
+        "242 PC BATTERY CIVILIAN",
+        89,
+        "240 PC ASSAULT/SIMPLE-CIVILIAN",
+        3,
+        "243.6 BATTERY SCHOOL EMPLOYEE",
+        4,
+        "243(B) PC BATTERY - OFFICER",
+        1,
+        "241(B) ASSAULT ON POLICE OFFIC",
+        1,
+        "243(B) BATTERY DR/NURSE/OFFIC",
+        1
+    ],
+    "1315": [
+        "243(E)1 BATTERY NONCOHAB SPOUS",
+        81,
+        "243(D) PC BATT/CIVILIAN W/INJ",
+        26,
+        "245(A)(2) AWDW/FIREARM/CIVILIA",
+        22,
+        "245(A)(1)AWDW/NO FIREARM/CIVIL",
+        76,
+        "243(C)(1)BATT EMERG PERSON-INJ",
+        1,
+        "368(B)(1) CRUELTY/ELDER/ W/INJ",
+        1,
+        "243.2(A)(1) BATT/SCHOOL INJURY",
+        14,
+        "243.3 BATT TRANS PERS/PASS/INJ",
+        1,
+        "243(C)2 PC BATT/PO WITH INJURY",
+        1,
+        "203 PC MAYHEM",
+        1,
+        "368(C) CAUSE PAIN/INJ TO ELDER",
+        1
+    ],
+    "1602": [
+        "422 PC THREAT/INTENT TO TERROR",
+        18
+    ],
+    "2099": [
+        "451(B) PC ARSON OF INHAB STRUC",
+        3,
+        "451(D) PC ARSON OF PROPERTY",
+        10,
+        "452(D)PC CAUSE FIRE OF PROPERT",
+        1
+    ],
+    "2203": [
+        "459 PC BURGLARY BUSINESS",
+        135
+    ],
+    "2204": [
+        "459 PC BURGLARY RESIDENCE",
+        356
+    ],
+    "2206": [
+        "466 PC POSS OF BURG TOOLS",
+        6
+    ],
+    "2299": [
+        "459 PC BURGLARY-UNSPECIFIED",
+        12,
+        "459 PC BURGLARY VEHICLE",
+        462
+    ],
+    "2301": [
+        "487(C) PC GRAND THEFT-PERSON",
+        4
+    ],
+    "2302": [
+        "484 PETTY THEFT-PURSE SNATCH",
+        2
+    ],
+    "2303": [
+        "487(A) PC GRAND THEFT",
+        84,
+        "484 PETTY THEFT-SHOPLIFT",
+        86,
+        "487(A) PC GRAND THEFT-SHOPLIFT",
+        6
+    ],
+    "2304": [
+        "487(A) GRAND THEFT-AUTO PARTS",
+        8,
+        "484 PC PETTY THEFT AUTO PART",
+        4
+    ],
+    "2305": [
+        "484 PETTY THEFT CLOUT UNLOCKED",
+        20,
+        "487(A) GRAND THEFT-CLOUT-UNLOC",
+        11
+    ],
+    "2307": [
+        "484 PC-PETTY THEFT-COIN MACHIN",
+        7,
+        "487(A) GRAND THEFT-COIN MACHIN",
+        4
+    ],
+    "2308": [
+        "484 PC PETTY THEFT/INSIDE",
+        99,
+        "487(A) GRAND THEFT-INSIDE",
+        41
+    ],
+    "2309": [
+        "484 PC PETTY THEFT/ OUTSIDE",
+        48
+    ],
+    "2310": [
+        "1708 US THEFT OF MAIL",
+        20
+    ],
+    "2399": [
+        "484 PC PETTY THEFT",
+        82,
+        "484 PETTY THEFT/LICENSE PLATE",
+        119,
+        "487(D)GRAND THEFT FIREARM/ANIM",
+        8,
+        "666 PC PETTY THEFT W/PRI CONV",
+        30,
+        "22435.2(A) BP POSS SHOP CART",
+        7,
+        "484 PC THEFT-LIC PLATE TABS",
+        6,
+        "537(A)(1) DEFRAUD INKEEP/-$400",
+        3,
+        "368(D) THEFT-ELDER >400",
+        3,
+        "485 PC PT OF FOUND PROPERTY",
+        1,
+        "368(E) THEFT OF ELDER <$400",
+        2,
+        "498(B)(5) THEFT OF ELECTRICITY",
+        1
+    ],
+    "2404": [
+        "10851(A)VC TAKE VEH W/O OWNER",
+        653,
+        "10851 VC AUTO THEFT LOCATE",
+        223,
+        "10855 VC LSE/RENT NOT RETURNED",
+        3,
+        "487(D) PC GRAND THEFT AUTO",
+        1,
+        "BAIT CAR 10851 VC TAKE VEHICLE",
+        1
+    ],
+    "2501": [
+        "476 PC PASS FICTICIOUS CHECK",
+        21
+    ],
+    "2503": [
+        "FORGERY-COUNTERFEITING",
+        1
+    ],
+    "2505": [
+        "FORGERY-PASSING COUNTERFEIT",
+        1
+    ],
+    "2506": [
+        "475(C) PASS FORGED NOTE",
+        20,
+        "475(A)PC POSS FORGED CHK/NOTE",
+        13
+    ],
+    "2589": [
+        "470 PC FORGERY",
+        1
+    ],
+    "2602": [
+        "FRAUD-SWINDLE",
+        2
+    ],
+    "2604": [
+        "530.5 PC USE PERSONAL ID INFO",
+        65,
+        "530 PC FALSE PERS. REC PROP",
+        5,
+        "529 PC FALSE PERSONATION",
+        23,
+        "538D PC IMPERSON PEACE OFFICER",
+        1
+    ],
+    "2605": [
+        "484G(B) PC ACCESS CARD FRAUD",
+        66,
+        "484J PC PUBLISH CARD INFO",
+        21,
+        "484G(A)PC USE FORGED CARD",
+        6,
+        "484E(A)PC THEFT OF CREDIT CARD",
+        2,
+        "484E(D)PC FRAUD POSS CARD INFO",
+        2
+    ],
+    "2699": [
+        "532 PC FRAUD OBTAIN MONEY ETC",
+        4,
+        "587C PC EVADE PAYMENT RAILFARE",
+        1
+    ],
+    "2799": [
+        "503 PC EMBEZZLEMENT",
+        4,
+        "506 PC EMBEZZLEMENT/CONTRACTOR",
+        1,
+        "508 PC EMBEZZLEMENT/EMPLOYEE",
+        3
+    ],
+    "2803": [
+        "496(A) RECEIVE STOLEN PROPERTY",
+        24,
+        "496(A) PC REC STOLEN AUTO PART",
+        1
+    ],
+    "2999": [
+        "594(B)(1)PC VANDALISM +$400",
+        117,
+        "594(B)(2)(A) VANDALISM/ -$400",
+        195,
+        "594(B)(1)VANDALISM GRAF +$400",
+        9,
+        "594(B)(2)(A)VANDALISM GRAF-400",
+        22,
+        "1705 US DESTRUCT OF MAIL RECEP",
+        2,
+        "10852 VC VEHICLE TAMPERING",
+        3,
+        "594.3(A)VANDAL/PLACE OF WORSHI",
+        4,
+        "10853 VC MALIC MISCHIEF TO VEH",
+        2,
+        "603 FORCED ENTRY/PROP DAMAGE",
+        2
+    ],
+    "3522": [
+        "11352(B)HS TRANS SUBST TO CNTY",
+        1,
+        "11351 HS POSS/SALE OPIATE/NARC",
+        1
+    ],
+    "3532": [
+        "11351.5 HS POSS SALE RCK COCAI",
+        8,
+        "11350(A)HS POSS CNTRL SUBST",
+        43,
+        "11352(A)HS SALE/TRANS CNTL SUB",
+        15
+    ],
+    "3560": [
+        "11359 HS POSS FOR SALE MARIJ",
+        8,
+        "11360(A)HS SALE/TRANSP MARIJ",
+        1
+    ],
+    "3562": [
+        "11357(B)HS POSS -28.5GR MARIJ",
+        51,
+        "11357(C)HS POSS +28.5GR MARIJ",
+        2,
+        "11357(E) MNR POSS MARIJ SCHOOL",
+        3
+    ],
+    "3563": [
+        "11358 HS CULTIVATE MARIJUANA",
+        1
+    ],
+    "3564": [
+        "11361(B)HS ADLT FURN MNR MARIJ",
+        1
+    ],
+    "3570": [
+        "11379(A)HS SELL/TRANSP AMPHET",
+        2
+    ],
+    "3571": [
+        "11378 HS POSS/SALE AMPHETAMINE",
+        10
+    ],
+    "3572": [
+        "11377(A)HS POSS AMPHETAMINES",
+        58
+    ],
+    "3582": [
+        "11350(B)HS POSSESS QUAALUDES",
+        9
+    ],
+    "3599": [
+        "11364 HS POSS DRUG PARAPH",
+        99,
+        "11532(A)HS LOITER DRG ACTIVITY",
+        5,
+        "4140 BP POSS OF HYPO NEEDLE",
+        16,
+        "11377(A)HS POSS CNTRL SUBST",
+        2,
+        "11550(A)HS UNDER INFL NARCOTIC",
+        4,
+        "11379(A)HS SALE/TRAN CNTRL SUB",
+        1,
+        "11366 HS MAINTN PLACE TO SELL",
+        1,
+        "11378 HS POSS CNTRL SUB/SALE",
+        1
+    ],
+    "3605": [
+        "314.1 PC INDECENT EXPOSURE",
+        2
+    ],
+    "3611": [
+        "647(I) PEEPING TOM-INHAB DWELL",
+        1
+    ],
+    "3699": [
+        "290(A)(1)(D) FAIL TO REG-5 DAY",
+        8,
+        "290(F)1 W/I 5 DAYS ADD CHANGE",
+        8,
+        "290(G)(1) FAIL TO REG SEX OFFE",
+        1,
+        "243.4(E)(1)TOUCH FOR SEX PLEAS",
+        2,
+        "290(A)(1)(A) FAIL REG-CHG ADD",
+        1,
+        "243.4(A) SEXUAL BATTERY",
+        2
+    ],
+    "3805": [
+        "32210 EC WILFL DISTURB PUB SCH",
+        1
+    ],
+    "4004": [
+        "647(B) PC PROSTITUTION",
+        39
+    ],
+    "4099": [
+        "653.22(A) LOITER PROSTITUTION",
+        12
+    ],
+    "4104": [
+        "25662(A)BP POSS ALC BY MINOR",
+        1
+    ],
+    "4199": [
+        "25661 BP FALSE EVIDENCE OF AGE",
+        2,
+        "25632 BP CONSM ALC AFT CLOSING",
+        1
+    ],
+    "4801": [
+        "148(A)(1)PC RESIST PEACE OFFCR",
+        10
+    ],
+    "4803": [
+        "148.9 PC FALSE ID TO OFFICER",
+        13,
+        "148.1(A)PC FALSE REPT OF BOMB",
+        2,
+        "31 VC FALSE INFO TO OFFICER",
+        1,
+        "148.4(A)PC TAMPER FIRE PROT EQ",
+        1
+    ],
+    "4805": [
+        "136.1(C)(1) PC DISSUADE V/W",
+        1
+    ],
+    "4808": [
+        "32 PC ACCESSORY TO A CRIME",
+        1
+    ],
+    "4902": [
+        "1551(A) FUGITIVE FROM JUSTICE",
+        13
+    ],
+    "4999": [
+        "836.6(B) PC ESCAPE FROM ARREST",
+        1
+    ],
+    "5005": [
+        "166(A)(4) WILFUL DISOBEY CT OR",
+        10
+    ],
+    "5007": [
+        "273.6(A) PC VIO DV COURT ORDER",
+        25
+    ],
+    "5011": [
+        "3056 PC PAROLE VIOLATION",
+        5
+    ],
+    "5012": [
+        "1203.2 PC VIOLATION OF PROBATI",
+        12
+    ],
+    "5202": [
+        "12025(A)2)CNCLD GUN ON PER/FEL",
+        2,
+        "12025(A)1)CONCLD GUN VEH/FEL",
+        1,
+        "12025(B)6 UNREG/CONCLED FIREAR",
+        1,
+        "12025(A)2)CONCL GUN ON PER/MSD",
+        1
+    ],
+    "5207": [
+        "12303.3 PC DEST DVC INTENT INJ",
+        1,
+        "12303.3 PC FIRE BOMB INT INJ",
+        1
+    ],
+    "5212": [
+        "12020(A)(4) PC DIRK/DAGGER",
+        7,
+        "417(A)1) PC BRANDISH NON-GUN",
+        8,
+        "12022.1 PC COMMIT FEL ON BAIL",
+        3,
+        "12020(A)1) PROHIBITED FIREARM",
+        10,
+        "12021(A)(1)PC FELON POSS FRARM",
+        8,
+        "417(A)2) PC BRANDISH FIREARM",
+        5,
+        "12031(A)(1)PC LOADED GUN/PUB-M",
+        1,
+        "653K PC POSS/SELL SWITCHBLADE",
+        3,
+        "626.10(A) PC POSS WPN SCHL ZN",
+        4,
+        "12101(B)1)PC MINOR POSS AMMO",
+        1
+    ],
+    "5213": [
+        "246 PC SHOOT OCCUP DWELL/VEH",
+        17,
+        "246.3 PC NEGL DISCH FIREARM",
+        2,
+        "247(B) PC SHOOT UNOCC BLDG/VEH",
+        5
+    ],
+    "5299": [
+        "12420 PC SELL/TRANSP TEAR GAS",
+        1,
+        "12403.7(G) PC ILLGL POSS TRGAS",
+        1,
+        "4574(A)WEAPON/TEAR GAS IN JAIL",
+        1,
+        "417.4 PC BRANDISH IMIT FIREARM",
+        1,
+        "12022(A)(1)PC ARMED COMM FEL",
+        1,
+        "12316(B)(1)FELON POSSESS AMMO",
+        2
+    ],
+    "5307": [
+        "653M(B) PC ANNOY/RPT CALL HOME",
+        12
+    ],
+    "5309": [
+        "653M(A) PC OBSCENE/THREAT CALL",
+        17
+    ],
+    "5311": [
+        "647(F) PC PUB INTOX-DETOX ONLY",
+        3,
+        "647(F) PC DIP - DISORDERLY",
+        25,
+        "415(1) PC DISTURB PEACE/FIGHT",
+        9
+    ],
+    "5399": [
+        "415.5(A)(1) PC FIGHT SCHOOL GR",
+        1,
+        "415(3) PC DIST PEACE OFF WORDS",
+        2
+    ],
+    "5400": [
+        "TRAFFIC-ACCIDENT INJURY",
+        182,
+        "TRAFFIC-ACCIDENT-NON INJURY",
+        175
+    ],
+    "5401": [
+        "20002(A) HIT/RUN",
+        103,
+        "20001(A) VC HIT/RUN INJ/DEATH",
+        30
+    ],
+    "5404": [
+        "23152(A) VC DUI-ALCOHOL/DRUGS",
+        84,
+        "23153(A) VC DUI CAUSE INJURY",
+        15,
+        "23220 VC DRINKING WHILE DRVING",
+        1,
+        "23152(B) VC DUI BA .08 OR MORE",
+        2,
+        "23550.5 VC 4+DUI IN 10 YEARS",
+        1,
+        "COLLISION/ACCIDENT BOATS",
+        1,
+        "21200.5 VC BICYCLE DUI",
+        1
+    ],
+    "5499": [
+        "23103(A) RECKLESS ON HIGHWAY",
+        8,
+        "2800.2(A) VC EVADING/RECKLESS",
+        5,
+        "12500(A) VC UNLIC DRIVER",
+        2,
+        "14601.1(A) VC LIC SUSP OTHER",
+        6,
+        "TRAFFIC OFFENSE",
+        3,
+        "23222(B)POSSESS MARIJ IN VEH",
+        11,
+        "4462.5 VC FALSE TAB/AVOID REG",
+        3,
+        "23110(B) VC THROW AT VEH W/INT",
+        1,
+        "4463(A)(1) VC ALTER REG",
+        2,
+        "14601(A) VC LIC SUSP NEGLIGENT",
+        1
+    ],
+    "5599": [
+        "308(B) PC MINOR POSS TOBACCO",
+        6,
+        "12671 HS SALE/POSS ILLGL FRWRK",
+        1
+    ],
+    "5707": [
+        "602(K)TRESPASS:INJURE PROPERTY",
+        4,
+        "602(N)TRESP DRIVE ON PRIVATE P",
+        1,
+        "602.1(A)TRES OBST BUSIN OPERAT",
+        1,
+        "602(L)(1)TRESPASS REFUSE TO LV",
+        3,
+        "602.5 PC ENTRY OF PROPERTY",
+        1,
+        "626.2 PC UNAUTH ENTRY CAMPUS",
+        1
+    ],
+    "7000": [
+        "ASSAULT WITH WEAPON - I RPT",
+        16,
+        "SUSP PERS-NO CRIME - I RPT",
+        44,
+        "TELEPEST -I RPT",
+        17,
+        "TRAFFIC - I RPT",
+        20,
+        "HARASSMENT - I RPT",
+        36,
+        "LOST PROPERTY - I RPT",
+        57,
+        "FOUND PROPERTY - I RPT",
+        81,
+        "THREATS - I RPT",
+        71,
+        "SHOOT INTO OCCUP DWELL - I RPT",
+        2,
+        "MISCELLANEOUS I RPT (ZMISC)",
+        71,
+        "TOWED/STORED VEH-14602.6",
+        463,
+        "CASUALTY REPORT",
+        116,
+        "DUI I RPT",
+        1,
+        "5150 WI DANGER SELF/OTHERS",
+        106,
+        "TOWED/STORED VEHICLE",
+        434,
+        "IMPOUNDED VEHICLE",
+        10,
+        "PERSON INFORMATION - I RPT",
+        16,
+        "MISSING PERSON I RPT",
+        24,
+        "BURGLARY - I RPT",
+        21,
+        "MISSING PERSON",
+        268,
+        "O/S AGENCY -ASSISTANCE- I RPT",
+        13,
+        "GANG ACTIVITY - I RPT",
+        65,
+        "NON INJ HR/MAIL OUT REPORT",
+        90,
+        "VANDALISM - I RPT",
+        24,
+        "ROBBERY - I RPT",
+        12,
+        "POSS STOLEN VEHICLE- I RPT",
+        5,
+        "BATTERY - I RPT",
+        35,
+        "PETTY THEFT - I RPT",
+        8,
+        "FAMILY DISTURBANCE - I RPT",
+        13,
+        "PROTECTIVE CUSTODY-I RPT",
+        9,
+        "CHILD WELFARE - I RPT",
+        16,
+        "ACCIDENTAL FIRES/ARSON -I RPT",
+        20,
+        "BUSINESS PERMITS - I RPT",
+        4,
+        "POSSIBLE MENTAL - I RPT",
+        5,
+        "NARCOTICS SUSP/EVID/ACT- I RPT",
+        41,
+        "WARRANT SERVED - I RPT",
+        14,
+        "3056 PAROLE VIO - I RPT",
+        27,
+        "BOMBS/THREATS/EXPLOSIV- I RPT",
+        4,
+        "JUVENILE PROBLEMS - I RPT",
+        8,
+        "POSSIBLE FINANCIAL CRIME-I RPT",
+        14,
+        "SAFEKEEPING - I RPT",
+        14,
+        "MISSING PERSON LOCATE O/S ASSI",
+        13,
+        "FRAUD OR BUNCO - I RPT",
+        19,
+        "GRAND THEFT - I RPT",
+        6,
+        "SUSPICIOUS VEHICLE - I RPT",
+        6,
+        "RECOVERED PROPERTY - I RPT",
+        5,
+        "PROB VIOLA/FEL-MISD - I RPT",
+        7,
+        "ABC LICENSE VIO/INFO - I RPT",
+        4,
+        "HIT AND RUN /SUSPECTS- I RPT",
+        7,
+        "DAMAGE - I RPT",
+        1,
+        "POSSIBLE STOLEN PROPERTY-I RPT",
+        5,
+        "TERRORIST THREATS - I RPT",
+        3,
+        "JUVENILE DISURBANCE - I RPT",
+        7,
+        "INTOX REPORT/ADMIN PER - I RPT",
+        1,
+        "CHILD CUSTODY - I RPT",
+        10,
+        "FOUND EVIDENCE-NON NARC -I RPT",
+        4,
+        "NEIGHBORHOOD DISTURBANCE-I RPT",
+        15,
+        "ELDER ABUSE/PHYS/MENTAL-I RPT",
+        7,
+        "FILE-UNABLE TO DEFINE - I RPT",
+        1,
+        "849(B)(1) CERTIFICATE OF RELEA",
+        4,
+        "CAR CLOUT - I RPT",
+        2,
+        "HOMICIDE ASSAULT - I RPT",
+        1,
+        "TRESPASS OR PROWLER- I RPT",
+        6,
+        "LOST PROPERTY-MATRICULA I RPT",
+        1,
+        "GRAFFITI PROBLEMS- I RPT",
+        5,
+        "FALSE PERSONATION - I RPT",
+        1,
+        "RPT # CANCELLED- I RPT",
+        2,
+        "HAZARDOUS SITUATION - I RPT",
+        2,
+        "ABANDONED VEHICLE - I RPT",
+        1,
+        "FRAUDULENT DOCUMENTS- I RPT",
+        3,
+        "601(A) WI JUVENILE INCORRIGIBL",
+        2,
+        "VICE/GAMBLING ACT - I RPT",
+        1,
+        "TRAFFIC ARREST FOR DA-I RPT",
+        1,
+        "WANTED SUBJ-O/S WANT/ I RPT",
+        2
+    ],
+    "7299": [
+        "647(A) PC LEWD CONDUCT",
+        1
+    ],
+    "7399": [
+        "9.04.050 A DRINKING IN PUBLIC",
+        9,
+        "9.04.070 URINATE/DEFECATE PUB",
+        1,
+        "9.40.020(A) JUVENILE CURFEW",
+        3,
+        "12.72.060I ADULT LOITER PLYGRD",
+        1,
+        "12.52.030 SCC UNLAWFUL CAMPING",
+        7,
+        "374.3(A) PC ILLEGAL DUMPING",
+        1,
+        "9.04.050C POSS OPEN CONTAINER",
+        1,
+        "5.136.050 NO TAXICAB PERMIT",
+        1,
+        "10.48.150 E FALSIFY PKG PERMIT",
+        1,
+        "374.4(A) LITTERING",
+        2,
+        "13.10.200 SCC DUMP PUB PLACES",
+        1,
+        "9.44.220 SCC ANIMAL AT LARGE",
+        1,
+        "99170 PUBLIC UTILITIES CODE",
+        1
+    ],
+    "8101": [
+        "1767.3 WI CYA PAROLE HOLD",
+        1
+    ],
+    "8102": [
+        "JUVENILE OFFENDER-PROBATION",
+        1
+    ]
+}
