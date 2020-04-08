@@ -145,6 +145,7 @@
             <div class="meta">
                 <small>Reported on </small><span class="date">{listItem.date}</span> <small>At</small> <span class="address">{listItem.address}</span>
             </div>
+            <span>{listItem.codeLabel}</span>
         </div>
     </div>
   {/each}

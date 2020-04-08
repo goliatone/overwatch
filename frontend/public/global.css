@@ -6,7 +6,7 @@ body {
 }
 
 body {
-    color: #354052;
+    color: #2C3A47;
     margin: 0;
     padding: 0px;
     background-color: #f6f6fc;
@@ -71,4 +71,151 @@ button:not(:disabled):active {
 
 button:focus {
     border-color: #666;
+}
+
+
+/* *****
+* Styles here
+* find"'(\w+-?\w+)':" 
+* replace".$1"
+* *****/
+
+.homicide {
+    color: '#ff3f34'
+}
+
+.manslaughter {
+    color: '#ff5e57'
+}
+
+.assault {
+    color: '#f53b57'
+}
+
+.arms {
+    color: '#ef5777'
+}
+
+.battery {
+    color: '#ffa801'
+}
+
+.threat {
+    color: '#ffc048'
+}
+
+.theft {
+    color: '#0fbcf9'
+}
+
+.carjacking {
+    color: '#4bcffa'
+}
+
+.robbery {
+    color: '#00d8d6'
+}
+
+.trespass {
+    color: '#00a8ff'
+}
+
+.arson {
+    color: '#ffdd59'
+}
+
+.burglary {
+    color: '#3c40c6'
+}
+
+.forgery {
+    color: '#575fcf'
+}
+
+.fraud {
+    color: '#00d8d6'
+}
+
+.impersonation {
+    color: '#34e7e4'
+}
+
+.embezzlement {
+    color: '#18dcff'
+}
+
+.stolen-property {
+    color: '#17c0eb'
+}
+
+.vandalism {
+    color: '#ffaf40'
+}
+
+.drugs {
+    color: '#BDC581'
+}
+
+.indecent {
+    color: '#F8EFBA'
+}
+
+.disturbance {
+    color: '#EAB543'
+}
+
+.prostitution {
+    color: '#3B3B98'
+}
+
+.minor {
+    color: '#1B9CFC'
+}
+
+.child-custody {
+    color: '#1B9CFC'
+}
+
+.disobedience {
+    color: '#fbc531'
+}
+
+.traffic-accident {
+    color: '#FEA47F'
+}
+
+.hit-run {
+    color: '#F97F51'
+}
+
+.dui {
+    color: '#8c7ae6'
+}
+
+.traffic-offense {
+    color: '#9c88ff'
+}
+
+.health-safety {
+    color: '#0097e6'
+}
+
+.lewd-conduct {
+    color: '#fdcb6e'
+}
+
+.public-offense {
+    color: '#ffeaa7'
+}
+
+.parole {
+    color: '#e17055'
+}
+
+.probation {
+    color: '#e17055'
+}
+
+.other {
+    color: '#636e72'
 }

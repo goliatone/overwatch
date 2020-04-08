@@ -7,9 +7,14 @@
 
     import { activeListItem, activeMapItem } from '../stores.js';
     import incidents, {incidentItems} from '../stores/incidents';
-    import { accessToken, activeCity } from '../consts.js';
+    import { accessToken, activeCity, categoryOptions } from '../consts.js';
 
     let map;
+
+    /**
+     * We use this to filter out by type
+     */ 
+    const layerIDs = [];
 
     /**
      * For each list item we generate an object with props for 
@@ -17,7 +22,9 @@
      * so we can access it later when we interact with list items
      * e.g. on click
      */ 
-    function generateFeature({ address, description, coordinates }, index) {
+    function generateFeature({ address, description, coordinates, codeLabel }, index) {
+        let {color, icon} = categoryOptions[codeLabel] || categoryOptions.other;
+
         return {
             type: 'Feature',
             properties: {
@@ -25,7 +32,10 @@
                     <h3>${description}</h3>
                     <p>${address}</p>
                 `,
-                id: index
+                id: index,
+                icon,
+                color,
+                codeLabel
             },
             geometry: {
                 type: 'Point',
@@ -46,7 +56,7 @@
         }
         map.getSource('places.source').setData({
             type: 'FeatureCollection',
-            features: features.map(generateFeature)
+            features: features.map(addFeature)
         });
 
         /**
@@ -80,6 +90,8 @@
             pitch: 60, // pitch in degrees
             bearing: 30, // bearing in degrees
         };
+
+        const onLoadQuery = { page: 1, size: 200 };
     
         map = new mapboxgl.Map(mapOptions);
         const nav = new mapboxgl.NavigationControl();
@@ -99,46 +111,81 @@
                 }
             });
 
-            map.addLayer({
-                id: 'places',
-                type: 'symbol',
-                source: 'places.source',
-                layout: {
-                    'icon-image': 'police-15',
-                    'icon-size': 2,
-                    'icon-allow-overlap': true
-                }
-            });
-
-            /**
-             * Manage Popup on click
-             */ 
-            map.on('click', 'places', function({ features }) {
-                const match = features[0];
-                const coordinates = match.geometry.coordinates.slice();
-    
-                setActiveMapItem(match.properties.id);
-                setActiveListItem(match.properties.id);
-            });
-
-            /**
-             * Feature should show pointer on hover
-             */
-            map.on('mouseenter', 'places', _=> {
-                map.getCanvas().style.cursor = 'pointer';
-            });
-
-            /**
-             * Remove cursor
-             */
-            map.on('mouseleave', 'places', _=> {
-                map.getCanvas().style.cursor = '';
-            });
-
             /**
              * Query backend for our first page of items
              */ 
-            await incidents.listItems('sacramento', {page:1, size:200});
+            await incidents.listItems('sacramento', onLoadQuery);
+        });
+    }
+
+    function addFeature(incident, index) {
+        /**
+         * Make our feature
+         */ 
+        const feature = generateFeature(incident, index);
+        const symbol = feature.properties.icon;
+        const label = feature.properties.codeLabel;
+
+        const layerID = `poi-${symbol}`;
+        
+        if(!map.getLayer(layerID))  addLayer(layerID, symbol, label);
+
+        return feature;
+    }
+
+    function addLayer(layerID, symbol, label) {
+
+        map.addLayer({
+            id: layerID,
+            type: 'symbol',
+            source: 'places.source',
+            layout: {
+                'icon-image': `${symbol}-15`,
+                'icon-size': 2,
+                'icon-allow-overlap': true,
+                'text-field': label,
+                'text-font': [
+                    'Open Sans Bold',
+                    'Arial Unicode MS Bold'
+                ],
+                'text-size': 11,
+                'text-transform': 'uppercase',
+                'text-letter-spacing': 0.05,
+                'text-offset': [0, 1.5]
+            },
+                'paint': {
+                'text-color': '#202',
+                'text-halo-color': '#fff',
+                'text-halo-width': 2
+            },
+            filter: ['==', 'icon', symbol]
+        });
+            
+        layerIDs.push(layerID);
+
+        /**
+         * Manage Popup on click
+         */ 
+        map.on('click', layerID, function({ features }) {
+            const match = features[0];
+            const coordinates = match.geometry.coordinates.slice();
+
+            setActiveMapItem(match.properties.id);
+            setActiveListItem(match.properties.id);
+        });
+
+        /**
+         * Feature should show pointer on hover
+         */
+        map.on('mouseenter', layerID, _=> {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        /**
+         * Remove cursor
+         */
+        map.on('mouseleave', layerID, _=> {
+            map.getCanvas().style.cursor = '';
         });
     }
 
@@ -148,7 +195,6 @@
      */
     const unsubscribeActiveMapItem = activeMapItem.subscribe(newActiveMapItem => {
         if (map) {
-
             const item = $incidentItems[newActiveMapItem];
 
             showPopup(item);
@@ -159,19 +205,20 @@
 
     function showPopup(item) {
         const popUps = document.getElementsByClassName('mapboxgl-popup');
-            if (popUps[0]) popUps[0].remove();
+        if (popUps[0]) popUps[0].remove();
 
         let description = `
             <h3>${item.description}</h3>
             <p>${item.address}</p>
         `;
+
         new mapboxgl.Popup()
             .setLngLat(item.coordinates)
             .setHTML(description)
             .addTo(map);
     }
 
-    function flyTo(coordinates){
+    function flyTo(coordinates) {
         map.flyTo({ 
             center: coordinates,
             // essential: true,
@@ -203,11 +250,8 @@
      */ 
     onDestroy(unsubscribeActiveMapItem);
 
-    $: {
-        if($incidentItems.length) {
-            updateDataSource($incidentItems);
-        }
-    };
+    $: if($incidentItems.length) updateDataSource($incidentItems);
+
 </script>
 
 <style>
@@ -215,8 +259,6 @@
         width: 100%;
         height: 100%;
         background-color: #393838;
-        background-color: #393838;
-        
     }
 
     #map:before {
