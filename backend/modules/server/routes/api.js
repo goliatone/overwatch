@@ -2,7 +2,7 @@
 
 const send = require('@polka/send-type');
 const authenticate = require('../../../lib/auth');
-const buildQuery = require('../../../lib/build-query');
+const buildQuery = require('../../../lib/build-query').buildQuery;
 
 module.exports.init = function(server, config) {
 
