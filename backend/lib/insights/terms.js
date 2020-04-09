@@ -183,3 +183,20 @@ const categoryOptions = {
         icon: 'toilet',
     }
 };
+
+function generateCSS() {
+    let out = '';
+
+    Object.keys(categoryOptions).forEach(cat => {
+        out += `
+.${cat} {
+    border-left: 3px solid ${categoryOptions[cat].color} !important;
+}
+.active.${cat} {
+    border-left: 6px solid ${categoryOptions[cat].color} !important;
+}
+`
+    });
+
+    return out;
+}

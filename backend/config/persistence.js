@@ -2,5 +2,5 @@
 const { resolve } = require('path');
 
 module.exports = {
-    dbPath: resolve('./data/crime.json')
+    dbPath: resolve('./data/crimesdb.json')
 };
