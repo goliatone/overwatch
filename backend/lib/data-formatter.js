@@ -111,6 +111,15 @@ const methods = {
         }
         return require(filepath);
     },
+    makeIndices(data = []) {
+        let indices = {};
+        data.forEach(item => {
+            let label = item.codeLabel;
+            if (!indices[label]) indices[label] = [];
+            indices[label].push(item.id);
+        });
+        return indices;
+    },
     format: (data = [], stringify = true) => {
         let output = data.map(methods.formatItem);
         if (stringify) output = JSON.stringify(output);
