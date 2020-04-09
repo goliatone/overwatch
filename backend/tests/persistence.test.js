@@ -68,7 +68,7 @@ test('Persistence should be able to paginate items', async t => {
     const data = [1, 2, 3, 4, 5, 6, 7, 8];
 
     const config = {
-        data: [1, 2, 3, 4, 5, 6, 7, 8]
+        data: { incidents: [1, 2, 3, 4, 5, 6, 7, 8] }
     };
 
     const db = new Persistence(config);
@@ -93,5 +93,49 @@ test('Persistence should be able to paginate items', async t => {
     result = db.paginate(data, 3, 40);
     t.deepEquals(result.data, data, 'Should page data');
 
+    t.end();
+});
+
+test('Persistence should be able to findByCodeLabel', async t => {
+
+    const config = {
+        dbPath: fixtures.filepath,
+        logger: {
+            info() {},
+            error() {}
+        }
+    };
+
+    const query = fixtures.filter;
+    const db = new Persistence(config);
+
+    db.load();
+
+    let items = await db.findByCodeLabel(query.where.codeLabel);
+    t.deepEquals(items, fixtures.filtered, 'Should load filtered items');
+
+    t.end();
+});
+
+test('Persistence should be able to query by code label', async t => {
+
+    const config = {
+        dbPath: fixtures.filepath,
+        logger: {
+            info() {},
+            error() {}
+        }
+    };
+
+    const query = fixtures.filter;
+    const db = new Persistence(config);
+
+    db.load();
+
+    const result = await db.find(query);
+
+    // console.log(require('deep-object-diff').detailedDiff(result, fixtures.filteredResult))
+
+    t.deepEquals(result, fixtures.filteredResult, 'Should load data');
     t.end();
 });
