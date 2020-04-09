@@ -49,7 +49,22 @@ class Data {
     }
 
     filter(query = {}) {
-        return (this.data || []).concat();
+        if (query.where) {
+            if (query.where.codeLabel) {
+                let label = query.where.codeLabel;
+                return this.findByCodeLabel(label);
+            }
+        }
+
+        return (this.data.incidents || []).concat();
+    }
+
+    findByCodeLabel(label) {
+        let indices = this.data.indices[label];
+
+        return this.data.incidents.filter(item => {
+            return indices.indexOf(item.id) !== -1;
+        }) || [];
     }
 
     paginate(data = [], page = 1, size = 2) {
@@ -76,7 +91,7 @@ class Data {
     }
 
     get count() {
-        return (this.data || []).length;
+        return (this.data.incidents || []).length;
     }
 }
 
