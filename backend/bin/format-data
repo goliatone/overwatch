@@ -65,5 +65,7 @@ data = methods.range(data, program.start, program.end);
  * ```
  */
 
-let output = methods.format(data, true);
+let incidents = methods.format(data, false);
+let indices = methods.makeIndices(incidents);
+let output = JSON.stringify({ indices, incidents }, null, 4);
 console.log(output);
