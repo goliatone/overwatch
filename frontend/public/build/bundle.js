@@ -45,6 +45,10 @@ var app = (function () {
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe(store, callback));
     }
+    function set_store_value(store, ret, value = ret) {
+        store.set(value);
+        return ret;
+    }
 
     const is_client = typeof window !== 'undefined';
     let now = is_client
@@ -773,102 +777,6 @@ var app = (function () {
     const activeListItem = writable(0);
     const activeMapItem = writable(0);
 
-    const defaults = {
-        loadConfigItem(path, def) {
-            return localStorage.getItem(path) || def;
-        }
-    };
-
-    /**
-     * Simple HTTP API client
-     */
-    class Api {
-        constructor(config = {}) {
-            config = Object.assign({}, defaults, config);
-            this.init(config);
-        }
-
-        init(config = {}) {
-
-            Object.assign(this, config);
-
-            let baseUrl = this.loadConfigItem('dataviz.api.url', config.url);
-            this.baseUrl = this._clean(baseUrl);
-
-            this.token = this.loadConfigItem('dataviz.api.token', config.token);
-        }
-
-        list(entity, query = false) {
-            const token = this.token;
-
-            let uri = new URL(`${this.baseUrl}/api/v1/crime/${entity}`);
-
-            if (query) {
-                Object.keys(query).map(key => {
-                    uri.searchParams.append(key, query[key]);
-                });
-            }
-
-            return fetch(uri.toString(), {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(res => res.json());
-        }
-
-        _clean(baseUrl = '') {
-            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
-            }
-            return baseUrl;
-        }
-    }
-
-    let api = new Api({
-        url: location.href,
-        token: '0a6fd546-9699-4fc3-8ba6-f878b11f0396'
-    });
-
-    const { subscribe: subscribe$1, set, update: update$1 } = writable([]);
-
-    const error = writable('');
-    const metadata = writable({
-        page: 1,
-        size: 100,
-        count: 200
-    });
-    const incidentItems = writable([]);
-
-    const incidents = _ => ({
-        set,
-        update: update$1,
-        subscribe: subscribe$1,
-        items: incidentItems,
-        async listItems(city, query = { page: 1, size: 100 }) {
-            try {
-                let response = await api.list(city, query);
-                let data = response.data;
-                let meta = response.meta;
-                set(data);
-                metadata.set(meta);
-                incidentItems.set(data);
-                return data;
-            } catch (e) {
-                set([]);
-                error.set(`
-                <h2>Error accessing API</h2>
-                <p>Details: ${e.message}</p>
-            `);
-                return e;
-            }
-        }
-    });
-
-    var incidents$1 = incidents();
-
     const accessToken = 'pk.eyJ1IjoiZ29saWF0b25lIiwiYSI6ImNrOG5kbmlzbTB4MngzaXF4Nnc4ZmlrN3kifQ.XgPimC6XiswkzavVSwHeJg';
 
     const activeCity = {
@@ -877,6 +785,43 @@ var app = (function () {
             38.575764
         ],
     };
+
+    const categories = [
+        'homicide',
+        'manslaughter',
+        'assault',
+        'arms',
+        'battery',
+        'threat',
+        'theft',
+        'carjacking',
+        'robbery',
+        'arson',
+        'burglary',
+        'forgery',
+        'fraud',
+        'impersonation',
+        'embezzlement',
+        'stolen-property',
+        'vandalism',
+        'drugs',
+        'indecent',
+        'disturbance',
+        'prostitution',
+        'minor',
+        'child-custody',
+        'disobedience',
+        'traffic-accident',
+        'hit-run',
+        'dui',
+        'traffic-offense',
+        'health-safety',
+        'trespass',
+        'lewd-conduct',
+        'public-offense',
+        'parole',
+        'probation'
+    ];
 
     const categoryOptions = {
         'homicide': {
@@ -1041,7 +986,7 @@ var app = (function () {
     			add_location(link, file, 1, 4, 18);
     			attr_dev(div, "id", "map");
     			attr_dev(div, "class", "svelte-1tfoct4");
-    			add_location(div, file, 274, 0, 7153);
+    			add_location(div, file, 366, 0, 10375);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1113,14 +1058,17 @@ var app = (function () {
     	/**
      * Update current data source. 
      * This will render all new features
+     * TODO: Why does this function get triggered multiple times
+     * befoe we have map and for so long?!
      */
     	function updateDataSource(features = []) {
     		if (!map.loaded()) {
+    			// console.info('update source with map not loaded...');
     			return setTimeout(
     				_ => {
     					updateDataSource(features);
     				},
-    				100
+    				400
     			);
     		}
 
@@ -1155,18 +1103,30 @@ var app = (function () {
     		const mapOptions = {
     			container: "map",
     			style: "mapbox://styles/mapbox/dark-v10?optimize=true",
-    			center: activeCity.center,
     			zoom: 15,
-    			pitch: 60, // pitch in degrees
+    			minZoom: 7,
+    			maxZoom: 20,
+    			pitch: 0, // pitch in degrees
     			bearing: 30, // bearing in degrees
-    			
-    		};
+    			center: activeCity.center,
+    			attributionControl: false
+    		}; /*maxBounds: [
+        [139.4821420801062, 35.37806665620483], // Southwest
+        [140.02948630731896, 35.86424358430297] // Northeast
+    ]*/
 
     		const onLoadQuery = { page: 1, size: 200 };
     		map = new mapboxGl.Map(mapOptions);
     		const nav = new mapboxGl.NavigationControl();
+    		window.mapRef = map;
     		map.addControl(nav, "top-right");
 
+    		/*
+    const layerSelector = new LayerSelectorControl({
+        layers: ['poi-theft', 'poi-burglary', 'poi-forgery', 'poi-other']
+    });
+    map.addControl(layerSelector, 'bottom-right');
+    */
     		map.on("load", async _ => {
     			/**
      * Add source 
@@ -1176,10 +1136,52 @@ var app = (function () {
     				data: { type: "FeatureCollection", features: [] }
     			});
 
+    			addHeatMap();
+
     			/**
      * Query backend for our first page of items
      */
-    			await incidents$1.listItems("sacramento", onLoadQuery);
+    			await incidents.listItems("sacramento", onLoadQuery);
+    		});
+    	}
+
+    	function addHeatMap() {
+    		//https://docs.mapbox.com/mapbox-gl-js/example/heatmap-layer/
+    		map.addLayer({
+    			id: "incidents-heat",
+    			type: "heatmap",
+    			source: "places.source",
+    			maxzoom: 15,
+    			paint: {
+    				// increase weight as diameter breast height increases
+    				"heatmap-weight": {
+    					property: "dbh",
+    					type: "exponential",
+    					stops: [[1, 0], [62, 1]]
+    				},
+    				// increase intensity as zoom level increases
+    				"heatmap-intensity": { stops: [[11, 1], [15, 3]] },
+    				// assign color values be applied to points depending on their density
+    				"heatmap-color": [
+    					"interpolate",
+    					["linear"],
+    					["heatmap-density"],
+    					0,
+    					"rgba(236,222,239,0)",
+    					0.2,
+    					"rgb(208,209,230)",
+    					0.4,
+    					"rgb(166,189,219)",
+    					0.6,
+    					"rgb(103,169,207)",
+    					0.8,
+    					"rgb(28,144,153)"
+    				],
+    				// increase radius as zoom increases
+    				"heatmap-radius": { stops: [[11, 15], [15, 20]] },
+    				// decrease opacity to transition into the circle layer
+    				"heatmap-opacity": { default: 1, stops: [[14, 1], [15, 0]] }
+    			}
     		});
     	}
 
@@ -1189,14 +1191,15 @@ var app = (function () {
      */
     		const feature = generateFeature(incident, index);
 
+    		const color = feature.properties.color;
     		const symbol = feature.properties.icon;
     		const label = feature.properties.codeLabel;
-    		const layerID = `poi-${symbol}`;
-    		if (!map.getLayer(layerID)) addLayer(layerID, symbol, label);
+    		const layerID = `poi-${label}`;
+    		if (!map.getLayer(layerID)) addLayer(layerID, symbol, label, color);
     		return feature;
     	}
 
-    	function addLayer(layerID, symbol, label) {
+    	function addLayer(layerID, symbol, label, color = "#000000") {
     		map.addLayer({
     			id: layerID,
     			type: "symbol",
@@ -1204,6 +1207,9 @@ var app = (function () {
     			layout: {
     				"icon-image": `${symbol}-15`,
     				"icon-size": 2,
+    				//This only works with SDF(?) icons
+    				//@see https://github.com/mapbox/mapbox-gl-js/issues/1817#issuecomment-497446984
+    				// 'icon-color': color,
     				"icon-allow-overlap": true,
     				"text-field": label,
     				"text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
@@ -1277,11 +1283,23 @@ var app = (function () {
     			// essential: true,
     			curve: 1,
     			// speed: 0.8,
+    			pitch: 60,
     			bearing: 0,
     			duration: 3200
     		}); // zoom: 9,
-    		// pitch: 0
     	}
+
+    	function toggleLayerVisibility(layerID, visible = false) {
+    		const prop = visible ? "visible" : "none";
+
+    		layerIDs.forEach(function (layerID) {
+    			map.setLayoutProperty(layerID, "visibility", prop);
+    		});
+    	}
+
+    	window.layerIDs = layerIDs;
+    	window.incidents = incidents;
+    	window.toggleLayerVisibility = toggleLayerVisibility;
 
     	/**
      * Livecycle handler, register map on first
@@ -1309,8 +1327,6 @@ var app = (function () {
     		onDestroy,
     		activeListItem,
     		activeMapItem,
-    		incidents: incidents$1,
-    		incidentItems,
     		accessToken,
     		activeCity,
     		categoryOptions,
@@ -1319,6 +1335,7 @@ var app = (function () {
     		generateFeature,
     		updateDataSource,
     		initializeMap,
+    		addHeatMap,
     		addFeature,
     		addLayer,
     		unsubscribeActiveMapItem,
@@ -1326,6 +1343,7 @@ var app = (function () {
     		flyTo,
     		setActiveListItem,
     		setActiveMapItem,
+    		toggleLayerVisibility,
     		$incidentItems
     	});
 
@@ -1339,7 +1357,7 @@ var app = (function () {
 
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*$incidentItems*/ 2) {
-    			 if ($incidentItems.length) updateDataSource($incidentItems);
+    			 if ($incidentItems.length > 0) updateDataSource($incidentItems);
     		}
     	};
 
@@ -1664,6 +1682,102 @@ var app = (function () {
         };
     }
 
+    const defaults = {
+        loadConfigItem(path, def) {
+            return localStorage.getItem(path) || def;
+        }
+    };
+
+    /**
+     * Simple HTTP API client
+     */
+    class Api {
+        constructor(config = {}) {
+            config = Object.assign({}, defaults, config);
+            this.init(config);
+        }
+
+        init(config = {}) {
+
+            Object.assign(this, config);
+
+            let baseUrl = this.loadConfigItem('dataviz.api.url', config.url);
+            this.baseUrl = this._clean(baseUrl);
+
+            this.token = this.loadConfigItem('dataviz.api.token', config.token);
+        }
+
+        list(entity, query = false) {
+            const token = this.token;
+
+            let uri = new URL(`${this.baseUrl}/api/v1/crime/${entity}`);
+
+            if (query) {
+                Object.keys(query).map(key => {
+                    uri.searchParams.append(key, query[key]);
+                });
+            }
+
+            return fetch(uri.toString(), {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(res => res.json());
+        }
+
+        _clean(baseUrl = '') {
+            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
+            }
+            return baseUrl;
+        }
+    }
+
+    let api = new Api({
+        url: location.href,
+        token: '0a6fd546-9699-4fc3-8ba6-f878b11f0396'
+    });
+
+    const { subscribe: subscribe$1, set, update: update$1 } = writable([]);
+
+    const error = writable('');
+    const metadata = writable({
+        page: 1,
+        size: 100,
+        count: 200
+    });
+    const incidentItems$1 = writable([]);
+
+    const incidents$1 = _ => ({
+        set,
+        update: update$1,
+        subscribe: subscribe$1,
+        items: incidentItems$1,
+        async listItems(city, query = { page: 1, size: 100 }) {
+            try {
+                let response = await api.list(city, query);
+                let data = response.data;
+                let meta = response.meta;
+                set(data);
+                metadata.set(meta);
+                incidentItems$1.set(data);
+                return data;
+            } catch (e) {
+                set([]);
+                error.set(`
+                <h2>Error accessing API</h2>
+                <p>Details: ${e.message}</p>
+            `);
+                return e;
+            }
+        }
+    });
+
+    var incidents$2 = incidents$1();
+
     /**
      * Items per page, default 10. 
      */
@@ -1739,6 +1853,7 @@ var app = (function () {
     };
 
     methods.update = function(meta) {
+        //TODO: Make handle `total` and `count`
         if (meta.hasOwnProperty('total')) totalItems.set(meta.total);
         if (meta.hasOwnProperty('size')) itemsPerPage.set(meta.size);
         if (meta.hasOwnProperty('page')) methods.goto(meta.page);
@@ -1767,7 +1882,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (155:4) {:else}
+    // (156:4) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -1775,8 +1890,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = "Loading...";
-    			attr_dev(div, "class", "loader svelte-cwxjr9");
-    			add_location(div, file$2, 155, 8, 4004);
+    			attr_dev(div, "class", "loader svelte-a430go");
+    			add_location(div, file$2, 156, 8, 4162);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1793,22 +1908,22 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(155:4) {:else}",
+    		source: "(156:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (153:4) {#if $error}
+    // (154:4) {#if $error}
     function create_if_block_2(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "error svelte-cwxjr9");
-    			add_location(div, file$2, 153, 8, 3944);
+    			attr_dev(div, "class", "error svelte-a430go");
+    			add_location(div, file$2, 154, 8, 4102);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1827,14 +1942,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(153:4) {#if $error}",
+    		source: "(154:4) {#if $error}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (140:0) {#if $incidentItems && $incidentItems.length}
+    // (141:0) {#if $incidentItems && $incidentItems.length}
     function create_if_block_1(ctx) {
     	let each_1_anchor;
     	let current;
@@ -1867,7 +1982,7 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$activeMapItem, setActiveMapItem, $incidentItems*/ 20) {
+    			if (dirty & /*$incidentItems, $activeMapItem, setActiveMapItem*/ 20) {
     				each_value = /*$incidentItems*/ ctx[2];
     				validate_each_argument(each_value);
     				let i;
@@ -1923,14 +2038,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(140:0) {#if $incidentItems && $incidentItems.length}",
+    		source: "(141:0) {#if $incidentItems && $incidentItems.length}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (141:2) {#each $incidentItems as listItem, index}
+    // (142:2) {#each $incidentItems as listItem, index}
     function create_each_block(ctx) {
     	let div2;
     	let div1;
@@ -1986,28 +2101,29 @@ var app = (function () {
     			span3 = element("span");
     			t9 = text(t9_value);
     			t10 = space();
-    			attr_dev(span0, "class", "description svelte-cwxjr9");
-    			add_location(span0, file$2, 143, 12, 3572);
-    			attr_dev(small0, "class", "svelte-cwxjr9");
-    			add_location(small0, file$2, 145, 16, 3675);
+    			attr_dev(span0, "class", "description svelte-a430go");
+    			add_location(span0, file$2, 144, 12, 3713);
+    			attr_dev(small0, "class", "svelte-a430go");
+    			add_location(small0, file$2, 146, 16, 3816);
     			attr_dev(span1, "class", "date");
-    			add_location(span1, file$2, 145, 43, 3702);
-    			attr_dev(small1, "class", "svelte-cwxjr9");
-    			add_location(small1, file$2, 145, 85, 3744);
+    			add_location(span1, file$2, 146, 43, 3843);
+    			attr_dev(small1, "class", "svelte-a430go");
+    			add_location(small1, file$2, 146, 85, 3885);
     			attr_dev(span2, "class", "address");
-    			add_location(span2, file$2, 145, 103, 3762);
-    			attr_dev(div0, "class", "meta svelte-cwxjr9");
-    			add_location(div0, file$2, 144, 12, 3640);
-    			add_location(span3, file$2, 147, 12, 3841);
-    			attr_dev(div1, "class", "list-item svelte-cwxjr9");
-    			add_location(div1, file$2, 142, 8, 3536);
+    			add_location(span2, file$2, 146, 103, 3903);
+    			attr_dev(div0, "class", "meta svelte-a430go");
+    			add_location(div0, file$2, 145, 12, 3781);
+    			attr_dev(span3, "class", "tag code");
+    			add_location(span3, file$2, 148, 12, 3982);
+    			attr_dev(div1, "class", "list-item svelte-a430go");
+    			add_location(div1, file$2, 143, 8, 3677);
 
-    			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[4] === /*index*/ ctx[13]
+    			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + /*listItem*/ ctx[11].codeLabel + " " + (/*$activeMapItem*/ ctx[4] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-cwxjr9");
+    			: "") + " svelte-a430go");
 
     			attr_dev(div2, "id", div2_id_value = "list-item-" + /*index*/ ctx[13]);
-    			add_location(div2, file$2, 141, 4, 3349);
+    			add_location(div2, file$2, 142, 4, 3469);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div2, anchor);
@@ -2039,9 +2155,9 @@ var app = (function () {
     			if ((!current || dirty & /*$incidentItems*/ 4) && t7_value !== (t7_value = /*listItem*/ ctx[11].address + "")) set_data_dev(t7, t7_value);
     			if ((!current || dirty & /*$incidentItems*/ 4) && t9_value !== (t9_value = /*listItem*/ ctx[11].codeLabel + "")) set_data_dev(t9, t9_value);
 
-    			if (!current || dirty & /*$activeMapItem*/ 16 && div2_class_value !== (div2_class_value = "list-item-wrapper " + (/*$activeMapItem*/ ctx[4] === /*index*/ ctx[13]
+    			if (!current || dirty & /*$incidentItems, $activeMapItem*/ 20 && div2_class_value !== (div2_class_value = "list-item-wrapper " + /*listItem*/ ctx[11].codeLabel + " " + (/*$activeMapItem*/ ctx[4] === /*index*/ ctx[13]
     			? "active"
-    			: "") + " svelte-cwxjr9")) {
+    			: "") + " svelte-a430go")) {
     				attr_dev(div2, "class", div2_class_value);
     			}
     		},
@@ -2071,14 +2187,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(141:2) {#each $incidentItems as listItem, index}",
+    		source: "(142:2) {#each $incidentItems as listItem, index}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (166:0) {#if visible}
+    // (167:0) {#if visible}
     function create_if_block(ctx) {
     	let div2;
     	let div1;
@@ -2122,22 +2238,22 @@ var app = (function () {
     			t9 = space();
     			button3 = element("button");
     			button3.textContent = "Last";
-    			attr_dev(button0, "class", "svelte-cwxjr9");
-    			add_location(button0, file$2, 168, 8, 4475);
-    			attr_dev(button1, "class", "svelte-cwxjr9");
-    			add_location(button1, file$2, 169, 8, 4534);
-    			add_location(span0, file$2, 171, 12, 4623);
-    			add_location(span1, file$2, 171, 43, 4654);
-    			attr_dev(div0, "class", "count svelte-cwxjr9");
-    			add_location(div0, file$2, 170, 8, 4591);
-    			attr_dev(button2, "class", "svelte-cwxjr9");
-    			add_location(button2, file$2, 173, 8, 4704);
-    			attr_dev(button3, "class", "svelte-cwxjr9");
-    			add_location(button3, file$2, 174, 8, 4761);
-    			attr_dev(div1, "class", "pagination svelte-cwxjr9");
-    			add_location(div1, file$2, 167, 4, 4442);
-    			attr_dev(div2, "class", "footer svelte-cwxjr9");
-    			add_location(div2, file$2, 166, 2, 4373);
+    			attr_dev(button0, "class", "svelte-a430go");
+    			add_location(button0, file$2, 169, 8, 4633);
+    			attr_dev(button1, "class", "svelte-a430go");
+    			add_location(button1, file$2, 170, 8, 4692);
+    			add_location(span0, file$2, 172, 12, 4781);
+    			add_location(span1, file$2, 172, 43, 4812);
+    			attr_dev(div0, "class", "count svelte-a430go");
+    			add_location(div0, file$2, 171, 8, 4749);
+    			attr_dev(button2, "class", "svelte-a430go");
+    			add_location(button2, file$2, 174, 8, 4862);
+    			attr_dev(button3, "class", "svelte-a430go");
+    			add_location(button3, file$2, 175, 8, 4919);
+    			attr_dev(div1, "class", "pagination svelte-a430go");
+    			add_location(div1, file$2, 168, 4, 4600);
+    			attr_dev(div2, "class", "footer svelte-a430go");
+    			add_location(div2, file$2, 167, 2, 4531);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div2, anchor);
@@ -2196,7 +2312,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(166:0) {#if visible}",
+    		source: "(167:0) {#if visible}",
     		ctx
     	});
 
@@ -2264,18 +2380,18 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			attr_dev(a0, "href", "https://github.com/goliatone");
     			attr_dev(a0, "target", "_blank");
-    			add_location(a0, file$2, 160, 40, 4119);
-    			add_location(p0, file$2, 160, 4, 4083);
+    			add_location(a0, file$2, 161, 40, 4277);
+    			add_location(p0, file$2, 161, 4, 4241);
     			attr_dev(a1, "href", "/about");
     			attr_dev(a1, "target", "_blank");
-    			add_location(a1, file$2, 161, 24, 4216);
-    			add_location(p1, file$2, 161, 4, 4196);
-    			add_location(i, file$2, 162, 4, 4272);
-    			attr_dev(div0, "class", "tail svelte-cwxjr9");
-    			add_location(div0, file$2, 159, 2, 4060);
+    			add_location(a1, file$2, 162, 24, 4374);
+    			add_location(p1, file$2, 162, 4, 4354);
+    			add_location(i, file$2, 163, 4, 4430);
+    			attr_dev(div0, "class", "tail svelte-a430go");
+    			add_location(div0, file$2, 160, 2, 4218);
     			attr_dev(div1, "id", "list-items");
-    			attr_dev(div1, "class", "svelte-cwxjr9");
-    			add_location(div1, file$2, 135, 0, 3174);
+    			attr_dev(div1, "class", "svelte-a430go");
+    			add_location(div1, file$2, 136, 0, 3294);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2393,8 +2509,8 @@ var app = (function () {
     	let $activeMapItem;
     	let $error;
     	let $totalPages;
-    	validate_store(incidentItems, "incidentItems");
-    	component_subscribe($$self, incidentItems, $$value => $$invalidate(2, $incidentItems = $$value));
+    	validate_store(incidentItems$1, "incidentItems");
+    	component_subscribe($$self, incidentItems$1, $$value => $$invalidate(2, $incidentItems = $$value));
     	validate_store(metadata, "metadata");
     	component_subscribe($$self, metadata, $$value => $$invalidate(7, $metadata = $$value));
     	validate_store(currentPage, "currentPage");
@@ -2448,8 +2564,8 @@ var app = (function () {
     		fade,
     		Header,
     		debounce,
-    		incidents: incidents$1,
-    		incidentItems,
+    		incidents: incidents$2,
+    		incidentItems: incidentItems$1,
     		error,
     		metadata,
     		activeListItem,
@@ -2492,7 +2608,7 @@ var app = (function () {
     		}
 
     		if ($$self.$$.dirty & /*$currentPage*/ 8) {
-    			 incidents$1.listItems(activeCity.name, { page: $currentPage, size: 200 });
+    			 incidents$2.listItems(activeCity.name, { page: $currentPage, size: 200 });
     		}
     	};
 
@@ -2525,61 +2641,46 @@ var app = (function () {
     	}
     }
 
-    /* src/App.svelte generated by Svelte v3.20.1 */
-    const file$3 = "src/App.svelte";
+    const filters = writable([]);
+
+    /* src/components/SearchBar.svelte generated by Svelte v3.20.1 */
+
+    const { console: console_1 } = globals;
+    const file$3 = "src/components/SearchBar.svelte";
 
     function create_fragment$3(ctx) {
-    	let div2;
-    	let div0;
-    	let t;
-    	let div1;
-    	let current;
-    	const list = new List({ $$inline: true });
-    	const map = new Map$1({ $$inline: true });
+    	let div;
+    	let input;
+    	let dispose;
 
     	const block = {
     		c: function create() {
-    			div2 = element("div");
-    			div0 = element("div");
-    			create_component(list.$$.fragment);
-    			t = space();
-    			div1 = element("div");
-    			create_component(map.$$.fragment);
-    			attr_dev(div0, "class", "pane left svelte-16bikh6");
-    			add_location(div0, file$3, 30, 2, 453);
-    			attr_dev(div1, "class", "pane right svelte-16bikh6");
-    			add_location(div1, file$3, 33, 2, 501);
-    			attr_dev(div2, "class", "container svelte-16bikh6");
-    			add_location(div2, file$3, 29, 0, 427);
+    			div = element("div");
+    			input = element("input");
+    			attr_dev(input, "id", "filter-input");
+    			attr_dev(input, "type", "text");
+    			attr_dev(input, "name", "filter");
+    			attr_dev(input, "placeholder", "Filter by name");
+    			attr_dev(input, "class", "svelte-qswhn7");
+    			add_location(input, file$3, 54, 4, 1394);
+    			attr_dev(div, "class", "filter-ctrl svelte-qswhn7");
+    			add_location(div, file$3, 53, 0, 1364);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div2, anchor);
-    			append_dev(div2, div0);
-    			mount_component(list, div0, null);
-    			append_dev(div2, t);
-    			append_dev(div2, div1);
-    			mount_component(map, div1, null);
-    			current = true;
+    		m: function mount(target, anchor, remount) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, input);
+    			if (remount) dispose();
+    			dispose = listen_dev(input, "keypress", /*handleKeyup*/ ctx[0], false, false, false);
     		},
     		p: noop,
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(list.$$.fragment, local);
-    			transition_in(map.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(list.$$.fragment, local);
-    			transition_out(map.$$.fragment, local);
-    			current = false;
-    		},
+    		i: noop,
+    		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div2);
-    			destroy_component(list);
-    			destroy_component(map);
+    			if (detaching) detach_dev(div);
+    			dispose();
     		}
     	};
 
@@ -2595,6 +2696,144 @@ var app = (function () {
     }
 
     function instance$3($$self, $$props, $$invalidate) {
+    	let $filters;
+    	validate_store(filters, "filters");
+    	component_subscribe($$self, filters, $$value => $$invalidate(1, $filters = $$value));
+
+    	function handleKeyup(e) {
+    		if (event.keyCode !== 13) return;
+    		const value = e.target.value.trim().toLowerCase();
+    		if (value === "") set_store_value(filters, $filters = []);
+
+    		if (categories.indexOf(value) > -1 && $filters.indexOf(value) === -1) {
+    			set_store_value(filters, $filters = [...$filters, value]);
+    		}
+    	}
+
+    	const unsubscribeFilters = filters.subscribe(newFilters => {
+    		console.log("filters updated", newFilters);
+    		const codeLabel = newFilters[0];
+    		const onLoadQuery = { page: 1, size: 200 };
+    		if (codeLabel) onLoadQuery.codeLabel = codeLabel;
+
+    		// const onLoadQuery = { page: 1, size: 200, where: {codeLabels: $filters} };
+    		incidents$2.listItems("sacramento", onLoadQuery);
+    	});
+
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<SearchBar> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("SearchBar", $$slots, []);
+
+    	$$self.$capture_state = () => ({
+    		filters,
+    		incidents: incidents$2,
+    		categories,
+    		handleKeyup,
+    		unsubscribeFilters,
+    		$filters
+    	});
+
+    	return [handleKeyup];
+    }
+
+    class SearchBar extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "SearchBar",
+    			options,
+    			id: create_fragment$3.name
+    		});
+    	}
+    }
+
+    /* src/App.svelte generated by Svelte v3.20.1 */
+    const file$4 = "src/App.svelte";
+
+    function create_fragment$4(ctx) {
+    	let div2;
+    	let div0;
+    	let t0;
+    	let div1;
+    	let t1;
+    	let current;
+    	const list = new List({ $$inline: true });
+    	const search = new SearchBar({ $$inline: true });
+    	const map = new Map$1({ $$inline: true });
+
+    	const block = {
+    		c: function create() {
+    			div2 = element("div");
+    			div0 = element("div");
+    			create_component(list.$$.fragment);
+    			t0 = space();
+    			div1 = element("div");
+    			create_component(search.$$.fragment);
+    			t1 = space();
+    			create_component(map.$$.fragment);
+    			attr_dev(div0, "class", "pane left svelte-f9qi6p");
+    			add_location(div0, file$4, 32, 2, 586);
+    			attr_dev(div1, "class", "pane right svelte-f9qi6p");
+    			add_location(div1, file$4, 35, 2, 634);
+    			attr_dev(div2, "class", "container svelte-f9qi6p");
+    			add_location(div2, file$4, 31, 0, 560);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div0);
+    			mount_component(list, div0, null);
+    			append_dev(div2, t0);
+    			append_dev(div2, div1);
+    			mount_component(search, div1, null);
+    			append_dev(div1, t1);
+    			mount_component(map, div1, null);
+    			current = true;
+    		},
+    		p: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(list.$$.fragment, local);
+    			transition_in(search.$$.fragment, local);
+    			transition_in(map.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(list.$$.fragment, local);
+    			transition_out(search.$$.fragment, local);
+    			transition_out(map.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div2);
+    			destroy_component(list);
+    			destroy_component(search);
+    			destroy_component(map);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$4.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$4($$self, $$props, $$invalidate) {
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -2603,20 +2842,20 @@ var app = (function () {
 
     	let { $$slots = {}, $$scope } = $$props;
     	validate_slots("App", $$slots, []);
-    	$$self.$capture_state = () => ({ Map: Map$1, List });
+    	$$self.$capture_state = () => ({ Map: Map$1, List, Search: SearchBar });
     	return [];
     }
 
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$3.name
+    			id: create_fragment$4.name
     		});
     	}
     }

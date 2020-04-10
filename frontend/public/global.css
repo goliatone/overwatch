@@ -73,6 +73,14 @@ button:focus {
     border-color: #666;
 }
 
+.tag.code {
+    width: 90px;
+    font-size: .8em;
+    font-weight: 600;
+    /* background-color: #fff;
+    padding: 4px 8px; */
+}
+
 
 /* *****
 * Styles here
@@ -81,141 +89,281 @@ button:focus {
 * *****/
 
 .homicide {
-    color: '#ff3f34'
+    border-left: 3px solid #ff3f34 !important;
+}
+
+.active.homicide {
+    border-left: 6px solid #ff3f34 !important;
 }
 
 .manslaughter {
-    color: '#ff5e57'
+    border-left: 3px solid #ff5e57 !important;
+}
+
+.active.manslaughter {
+    border-left: 6px solid #ff5e57 !important;
 }
 
 .assault {
-    color: '#f53b57'
+    border-left: 3px solid #f53b57 !important;
+}
+
+.active.assault {
+    border-left: 6px solid #f53b57 !important;
 }
 
 .arms {
-    color: '#ef5777'
+    border-left: 3px solid #ef5777 !important;
+}
+
+.active.arms {
+    border-left: 6px solid #ef5777 !important;
 }
 
 .battery {
-    color: '#ffa801'
+    border-left: 3px solid #ffa801 !important;
+}
+
+.active.battery {
+    border-left: 6px solid #ffa801 !important;
 }
 
 .threat {
-    color: '#ffc048'
+    border-left: 3px solid #ffc048 !important;
+}
+
+.active.threat {
+    border-left: 6px solid #ffc048 !important;
 }
 
 .theft {
-    color: '#0fbcf9'
+    border-left: 3px solid #0fbcf9 !important;
+}
+
+.active.theft {
+    border-left: 6px solid #0fbcf9 !important;
 }
 
 .carjacking {
-    color: '#4bcffa'
+    border-left: 3px solid #4bcffa !important;
+}
+
+.active.carjacking {
+    border-left: 6px solid #4bcffa !important;
 }
 
 .robbery {
-    color: '#00d8d6'
+    border-left: 3px solid #00d8d6 !important;
+}
+
+.active.robbery {
+    border-left: 6px solid #00d8d6 !important;
 }
 
 .trespass {
-    color: '#00a8ff'
+    border-left: 3px solid #00a8ff !important;
+}
+
+.active.trespass {
+    border-left: 6px solid #00a8ff !important;
 }
 
 .arson {
-    color: '#ffdd59'
+    border-left: 3px solid #ffdd59 !important;
+}
+
+.active.arson {
+    border-left: 6px solid #ffdd59 !important;
 }
 
 .burglary {
-    color: '#3c40c6'
+    border-left: 3px solid #3c40c6 !important;
+}
+
+.active.burglary {
+    border-left: 6px solid #3c40c6 !important;
 }
 
 .forgery {
-    color: '#575fcf'
+    border-left: 3px solid #575fcf !important;
+}
+
+.active.forgery {
+    border-left: 6px solid #575fcf !important;
 }
 
 .fraud {
-    color: '#00d8d6'
+    border-left: 3px solid #00d8d6 !important;
+}
+
+.active.fraud {
+    border-left: 6px solid #00d8d6 !important;
 }
 
 .impersonation {
-    color: '#34e7e4'
+    border-left: 3px solid #34e7e4 !important;
+}
+
+.active.impersonation {
+    border-left: 6px solid #34e7e4 !important;
 }
 
 .embezzlement {
-    color: '#18dcff'
+    border-left: 3px solid #18dcff !important;
+}
+
+.active.embezzlement {
+    border-left: 6px solid #18dcff !important;
 }
 
 .stolen-property {
-    color: '#17c0eb'
+    border-left: 3px solid #17c0eb !important;
+}
+
+.active.stolen-property {
+    border-left: 6px solid #17c0eb !important;
 }
 
 .vandalism {
-    color: '#ffaf40'
+    border-left: 3px solid #ffaf40 !important;
+}
+
+.active.vandalism {
+    border-left: 6px solid #ffaf40 !important;
 }
 
 .drugs {
-    color: '#BDC581'
+    border-left: 3px solid #BDC581 !important;
+}
+
+.active.drugs {
+    border-left: 6px solid #BDC581 !important;
 }
 
 .indecent {
-    color: '#F8EFBA'
+    border-left: 3px solid #F8EFBA !important;
+}
+
+.active.indecent {
+    border-left: 6px solid #F8EFBA !important;
 }
 
 .disturbance {
-    color: '#EAB543'
+    border-left: 3px solid #EAB543 !important;
+}
+
+.active.disturbance {
+    border-left: 6px solid #EAB543 !important;
 }
 
 .prostitution {
-    color: '#3B3B98'
+    border-left: 3px solid #3B3B98 !important;
+}
+
+.active.prostitution {
+    border-left: 6px solid #3B3B98 !important;
 }
 
 .minor {
-    color: '#1B9CFC'
+    border-left: 3px solid #1B9CFC !important;
+}
+
+.active.minor {
+    border-left: 6px solid #1B9CFC !important;
 }
 
 .child-custody {
-    color: '#1B9CFC'
+    border-left: 3px solid #1B9CFC !important;
+}
+
+.active.child-custody {
+    border-left: 6px solid #1B9CFC !important;
 }
 
 .disobedience {
-    color: '#fbc531'
+    border-left: 3px solid #fbc531 !important;
+}
+
+.active.disobedience {
+    border-left: 6px solid #fbc531 !important;
 }
 
 .traffic-accident {
-    color: '#FEA47F'
+    border-left: 3px solid #FEA47F !important;
+}
+
+.active.traffic-accident {
+    border-left: 6px solid #FEA47F !important;
 }
 
 .hit-run {
-    color: '#F97F51'
+    border-left: 3px solid #F97F51 !important;
+}
+
+.active.hit-run {
+    border-left: 6px solid #F97F51 !important;
 }
 
 .dui {
-    color: '#8c7ae6'
+    border-left: 3px solid #8c7ae6 !important;
+}
+
+.active.dui {
+    border-left: 6px solid #8c7ae6 !important;
 }
 
 .traffic-offense {
-    color: '#9c88ff'
+    border-left: 3px solid #9c88ff !important;
+}
+
+.active.traffic-offense {
+    border-left: 6px solid #9c88ff !important;
 }
 
 .health-safety {
-    color: '#0097e6'
+    border-left: 3px solid #0097e6 !important;
+}
+
+.active.health-safety {
+    border-left: 6px solid #0097e6 !important;
 }
 
 .lewd-conduct {
-    color: '#fdcb6e'
+    border-left: 3px solid #fdcb6e !important;
+}
+
+.active.lewd-conduct {
+    border-left: 6px solid #fdcb6e !important;
 }
 
 .public-offense {
-    color: '#ffeaa7'
+    border-left: 3px solid #ffeaa7 !important;
+}
+
+.active.public-offense {
+    border-left: 6px solid #ffeaa7 !important;
 }
 
 .parole {
-    color: '#e17055'
+    border-left: 3px solid #e17055 !important;
+}
+
+.active.parole {
+    border-left: 6px solid #e17055 !important;
 }
 
 .probation {
-    color: '#e17055'
+    border-left: 3px solid #e17055 !important;
+}
+
+.active.probation {
+    border-left: 6px solid #e17055 !important;
 }
 
 .other {
-    color: '#636e72'
+    border-left: 3px solid #636e72 !important;
+}
+
+.active.other {
+    border-left: 6px solid #636e72 !important;
 }
