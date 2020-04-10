@@ -7,6 +7,43 @@ export const activeCity = {
     ],
 };
 
+export const categories = [
+    'homicide',
+    'manslaughter',
+    'assault',
+    'arms',
+    'battery',
+    'threat',
+    'theft',
+    'carjacking',
+    'robbery',
+    'arson',
+    'burglary',
+    'forgery',
+    'fraud',
+    'impersonation',
+    'embezzlement',
+    'stolen-property',
+    'vandalism',
+    'drugs',
+    'indecent',
+    'disturbance',
+    'prostitution',
+    'minor',
+    'child-custody',
+    'disobedience',
+    'traffic-accident',
+    'hit-run',
+    'dui',
+    'traffic-offense',
+    'health-safety',
+    'trespass',
+    'lewd-conduct',
+    'public-offense',
+    'parole',
+    'probation'
+];
+
 export const categoryOptions = {
     'homicide': {
         color: '#ff3f34',
