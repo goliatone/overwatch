@@ -1,6 +1,7 @@
 <script>
   	import Map from './components/Map.svelte';
-  	import List from './components/List.svelte';
+    import List from './components/List.svelte';
+    import Search from './components/SearchBar.svelte';
 </script>
 
 <style>
@@ -18,6 +19,7 @@
   .left {
     align-items: center;
     width: 30%;
+    /* max-width: 385px;  HOW TO APPLY THIS AND HAVE RIGHT TAKE THE REST?*/
     justify-content: center;
   }
 
@@ -32,6 +34,7 @@
     <List />
   </div>
   <div class="pane right">
+    <Search />
     <Map />
   </div>
 </div>
