@@ -60,7 +60,13 @@ class Data {
     }
 
     findByCodeLabel(label) {
-        let indices = this.data.indices[label];
+        if (!Array.isArray(label)) {
+            label = [label];
+        }
+
+        let indices = label.map(key => this.data.indices[key]);
+
+        indices = indices.flat().filter(unique);
 
         return this.data.incidents.filter(item => {
             return indices.indexOf(item.id) !== -1;
@@ -98,3 +104,7 @@ class Data {
 Data.defaults = defaults;
 
 module.exports = Data;
+
+function unique(value, index, self) {
+    return self.indexOf(value) === index;
+}
