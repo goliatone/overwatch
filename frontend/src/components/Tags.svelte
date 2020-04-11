@@ -5,8 +5,6 @@
     let tag;
     let arrelementsmatch = [];
 
-    export let inputEl = {};
-
     export let tags;
     export let addKeys;
     export let maxTags;
@@ -17,16 +15,6 @@
     export let allowDrop;
     export let splitWith;
     export let autoComplete;
-
-    /**
-     * More here https://keycode.info/
-     */ 
-    const CODES = {
-        BACKSPACE: 8,
-        TAB: 9,
-        ENTER:13,
-        COMMA: 188,
-    };
 
     $: tags = tags || [];
     $: addKeys = addKeys || false;
@@ -39,78 +27,64 @@
     $: splitWith = splitWith || ',';
     $: autoComplete = autoComplete || false;
 
-    function _trimTrailing(word, char=',') {
-        return word.substring(0, word.length - 1);
-    }
-
     function setTag(event) {
-        const keyCode = event.keyCode;
+        
         const currentTag = event.target.value;
 
-        //On ENTER press we add the tag
-        if(keyCode === CODES.ENTER) {
+        if (event.keyCode === 13) {
             addTag(currentTag);
         }
-
-        //If we BACKSPACE when there's no text then remove previous tag
-        if(keyCode === CODES.BACKSPACE && tag === '') {
+        
+        if (event.keyCode === 8 && tag == '') {
             tags.pop();
             tags = tags;
 
-            dispatchEvent('tags', {tags});
+            dispatch('tags', {tags});
         }
-
-        /**
-         * We can add tags by:
-         * - type tag + hitting ENTER
-         * - type tag + hitting TAB
-         * - type tag + typing "," between tags
-         * - type tag + typing random key added to addKeys[]
-         */ 
-        if(Array.isArray(addKeys)) {
+        
+        if (addKeys) {
             addKeys.forEach(key => {
-                if(key !== keyCode) return;
-                switch (keyCode) {
-                    case CODES.COMMA:
-                        /**
-                         * We want to remove the trailing comma before
-                         * we add the word as a tag
-                         */ 
-                        addTag(_trimTrailing(currentTag, ','))
+                if (key === event.keyCode) {
+                    switch (event.keyCode) {
+                    case 188:
+                        // Remove comma if keycode to add tag is comma
+                        addTag(currentTag.substring(0, currentTag.length - 1));
                         break;
-                    case CODES.TAB:
+                    case 9:
                         event.preventDefault();
                         addTag(currentTag);
                         break;
                     default:
                         addTag(currentTag);
                         break;
-
+                    }
                 }
             });
         }
-
-        if(Array.isArray(removeKeys)) {
+        
+        if (removeKeys) {
             removeKeys.forEach(key => {
-                if(key !== keyCode) return;
-                tags.pop();
-                tags = tags;
-                tag = '';
+                if (key === event.keyCode) {
+                    tags.pop();
+                    tags = tags;
+                    tag = '';
 
-                dispatch('tags', {tags});
+                    dispatch('tags', {tags});
+                }
             });
         }
     }
 
-    function addTag(currentTag='') {
+    function addTag(currentTag) {
         currentTag = currentTag.trim();
-        if(!currentTag) return;
+
+        if (currentTag == '') return;
+        if (maxTags && tags.length == maxTags) return;
         
-        //TODO: We might want to move this to a function where we check
-        if(maxTags && tags.length === maxTags) return;
-
-        if(onlyUnique &&tags.includes(currentTag)) return;
-
+        if(onlyUnique) {
+            if (tags.includes(currentTag)) return;
+        }
+        
         tags.push(currentTag);
         tags = tags;
         tag = '';
@@ -125,49 +99,48 @@
         dispatch('tags', {tags});
     }
 
-    /**
-     * Handle pasting a string on tags in our field
-     * https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
-     */ 
     function onPaste(e) {
         if(!allowPaste) return;
         e.preventDefault();
         const data = getClipboardData(e);
-        const tags = splitTags(data).forEach(addTag);
+        const tags = splitTags(data).map(tag => addTag(tag));
     }
 
     function onDrop(e) {
         if(!allowDrop) return;
         e.preventDefault();
-
-        const data = e.dataTransfer.getData('text');
-        const tags = splitTags(data).forEach(addTag);
+        const data = e.dataTransfer.getData('Text');
+        const tags = splitTags(data).map(tag => addTag(tag));
     }
 
     function getClipboardData(e) {
-        if(window && window.clipboardData) {
-            return window.clipboardData.getData('text');
+        if (window.clipboardData) {
+            return window.clipboardData.getData('Text');
         }
-        if(e.clipboardData) {
+
+        if (e.clipboardData) {
             return e.clipboardData.getData('text/plain');
         }
+
         return '';
     }
 
     function splitTags(data) {
-        if(!data) return []
-        return data.split(splitWith).map(t=>t.trim());
+        return data.split(splitWith).map(d => d.trim());
     }
 
     function getMatchElements(e) {
-        if(!Array.isArray(autoComplete)) return;
 
-        let x = e.target.value;
-        if(!x) return arrelementsmatch = [];
+        if(!autoComplete) return;
+        
+        var x = e.target.value;
+        
+        if (x == '') {
+            arrelementsmatch = [];
+            return;
+        }
 
-        let matchs = autoComplete.filter(e => {
-            return e.toLowerCase().includes(e.toLowerCase());
-        });
+        var matchs = autoComplete.filter(e =>e.toLowerCase().includes(x.toLowerCase()));
 
         arrelementsmatch = matchs;
     }
@@ -177,21 +150,11 @@
 <div class="svelte-tags-input-layout">
     {#if tags.length > 0}
         {#each tags as tag, i}
-            <span class="svelte-tags-input-tag">{tag}</span>
-            <span class="svelte-tags-input-tag-remove" on:click={_=>removeTag(i)}>x</span>
+            <span class="svelte-tags-input-tag">{tag} <span class="svelte-tags-input-tag-remove" on:click={() => removeTag(i)}> ×</span></span>
         {/each}
     {/if}
-    <input  type="text"
-            bind:this={inputEl}
-            bind:value={tag} 
-            on:keydown={setTag} 
-            on:keyup={getMatchElements}
-            on:paste={onPaste}
-            on:drop={onDrop}
-            class="svelte-tags-input"
-            placeholder={placeholder}
-            contenteditable="true"
-    >
+    <input type="text" bind:value={tag} on:keydown={setTag} on:keyup={getMatchElements} on:paste={onPaste} on:drop={onDrop} class="svelte-tags-input" placeholder={placeholder}>
+    
 </div>
 
 {#if autoComplete && arrelementsmatch.length > 0}
@@ -202,12 +165,11 @@
     </ul>
 {/if}
 
-
 <style>
 /* main */
 .svelte-tags-input,
 .svelte-tags-input-tag {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
     font-size: 14px;
     padding: 2px 5px;
 }
@@ -220,13 +182,14 @@
     -ms-flex-wrap:wrap;
         flex-wrap:wrap;
     -webkit-box-align:center;
-       -ms-flex-align:center;
-          align-items:center;
+        -ms-flex-align:center;
+            align-items:center;
     padding: 0px 5px 5px 5px;
     border: solid 1px #CCC;
     background: #FFF;
     border-radius: 2px;
 }
+
 .svelte-tags-input-layout:focus,
 .svelte-tags-input-layout:hover {
     border: solid 1px #000;    
@@ -235,12 +198,13 @@
 /* svelte-tags-input */
 .svelte-tags-input {
     -webkit-box-flex: 1;
-            -ms-flex: 1;
-                flex: 1; 
+        -ms-flex: 1;
+            flex: 1; 
     margin: 0;
     margin-top: 5px;
     border:none;
 }
+
 .svelte-tags-input:focus {
     outline:0;
 }
@@ -258,9 +222,11 @@
     margin-right: 5px;
     margin-top: 5px;
 }
+
 .svelte-tags-input-tag:hover {
     /*background: #CCC;*/
 }
+
 .svelte-tags-input-tag-remove {
     cursor:pointer;
 }
@@ -275,12 +241,14 @@
     overflow:scroll;
     overflow-x:hidden;
 }
+
 .svelte-tags-input-matchs li {
     list-style:none;
     padding:5px;
     border-radius: 2px;
     cursor:pointer;
 }
+
 .svelte-tags-input-matchs li:hover {
     background:#000;
     color:#FFF;
