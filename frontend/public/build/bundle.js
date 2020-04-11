@@ -125,6 +125,11 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
+    function set_input_value(input, value) {
+        if (value != null || input.value) {
+            input.value = value;
+        }
+    }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
@@ -206,6 +211,20 @@ var app = (function () {
     }
     function onDestroy(fn) {
         get_current_component().$$.on_destroy.push(fn);
+    }
+    function createEventDispatcher() {
+        const component = get_current_component();
+        return (type, detail) => {
+            const callbacks = component.$$.callbacks[type];
+            if (callbacks) {
+                // TODO are there situations where events could be dispatched
+                // in a server (non-DOM) environment?
+                const event = custom_event(type, detail);
+                callbacks.slice().forEach(fn => {
+                    fn.call(component, event);
+                });
+            }
+        };
     }
 
     const dirty_components = [];
@@ -777,6 +796,103 @@ var app = (function () {
     const activeListItem = writable(0);
     const activeMapItem = writable(0);
 
+    const defaults = {
+        loadConfigItem(path, def) {
+            return localStorage.getItem(path) || def;
+        }
+    };
+
+    /**
+     * Simple HTTP API client
+     */
+    class Api {
+        constructor(config = {}) {
+            config = Object.assign({}, defaults, config);
+            this.init(config);
+        }
+
+        init(config = {}) {
+
+            Object.assign(this, config);
+
+            let baseUrl = this.loadConfigItem('dataviz.api.url', config.url);
+            this.baseUrl = this._clean(baseUrl);
+
+            this.token = this.loadConfigItem('dataviz.api.token', config.token);
+        }
+
+        list(entity, query = false) {
+            const token = this.token;
+
+            let uri = new URL(`${this.baseUrl}/api/v1/crime/${entity}`);
+
+            if (query) {
+                Object.keys(query).map(key => {
+                    let value = JSON.stringify(query[key]);
+                    uri.searchParams.append(key, value);
+                });
+            }
+
+            return fetch(uri.toString(), {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(res => res.json());
+        }
+
+        _clean(baseUrl = '') {
+            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
+                baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
+            }
+            return baseUrl;
+        }
+    }
+
+    let api = new Api({
+        url: location.href,
+        token: '0a6fd546-9699-4fc3-8ba6-f878b11f0396'
+    });
+
+    const { subscribe: subscribe$1, set, update: update$1 } = writable([]);
+
+    const error = writable('');
+    const metadata = writable({
+        page: 1,
+        size: 100,
+        count: 200
+    });
+    const incidentItems = writable([]);
+
+    const incidents = _ => ({
+        set,
+        update: update$1,
+        subscribe: subscribe$1,
+        items: incidentItems,
+        async listItems(city, query = { page: 1, size: 100 }) {
+            try {
+                let response = await api.list(city, query);
+                let data = response.data;
+                let meta = response.meta;
+                set(data);
+                metadata.set(meta);
+                incidentItems.set(data);
+                return data;
+            } catch (e) {
+                set([]);
+                error.set(`
+                <h2>Error accessing API</h2>
+                <p>Details: ${e.message}</p>
+            `);
+                return e;
+            }
+        }
+    });
+
+    var incidents$1 = incidents();
+
     const accessToken = 'pk.eyJ1IjoiZ29saWF0b25lIiwiYSI6ImNrOG5kbmlzbTB4MngzaXF4Nnc4ZmlrN3kifQ.XgPimC6XiswkzavVSwHeJg';
 
     const activeCity = {
@@ -787,40 +903,24 @@ var app = (function () {
     };
 
     const categories = [
-        'homicide',
-        'manslaughter',
-        'assault',
-        'arms',
-        'battery',
-        'threat',
-        'theft',
-        'carjacking',
-        'robbery',
-        'arson',
-        'burglary',
-        'forgery',
-        'fraud',
-        'impersonation',
-        'embezzlement',
-        'stolen-property',
-        'vandalism',
-        'drugs',
-        'indecent',
-        'disturbance',
-        'prostitution',
-        'minor',
-        'child-custody',
-        'disobedience',
-        'traffic-accident',
-        'hit-run',
-        'dui',
-        'traffic-offense',
-        'health-safety',
-        'trespass',
-        'lewd-conduct',
-        'public-offense',
-        'parole',
-        'probation'
+        'arms', 'arson',
+        'assault', 'battery',
+        'burglary', 'carjacking',
+        'child-custody', 'disobedience',
+        'disturbance', 'drugs',
+        'dui', 'embezzlement',
+        'forgery', 'fraud',
+        'health-safety', 'hit-run',
+        'homicide', 'impersonation',
+        'indecent', 'lewd-conduct',
+        'manslaughter', 'minor',
+        'other', 'parole',
+        'probation', 'prostitution',
+        'public-offense', 'robbery',
+        'stolen-property', 'theft',
+        'threat', 'traffic-accident',
+        'traffic-offense', 'trespass',
+        'vandalism'
     ];
 
     const categoryOptions = {
@@ -986,7 +1086,7 @@ var app = (function () {
     			add_location(link, file, 1, 4, 18);
     			attr_dev(div, "id", "map");
     			attr_dev(div, "class", "svelte-1tfoct4");
-    			add_location(div, file, 366, 0, 10375);
+    			add_location(div, file, 366, 0, 10436);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1141,7 +1241,7 @@ var app = (function () {
     			/**
      * Query backend for our first page of items
      */
-    			await incidents.listItems("sacramento", onLoadQuery);
+    			await incidents$1.listItems("sacramento", onLoadQuery);
     		});
     	}
 
@@ -1298,7 +1398,7 @@ var app = (function () {
     	}
 
     	window.layerIDs = layerIDs;
-    	window.incidents = incidents;
+    	window.incidents = incidents$1;
     	window.toggleLayerVisibility = toggleLayerVisibility;
 
     	/**
@@ -1327,6 +1427,8 @@ var app = (function () {
     		onDestroy,
     		activeListItem,
     		activeMapItem,
+    		incidents: incidents$1,
+    		incidentItems,
     		accessToken,
     		activeCity,
     		categoryOptions,
@@ -1681,102 +1783,6 @@ var app = (function () {
             timeout = setTimeout(_ => callback.apply(context, args), wait);
         };
     }
-
-    const defaults = {
-        loadConfigItem(path, def) {
-            return localStorage.getItem(path) || def;
-        }
-    };
-
-    /**
-     * Simple HTTP API client
-     */
-    class Api {
-        constructor(config = {}) {
-            config = Object.assign({}, defaults, config);
-            this.init(config);
-        }
-
-        init(config = {}) {
-
-            Object.assign(this, config);
-
-            let baseUrl = this.loadConfigItem('dataviz.api.url', config.url);
-            this.baseUrl = this._clean(baseUrl);
-
-            this.token = this.loadConfigItem('dataviz.api.token', config.token);
-        }
-
-        list(entity, query = false) {
-            const token = this.token;
-
-            let uri = new URL(`${this.baseUrl}/api/v1/crime/${entity}`);
-
-            if (query) {
-                Object.keys(query).map(key => {
-                    uri.searchParams.append(key, query[key]);
-                });
-            }
-
-            return fetch(uri.toString(), {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            }).then(res => res.json());
-        }
-
-        _clean(baseUrl = '') {
-            if (baseUrl.charAt(baseUrl.length - 1) === '/') {
-                baseUrl = baseUrl.slice(0, baseUrl.lastIndexOf('/'));
-            }
-            return baseUrl;
-        }
-    }
-
-    let api = new Api({
-        url: location.href,
-        token: '0a6fd546-9699-4fc3-8ba6-f878b11f0396'
-    });
-
-    const { subscribe: subscribe$1, set, update: update$1 } = writable([]);
-
-    const error = writable('');
-    const metadata = writable({
-        page: 1,
-        size: 100,
-        count: 200
-    });
-    const incidentItems$1 = writable([]);
-
-    const incidents$1 = _ => ({
-        set,
-        update: update$1,
-        subscribe: subscribe$1,
-        items: incidentItems$1,
-        async listItems(city, query = { page: 1, size: 100 }) {
-            try {
-                let response = await api.list(city, query);
-                let data = response.data;
-                let meta = response.meta;
-                set(data);
-                metadata.set(meta);
-                incidentItems$1.set(data);
-                return data;
-            } catch (e) {
-                set([]);
-                error.set(`
-                <h2>Error accessing API</h2>
-                <p>Details: ${e.message}</p>
-            `);
-                return e;
-            }
-        }
-    });
-
-    var incidents$2 = incidents$1();
 
     /**
      * Items per page, default 10. 
@@ -2509,8 +2515,8 @@ var app = (function () {
     	let $activeMapItem;
     	let $error;
     	let $totalPages;
-    	validate_store(incidentItems$1, "incidentItems");
-    	component_subscribe($$self, incidentItems$1, $$value => $$invalidate(2, $incidentItems = $$value));
+    	validate_store(incidentItems, "incidentItems");
+    	component_subscribe($$self, incidentItems, $$value => $$invalidate(2, $incidentItems = $$value));
     	validate_store(metadata, "metadata");
     	component_subscribe($$self, metadata, $$value => $$invalidate(7, $metadata = $$value));
     	validate_store(currentPage, "currentPage");
@@ -2564,8 +2570,8 @@ var app = (function () {
     		fade,
     		Header,
     		debounce,
-    		incidents: incidents$2,
-    		incidentItems: incidentItems$1,
+    		incidents: incidents$1,
+    		incidentItems,
     		error,
     		metadata,
     		activeListItem,
@@ -2608,7 +2614,7 @@ var app = (function () {
     		}
 
     		if ($$self.$$.dirty & /*$currentPage*/ 8) {
-    			 incidents$2.listItems(activeCity.name, { page: $currentPage, size: 200 });
+    			 incidents$1.listItems(activeCity.name, { page: $currentPage, size: 200 });
     		}
     	};
 
@@ -2643,44 +2649,364 @@ var app = (function () {
 
     const filters = writable([]);
 
-    /* src/components/SearchBar.svelte generated by Svelte v3.20.1 */
+    /* src/components/Tags.svelte generated by Svelte v3.20.1 */
 
     const { console: console_1 } = globals;
-    const file$3 = "src/components/SearchBar.svelte";
+    const file$3 = "src/components/Tags.svelte";
+
+    function get_each_context$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[27] = list[i];
+    	child_ctx[29] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[4] = list[i];
+    	child_ctx[29] = i;
+    	return child_ctx;
+    }
+
+    // (209:4) {#if tags.length > 0}
+    function create_if_block_1$1(ctx) {
+    	let each_1_anchor;
+    	let each_value_1 = /*tags*/ ctx[0];
+    	validate_each_argument(each_value_1);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert_dev(target, each_1_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*tags, removeTag*/ 129) {
+    				each_value_1 = /*tags*/ ctx[0];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_1.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$1.name,
+    		type: "if",
+    		source: "(209:4) {#if tags.length > 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (210:8) {#each tags as tag, i}
+    function create_each_block_1(ctx) {
+    	let span1;
+    	let t0_value = /*tag*/ ctx[4] + "";
+    	let t0;
+    	let t1;
+    	let span0;
+    	let t3;
+    	let span1_class_value;
+    	let dispose;
+
+    	function click_handler(...args) {
+    		return /*click_handler*/ ctx[24](/*i*/ ctx[29], ...args);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			span1 = element("span");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			span0 = element("span");
+    			span0.textContent = "×";
+    			t3 = space();
+    			attr_dev(span0, "class", "svelte-tags-input-tag-remove svelte-nle00x");
+    			add_location(span0, file$3, 211, 16, 5809);
+    			attr_dev(span1, "class", span1_class_value = "svelte-tags-input-tag tag " + /*tag*/ ctx[4] + " svelte-nle00x");
+    			add_location(span1, file$3, 210, 12, 5740);
+    		},
+    		m: function mount(target, anchor, remount) {
+    			insert_dev(target, span1, anchor);
+    			append_dev(span1, t0);
+    			append_dev(span1, t1);
+    			append_dev(span1, span0);
+    			append_dev(span1, t3);
+    			if (remount) dispose();
+    			dispose = listen_dev(span0, "click", click_handler, false, false, false);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*tags*/ 1 && t0_value !== (t0_value = /*tag*/ ctx[4] + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*tags*/ 1 && span1_class_value !== (span1_class_value = "svelte-tags-input-tag tag " + /*tag*/ ctx[4] + " svelte-nle00x")) {
+    				attr_dev(span1, "class", span1_class_value);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span1);
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1.name,
+    		type: "each",
+    		source: "(210:8) {#each tags as tag, i}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (227:0) {#if autoComplete && arrelementsmatch.length > 0}
+    function create_if_block$1(ctx) {
+    	let ul;
+    	let each_value = /*arrelementsmatch*/ ctx[3];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			ul = element("ul");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			attr_dev(ul, "class", "svelte-tags-input-matchs svelte-nle00x");
+    			add_location(ul, file$3, 227, 4, 6273);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, ul, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(ul, null);
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*addTagFromDropdown, arrelementsmatch*/ 72) {
+    				each_value = /*arrelementsmatch*/ ctx[3];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$1(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(ul, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(ul);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(227:0) {#if autoComplete && arrelementsmatch.length > 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (229:8) {#each arrelementsmatch as element, i}
+    function create_each_block$1(ctx) {
+    	let li;
+    	let t_value = /*element*/ ctx[27] + "";
+    	let t;
+    	let dispose;
+
+    	function click_handler_1(...args) {
+    		return /*click_handler_1*/ ctx[26](/*element*/ ctx[27], ...args);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			li = element("li");
+    			t = text(t_value);
+    			li.value = "element";
+    			attr_dev(li, "class", "svelte-nle00x");
+    			add_location(li, file$3, 229, 8, 6366);
+    		},
+    		m: function mount(target, anchor, remount) {
+    			insert_dev(target, li, anchor);
+    			append_dev(li, t);
+    			if (remount) dispose();
+    			dispose = listen_dev(li, "click", click_handler_1, false, false, false);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*arrelementsmatch*/ 8 && t_value !== (t_value = /*element*/ ctx[27] + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(li);
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$1.name,
+    		type: "each",
+    		source: "(229:8) {#each arrelementsmatch as element, i}",
+    		ctx
+    	});
+
+    	return block;
+    }
 
     function create_fragment$3(ctx) {
     	let div;
+    	let t0;
     	let input;
+    	let t1;
+    	let if_block1_anchor;
     	let dispose;
+    	let if_block0 = /*tags*/ ctx[0].length > 0 && create_if_block_1$1(ctx);
+    	let if_block1 = /*autoComplete*/ ctx[2] && /*arrelementsmatch*/ ctx[3].length > 0 && create_if_block$1(ctx);
 
     	const block = {
     		c: function create() {
     			div = element("div");
+    			if (if_block0) if_block0.c();
+    			t0 = space();
     			input = element("input");
-    			attr_dev(input, "id", "filter-input");
+    			t1 = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
     			attr_dev(input, "type", "text");
-    			attr_dev(input, "name", "filter");
-    			attr_dev(input, "placeholder", "Filter by name");
-    			attr_dev(input, "class", "svelte-qswhn7");
-    			add_location(input, file$3, 54, 4, 1394);
-    			attr_dev(div, "class", "filter-ctrl svelte-qswhn7");
-    			add_location(div, file$3, 53, 0, 1364);
+    			attr_dev(input, "class", "svelte-tags-input svelte-nle00x");
+    			attr_dev(input, "placeholder", /*placeholder*/ ctx[1]);
+    			add_location(input, file$3, 215, 4, 5941);
+    			attr_dev(div, "class", "svelte-tags-input-layout svelte-nle00x");
+    			add_location(div, file$3, 207, 0, 5632);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div, anchor);
+    			if (if_block0) if_block0.m(div, null);
+    			append_dev(div, t0);
     			append_dev(div, input);
-    			if (remount) dispose();
-    			dispose = listen_dev(input, "keypress", /*handleKeyup*/ ctx[0], false, false, false);
+    			set_input_value(input, /*tag*/ ctx[4]);
+    			insert_dev(target, t1, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert_dev(target, if_block1_anchor, anchor);
+    			if (remount) run_all(dispose);
+
+    			dispose = [
+    				listen_dev(input, "input", /*input_input_handler*/ ctx[25]),
+    				listen_dev(input, "keydown", /*setTag*/ ctx[5], false, false, false),
+    				listen_dev(input, "keyup", /*getMatchElements*/ ctx[10], false, false, false),
+    				listen_dev(input, "paste", /*onPaste*/ ctx[8], false, false, false),
+    				listen_dev(input, "drop", /*onDrop*/ ctx[9], false, false, false)
+    			];
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (/*tags*/ ctx[0].length > 0) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_1$1(ctx);
+    					if_block0.c();
+    					if_block0.m(div, t0);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (dirty & /*placeholder*/ 2) {
+    				attr_dev(input, "placeholder", /*placeholder*/ ctx[1]);
+    			}
+
+    			if (dirty & /*tag*/ 16 && input.value !== /*tag*/ ctx[4]) {
+    				set_input_value(input, /*tag*/ ctx[4]);
+    			}
+
+    			if (/*autoComplete*/ ctx[2] && /*arrelementsmatch*/ ctx[3].length > 0) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block$1(ctx);
+    					if_block1.c();
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+    		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
-    			dispose();
+    			if (if_block0) if_block0.d();
+    			if (detaching) detach_dev(t1);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach_dev(if_block1_anchor);
+    			run_all(dispose);
     		}
     	};
 
@@ -2695,11 +3021,589 @@ var app = (function () {
     	return block;
     }
 
+    function getClipboardData(e) {
+    	if (window && window.clipboardData) {
+    		return window.clipboardData.getData("text");
+    	}
+
+    	if (e.clipboardData) {
+    		return e.clipboardData.getData("text/plain");
+    	}
+
+    	return "";
+    }
+
+    function _trimTrailing(word = "", char = ",") {
+    	let last = word[word.length - 1];
+    	if (char !== last) return word;
+    	return word.substring(0, word.length - 1);
+    }
+
     function instance$3($$self, $$props, $$invalidate) {
+    	const dispatch = createEventDispatcher();
+    	let tag;
+    	let arrelementsmatch = [];
+    	let { inputEl = {} } = $$props;
+    	let removeComma = false;
+    	let { tags } = $$props;
+    	let { addKeys } = $$props;
+    	let { maxTags } = $$props;
+    	let { onlyUnique } = $$props;
+    	let { removeKeys } = $$props;
+    	let { placeholder } = $$props;
+    	let { allowPaste } = $$props;
+    	let { allowDrop } = $$props;
+    	let { splitWith } = $$props;
+    	let { autoComplete } = $$props;
+
+    	/**
+     * More here https://keycode.info/
+     */
+    	const CODES = {
+    		BACKSPACE: 8,
+    		TAB: 9,
+    		ENTER: 13,
+    		COMMA: 188
+    	};
+
+    	function setTag(event) {
+    		const keyCode = event.keyCode;
+    		let currentTag = event.target.value;
+
+    		//On ENTER press we add the tag
+    		if (keyCode === CODES.ENTER) {
+    			return addTag(currentTag);
+    		}
+
+    		//If we BACKSPACE when there's no text then remove previous tag
+    		if (keyCode === CODES.BACKSPACE && tag === "") {
+    			tags.pop();
+    			$$invalidate(0, tags);
+    			dispatch("tags", { tags });
+    		}
+
+    		/**
+     * We can add tags by:
+     * - type tag + hitting ENTER
+     * - type tag + hitting TAB
+     * - type tag + typing "," between tags
+     * - type tag + typing random key added to addKeys[]
+     */
+    		if (Array.isArray(addKeys)) {
+    			addKeys.forEach(key => {
+    				if (key !== keyCode) return;
+
+    				switch (keyCode) {
+    					case CODES.COMMA:
+    						/**
+     * We want to remove the trailing comma before
+     * we add the word as a tag
+     */
+    						removeComma = true;
+    						addTag(_trimTrailing(currentTag, ","));
+    						break;
+    					case CODES.TAB:
+    						event.preventDefault();
+    						let match = arrelementsmatch[0];
+    						addTagFromDropdown(currentTag, match);
+    						break;
+    					default:
+    						addTag(currentTag);
+    						break;
+    				}
+    			});
+    		}
+
+    		if (Array.isArray(removeKeys)) {
+    			removeKeys.forEach(key => {
+    				if (key !== keyCode) return;
+    				tags.pop();
+    				$$invalidate(0, tags);
+    				$$invalidate(4, tag = "");
+    				dispatch("tags", { tags });
+    			});
+    		}
+    	}
+
+    	function addTagFromDropdown(currentTag, match) {
+    		console.log("add tag from dropdown", currentTag, match);
+
+    		if (match) {
+    			if (currentTag === match) {
+    				$$invalidate(4, tag = "");
+    			} else if (match.indexOf(currentTag) !== -1) {
+    				currentTag = $$invalidate(4, tag = match);
+    			}
+    		}
+
+    		if (onlyUnique) {
+    			$$invalidate(3, arrelementsmatch = arrelementsmatch.filter(m => m !== currentTag));
+    		}
+
+    		addTag(currentTag);
+    	}
+
+    	function addTag(currentTag = "") {
+    		currentTag = currentTag.trim();
+    		if (!currentTag) return;
+
+    		//TODO: We might want to move this to a function where we check
+    		if (maxTags && tags.length === maxTags) return;
+
+    		if (onlyUnique && tags.includes(currentTag)) return;
+    		tags.push(currentTag);
+    		$$invalidate(0, tags);
+    		$$invalidate(4, tag = "");
+    		dispatch("tags", { tags });
+    	}
+
+    	function removeTag(i) {
+    		tags.splice(i, 1);
+    		$$invalidate(0, tags);
+    		dispatch("tags", { tags });
+    	}
+
+    	/**
+     * Handle pasting a string on tags in our field
+     * https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
+     */
+    	function onPaste(e) {
+    		if (!allowPaste) return;
+    		e.preventDefault();
+    		const data = getClipboardData(e);
+    		const tags = splitTags(data).forEach(addTag);
+    	}
+
+    	function onDrop(e) {
+    		if (!allowDrop) return;
+    		e.preventDefault();
+    		const data = e.dataTransfer.getData("Text");
+    		const tags = splitTags(data).map(tag => addTag(tag));
+    	}
+
+    	function splitTags(data) {
+    		if (!data) return [];
+    		return data.split(splitWith).map(t => t.trim());
+    	}
+
+    	function getMatchElements(e) {
+    		if (!Array.isArray(autoComplete)) return;
+    		let term = e.target.value;
+    		if (!term) return $$invalidate(3, arrelementsmatch = []);
+
+    		/**
+     * Select elements that match the given
+     * string...
+     */
+    		let matched = autoComplete.filter(item => {
+    			return item.toLowerCase().includes(term.toLowerCase());
+    		});
+
+    		if (onlyUnique) {
+    			matched = matched.filter(m => tags.indexOf(m) === -1);
+    		}
+
+    		$$invalidate(3, arrelementsmatch = matched);
+    	}
+
+    	const writable_props = [
+    		"inputEl",
+    		"tags",
+    		"addKeys",
+    		"maxTags",
+    		"onlyUnique",
+    		"removeKeys",
+    		"placeholder",
+    		"allowPaste",
+    		"allowDrop",
+    		"splitWith",
+    		"autoComplete"
+    	];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Tags> was created with unknown prop '${key}'`);
+    	});
+
+    	let { $$slots = {}, $$scope } = $$props;
+    	validate_slots("Tags", $$slots, []);
+    	const click_handler = (i, _) => removeTag(i);
+
+    	function input_input_handler() {
+    		tag = this.value;
+    		$$invalidate(4, tag);
+    	}
+
+    	const click_handler_1 = (element, _) => addTagFromDropdown(element, element);
+
+    	$$self.$set = $$props => {
+    		if ("inputEl" in $$props) $$invalidate(18, inputEl = $$props.inputEl);
+    		if ("tags" in $$props) $$invalidate(0, tags = $$props.tags);
+    		if ("addKeys" in $$props) $$invalidate(11, addKeys = $$props.addKeys);
+    		if ("maxTags" in $$props) $$invalidate(12, maxTags = $$props.maxTags);
+    		if ("onlyUnique" in $$props) $$invalidate(13, onlyUnique = $$props.onlyUnique);
+    		if ("removeKeys" in $$props) $$invalidate(14, removeKeys = $$props.removeKeys);
+    		if ("placeholder" in $$props) $$invalidate(1, placeholder = $$props.placeholder);
+    		if ("allowPaste" in $$props) $$invalidate(15, allowPaste = $$props.allowPaste);
+    		if ("allowDrop" in $$props) $$invalidate(16, allowDrop = $$props.allowDrop);
+    		if ("splitWith" in $$props) $$invalidate(17, splitWith = $$props.splitWith);
+    		if ("autoComplete" in $$props) $$invalidate(2, autoComplete = $$props.autoComplete);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		createEventDispatcher,
+    		dispatch,
+    		tag,
+    		arrelementsmatch,
+    		inputEl,
+    		removeComma,
+    		tags,
+    		addKeys,
+    		maxTags,
+    		onlyUnique,
+    		removeKeys,
+    		placeholder,
+    		allowPaste,
+    		allowDrop,
+    		splitWith,
+    		autoComplete,
+    		CODES,
+    		setTag,
+    		addTagFromDropdown,
+    		addTag,
+    		removeTag,
+    		onPaste,
+    		onDrop,
+    		getClipboardData,
+    		splitTags,
+    		getMatchElements,
+    		_trimTrailing
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("tag" in $$props) $$invalidate(4, tag = $$props.tag);
+    		if ("arrelementsmatch" in $$props) $$invalidate(3, arrelementsmatch = $$props.arrelementsmatch);
+    		if ("inputEl" in $$props) $$invalidate(18, inputEl = $$props.inputEl);
+    		if ("removeComma" in $$props) removeComma = $$props.removeComma;
+    		if ("tags" in $$props) $$invalidate(0, tags = $$props.tags);
+    		if ("addKeys" in $$props) $$invalidate(11, addKeys = $$props.addKeys);
+    		if ("maxTags" in $$props) $$invalidate(12, maxTags = $$props.maxTags);
+    		if ("onlyUnique" in $$props) $$invalidate(13, onlyUnique = $$props.onlyUnique);
+    		if ("removeKeys" in $$props) $$invalidate(14, removeKeys = $$props.removeKeys);
+    		if ("placeholder" in $$props) $$invalidate(1, placeholder = $$props.placeholder);
+    		if ("allowPaste" in $$props) $$invalidate(15, allowPaste = $$props.allowPaste);
+    		if ("allowDrop" in $$props) $$invalidate(16, allowDrop = $$props.allowDrop);
+    		if ("splitWith" in $$props) $$invalidate(17, splitWith = $$props.splitWith);
+    		if ("autoComplete" in $$props) $$invalidate(2, autoComplete = $$props.autoComplete);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*tags*/ 1) {
+    			 $$invalidate(0, tags = tags || []);
+    		}
+
+    		if ($$self.$$.dirty & /*addKeys*/ 2048) {
+    			 $$invalidate(11, addKeys = addKeys || false);
+    		}
+
+    		if ($$self.$$.dirty & /*maxTags*/ 4096) {
+    			 $$invalidate(12, maxTags = maxTags || false);
+    		}
+
+    		if ($$self.$$.dirty & /*onlyUnique*/ 8192) {
+    			 $$invalidate(13, onlyUnique = onlyUnique || false);
+    		}
+
+    		if ($$self.$$.dirty & /*removeKeys*/ 16384) {
+    			 $$invalidate(14, removeKeys = removeKeys || false);
+    		}
+
+    		if ($$self.$$.dirty & /*placeholder*/ 2) {
+    			 $$invalidate(1, placeholder = placeholder || "");
+    		}
+
+    		if ($$self.$$.dirty & /*allowPaste*/ 32768) {
+    			 $$invalidate(15, allowPaste = allowPaste || false);
+    		}
+
+    		if ($$self.$$.dirty & /*allowDrop*/ 65536) {
+    			 $$invalidate(16, allowDrop = allowDrop || false);
+    		}
+
+    		if ($$self.$$.dirty & /*splitWith*/ 131072) {
+    			 $$invalidate(17, splitWith = splitWith || ",");
+    		}
+
+    		if ($$self.$$.dirty & /*autoComplete*/ 4) {
+    			 $$invalidate(2, autoComplete = autoComplete || false);
+    		}
+    	};
+
+    	return [
+    		tags,
+    		placeholder,
+    		autoComplete,
+    		arrelementsmatch,
+    		tag,
+    		setTag,
+    		addTagFromDropdown,
+    		removeTag,
+    		onPaste,
+    		onDrop,
+    		getMatchElements,
+    		addKeys,
+    		maxTags,
+    		onlyUnique,
+    		removeKeys,
+    		allowPaste,
+    		allowDrop,
+    		splitWith,
+    		inputEl,
+    		removeComma,
+    		dispatch,
+    		CODES,
+    		addTag,
+    		splitTags,
+    		click_handler,
+    		input_input_handler,
+    		click_handler_1
+    	];
+    }
+
+    class Tags extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {
+    			inputEl: 18,
+    			tags: 0,
+    			addKeys: 11,
+    			maxTags: 12,
+    			onlyUnique: 13,
+    			removeKeys: 14,
+    			placeholder: 1,
+    			allowPaste: 15,
+    			allowDrop: 16,
+    			splitWith: 17,
+    			autoComplete: 2
+    		});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Tags",
+    			options,
+    			id: create_fragment$3.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*tags*/ ctx[0] === undefined && !("tags" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'tags'");
+    		}
+
+    		if (/*addKeys*/ ctx[11] === undefined && !("addKeys" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'addKeys'");
+    		}
+
+    		if (/*maxTags*/ ctx[12] === undefined && !("maxTags" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'maxTags'");
+    		}
+
+    		if (/*onlyUnique*/ ctx[13] === undefined && !("onlyUnique" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'onlyUnique'");
+    		}
+
+    		if (/*removeKeys*/ ctx[14] === undefined && !("removeKeys" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'removeKeys'");
+    		}
+
+    		if (/*placeholder*/ ctx[1] === undefined && !("placeholder" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'placeholder'");
+    		}
+
+    		if (/*allowPaste*/ ctx[15] === undefined && !("allowPaste" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'allowPaste'");
+    		}
+
+    		if (/*allowDrop*/ ctx[16] === undefined && !("allowDrop" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'allowDrop'");
+    		}
+
+    		if (/*splitWith*/ ctx[17] === undefined && !("splitWith" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'splitWith'");
+    		}
+
+    		if (/*autoComplete*/ ctx[2] === undefined && !("autoComplete" in props)) {
+    			console_1.warn("<Tags> was created without expected prop 'autoComplete'");
+    		}
+    	}
+
+    	get inputEl() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set inputEl(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get tags() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set tags(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get addKeys() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set addKeys(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get maxTags() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set maxTags(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get onlyUnique() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set onlyUnique(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get removeKeys() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set removeKeys(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get placeholder() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set placeholder(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get allowPaste() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set allowPaste(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get allowDrop() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set allowDrop(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get splitWith() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set splitWith(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get autoComplete() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set autoComplete(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src/components/SearchBar.svelte generated by Svelte v3.20.1 */
+    const file$4 = "src/components/SearchBar.svelte";
+
+    function create_fragment$4(ctx) {
+    	let div;
+    	let current;
+
+    	const tags = new Tags({
+    			props: {
+    				addKeys: /*addKeys*/ ctx[0],
+    				onlyUnique: true,
+    				autoComplete: categories,
+    				placeholder: "Filter by category"
+    			},
+    			$$inline: true
+    		});
+
+    	tags.$on("tags", /*handleTagProperties*/ ctx[1]);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			create_component(tags.$$.fragment);
+    			attr_dev(div, "class", "filter-ctrl svelte-11u5jz5");
+    			add_location(div, file$4, 63, 0, 1595);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			mount_component(tags, div, null);
+    			current = true;
+    		},
+    		p: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(tags.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(tags.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			destroy_component(tags);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$4.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$4($$self, $$props, $$invalidate) {
     	let $filters;
     	validate_store(filters, "filters");
-    	component_subscribe($$self, filters, $$value => $$invalidate(1, $filters = $$value));
+    	component_subscribe($$self, filters, $$value => $$invalidate(2, $filters = $$value));
+    	let addKeys = [9, 13, 188];
 
+    	function handleTagProperties(e) {
+    		let tags = e.detail.tags;
+    		set_store_value(filters, $filters = tags);
+    	}
+
+    	//on:keyup={handleKeyup}
     	function handleKeyup(e) {
     		if (event.keyCode !== 13) return;
     		const value = e.target.value.trim().toLowerCase();
@@ -2711,19 +3615,20 @@ var app = (function () {
     	}
 
     	const unsubscribeFilters = filters.subscribe(newFilters => {
-    		console.log("filters updated", newFilters);
-    		const codeLabel = newFilters[0];
     		const onLoadQuery = { page: 1, size: 200 };
-    		if (codeLabel) onLoadQuery.codeLabel = codeLabel;
+
+    		if (newFilters && newFilters.length > 0) {
+    			onLoadQuery.where = { codeLabel: newFilters };
+    		}
 
     		// const onLoadQuery = { page: 1, size: 200, where: {codeLabels: $filters} };
-    		incidents$2.listItems("sacramento", onLoadQuery);
+    		incidents$1.listItems("sacramento", onLoadQuery);
     	});
 
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<SearchBar> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<SearchBar> was created with unknown prop '${key}'`);
     	});
 
     	let { $$slots = {}, $$scope } = $$props;
@@ -2731,34 +3636,45 @@ var app = (function () {
 
     	$$self.$capture_state = () => ({
     		filters,
-    		incidents: incidents$2,
+    		incidents: incidents$1,
     		categories,
+    		Tags,
+    		addKeys,
+    		handleTagProperties,
     		handleKeyup,
     		unsubscribeFilters,
     		$filters
     	});
 
-    	return [handleKeyup];
+    	$$self.$inject_state = $$props => {
+    		if ("addKeys" in $$props) $$invalidate(0, addKeys = $$props.addKeys);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [addKeys, handleTagProperties];
     }
 
     class SearchBar extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "SearchBar",
     			options,
-    			id: create_fragment$3.name
+    			id: create_fragment$4.name
     		});
     	}
     }
 
     /* src/App.svelte generated by Svelte v3.20.1 */
-    const file$4 = "src/App.svelte";
+    const file$5 = "src/App.svelte";
 
-    function create_fragment$4(ctx) {
+    function create_fragment$5(ctx) {
     	let div2;
     	let div0;
     	let t0;
@@ -2780,11 +3696,11 @@ var app = (function () {
     			t1 = space();
     			create_component(map.$$.fragment);
     			attr_dev(div0, "class", "pane left svelte-f9qi6p");
-    			add_location(div0, file$4, 32, 2, 586);
+    			add_location(div0, file$5, 32, 2, 586);
     			attr_dev(div1, "class", "pane right svelte-f9qi6p");
-    			add_location(div1, file$4, 35, 2, 634);
+    			add_location(div1, file$5, 35, 2, 634);
     			attr_dev(div2, "class", "container svelte-f9qi6p");
-    			add_location(div2, file$4, 31, 0, 560);
+    			add_location(div2, file$5, 31, 0, 560);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2824,7 +3740,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$4.name,
+    		id: create_fragment$5.name,
     		type: "component",
     		source: "",
     		ctx
@@ -2833,7 +3749,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$4($$self, $$props, $$invalidate) {
+    function instance$5($$self, $$props, $$invalidate) {
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -2849,13 +3765,13 @@ var app = (function () {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$4.name
+    			id: create_fragment$5.name
     		});
     	}
     }
