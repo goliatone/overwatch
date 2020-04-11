@@ -8,6 +8,7 @@
     import { activeListItem, activeMapItem } from '../stores.js';
     import incidents, {incidentItems} from '../stores/incidents';
     import { accessToken, activeCity, categoryOptions } from '../consts.js';
+    // import LayerSelectorControl from '../mapbox-pugins/layer-selector.js';
 
     let map;
 
@@ -47,13 +48,17 @@
     /**
      * Update current data source. 
      * This will render all new features
+     * TODO: Why does this function get triggered multiple times
+     * befoe we have map and for so long?!
      */ 
     function updateDataSource(features=[]) {
-        if(!map.loaded()){
+        if(!map.loaded()) {
+            // console.info('update source with map not loaded...');
             return setTimeout(_ => {
                 updateDataSource(features);
-            }, 100);
+            }, 400);
         }
+
         map.getSource('places.source').setData({
             type: 'FeatureCollection',
             features: features.map(addFeature)
@@ -85,10 +90,17 @@
         const mapOptions =  {
             container: 'map',
             style: 'mapbox://styles/mapbox/dark-v10?optimize=true',
-            center: activeCity.center,
             zoom: 15,
-            pitch: 60, // pitch in degrees
+            minZoom: 7,
+            maxZoom: 20,
+            pitch: 0, // pitch in degrees
             bearing: 30, // bearing in degrees
+            center: activeCity.center,
+            attributionControl: false,
+            /*maxBounds: [
+                [139.4821420801062, 35.37806665620483], // Southwest
+                [140.02948630731896, 35.86424358430297] // Northeast
+            ]*/
         };
 
         const onLoadQuery = { page: 1, size: 200 };
@@ -96,7 +108,16 @@
         map = new mapboxgl.Map(mapOptions);
         const nav = new mapboxgl.NavigationControl();
         
+        window.mapRef = map;
+        
         map.addControl(nav, 'top-right');
+
+        /*
+        const layerSelector = new LayerSelectorControl({
+            layers: ['poi-theft', 'poi-burglary', 'poi-forgery', 'poi-other']
+        });
+        map.addControl(layerSelector, 'bottom-right');
+        */
 
         map.on('load', async _ => {
 
@@ -111,10 +132,66 @@
                 }
             });
 
+            addHeatMap();
+
             /**
              * Query backend for our first page of items
              */ 
             await incidents.listItems('sacramento', onLoadQuery);
+        });
+    }
+
+    function addHeatMap() {
+        //https://docs.mapbox.com/mapbox-gl-js/example/heatmap-layer/
+        map.addLayer({
+            id: 'incidents-heat',
+            type: 'heatmap',
+            source: 'places.source',
+            maxzoom: 15,
+            paint: {
+                // increase weight as diameter breast height increases
+                'heatmap-weight': {
+                    property: 'dbh',
+                    type: 'exponential',
+                    stops: [
+                        [1, 0],
+                        [62, 1]
+                    ]
+                },
+                // increase intensity as zoom level increases
+                'heatmap-intensity': {
+                    stops: [
+                        [11, 1],
+                        [15, 3]         
+                    ]
+                },
+                // assign color values be applied to points depending on their density
+                'heatmap-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['heatmap-density'],
+                    0, 'rgba(236,222,239,0)',
+                    0.2, 'rgb(208,209,230)',
+                    0.4, 'rgb(166,189,219)',
+                    0.6, 'rgb(103,169,207)',
+                    0.8, 'rgb(28,144,153)'
+                ],
+                // increase radius as zoom increases
+                'heatmap-radius': {
+                    stops: [
+                        [11, 15],
+                        [15, 20]
+                    ]
+                },
+                // decrease opacity to transition into the circle layer
+                'heatmap-opacity': {
+                    default: 1,
+                    stops: [
+                        [14, 1],
+                        [15, 0]
+                    ] 
+                },
+            }
         });
     }
 
@@ -123,17 +200,18 @@
          * Make our feature
          */ 
         const feature = generateFeature(incident, index);
+        const color = feature.properties.color;
         const symbol = feature.properties.icon;
         const label = feature.properties.codeLabel;
 
-        const layerID = `poi-${symbol}`;
+        const layerID = `poi-${label}`;
         
-        if(!map.getLayer(layerID))  addLayer(layerID, symbol, label);
+        if(!map.getLayer(layerID))  addLayer(layerID, symbol, label, color);
 
         return feature;
     }
 
-    function addLayer(layerID, symbol, label) {
+    function addLayer(layerID, symbol, label, color='#000000') {
 
         map.addLayer({
             id: layerID,
@@ -142,6 +220,9 @@
             layout: {
                 'icon-image': `${symbol}-15`,
                 'icon-size': 2,
+                //This only works with SDF(?) icons
+                //@see https://github.com/mapbox/mapbox-gl-js/issues/1817#issuecomment-497446984
+                // 'icon-color': color,
                 'icon-allow-overlap': true,
                 'text-field': label,
                 'text-font': [
@@ -224,10 +305,10 @@
             // essential: true,
             curve: 1,
             // speed: 0.8,
+            pitch: 60,
             bearing: 0,
             duration: 3200,
             // zoom: 9,
-            // pitch: 0
         });
     }
 
@@ -238,6 +319,17 @@
     function setActiveMapItem(id) {
         activeMapItem.set(id);
     }
+
+    function toggleLayerVisibility(layerID, visible=false) {
+        const prop = visible ? 'visible' : 'none';
+        layerIDs.forEach(function(layerID) {
+            map.setLayoutProperty(layerID, 'visibility', prop);
+        });
+    }
+
+    window.layerIDs = layerIDs;
+    window.incidents = incidents;
+    window.toggleLayerVisibility = toggleLayerVisibility;
 
     /**
      * Livecycle handler, register map on first
@@ -250,7 +342,7 @@
      */ 
     onDestroy(unsubscribeActiveMapItem);
 
-    $: if($incidentItems.length) updateDataSource($incidentItems);
+    $: if($incidentItems.length > 0) updateDataSource($incidentItems);
 
 </script>
 
