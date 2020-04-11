@@ -81,6 +81,11 @@ button:focus {
     padding: 4px 8px; */
 }
 
+li.active {
+    color: #f6f6fc;
+    background: #252529 !important;
+}
+
 
 /* *****
 * Styles here
