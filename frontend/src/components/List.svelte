@@ -25,7 +25,7 @@
             });
         }
     });
-
+    //TODO: Implement infinite scroll https://github.com/andrelmlins/svelte-infinite-scroll
     function setActiveMapItem(index) {
         activeMapItem.set(index);
     }
@@ -66,8 +66,8 @@
         font-size: 1.2em;
         line-height: 1.5em; */
         margin: 0px 40px 0px 40px;
-        padding-top: 8px;
-        padding-bottom: 12px;
+        padding-top: 16px;
+        padding-bottom: 14px;
         display: flex;
         flex-direction: column;
     }
@@ -79,8 +79,9 @@
     }
 
     .list-item .meta {
-        font-size: 0.9em;
-        line-height: 1em;
+        font-size: 0.8em;
+        font-weight: 400;
+        line-height: 1.4em;
     }
 
     .list-item .meta small {
@@ -139,13 +140,13 @@
 
 {#if $incidentItems && $incidentItems.length}
   {#each $incidentItems as listItem, index}
-    <div on:click={_=>setActiveMapItem(index)} class="list-item-wrapper {$activeMapItem === index ? 'active': ''}" id="list-item-{index}" transition:fly="{{ y: 60, duration: 400 }}">
+    <div on:click={_=>setActiveMapItem(index)} class="list-item-wrapper {listItem.codeLabel} {$activeMapItem === index ? 'active': ''}" id="list-item-{index}" transition:fly="{{ y: 60, duration: 400 }}">
         <div class="list-item">
             <span class="description">{listItem.description}</span>
             <div class="meta">
                 <small>Reported on </small><span class="date">{listItem.date}</span> <small>At</small> <span class="address">{listItem.address}</span>
             </div>
-            <span>{listItem.codeLabel}</span>
+            <span class="tag code">{listItem.codeLabel}</span>
         </div>
     </div>
   {/each}
