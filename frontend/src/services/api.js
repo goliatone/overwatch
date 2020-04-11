@@ -32,7 +32,8 @@ class Api {
 
         if (query) {
             Object.keys(query).map(key => {
-                uri.searchParams.append(key, query[key]);
+                let value = JSON.stringify(query[key]);
+                uri.searchParams.append(key, value);
             });
         }
 
