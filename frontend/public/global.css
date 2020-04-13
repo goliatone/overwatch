@@ -73,6 +73,11 @@ button:focus {
     border-color: #666;
 }
 
+
+/**
+* Style the tag for code labels in List
+*/
+
 .tag.code {
     width: 90px;
     font-size: .8em;

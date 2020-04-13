@@ -134,12 +134,11 @@
     } 
 </style>
 
-<div id="list-items" bind:this="{listRef}">
-  
-  <Header doAnimate={!visible}/>
+<div id="list-items" bind:this="{listRef}" class="{visible ? 'open' : ''}">
+    <Header doAnimate={!visible}/>
 
-{#if $incidentItems && $incidentItems.length}
-  {#each $incidentItems as listItem, index}
+{#if visible}
+    {#each $incidentItems as listItem, index}
     <div on:click={_=>setActiveMapItem(index)} class="list-item-wrapper {listItem.codeLabel} {$activeMapItem === index ? 'active': ''}" id="list-item-{index}" transition:fly="{{ y: 60, duration: 400 }}">
         <div class="list-item">
             <span class="description">{listItem.description}</span>
