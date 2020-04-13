@@ -45,6 +45,9 @@ var app = (function () {
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe(store, callback));
     }
+    function null_to_empty(value) {
+        return value == null ? '' : value;
+    }
     function set_store_value(store, ret, value = ret) {
         store.set(value);
         return ret;
@@ -1892,7 +1895,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (156:4) {:else}
+    // (155:4) {:else}
     function create_else_block(ctx) {
     	let div;
 
@@ -1901,7 +1904,7 @@ var app = (function () {
     			div = element("div");
     			div.textContent = "Loading...";
     			attr_dev(div, "class", "loader svelte-a430go");
-    			add_location(div, file$2, 156, 8, 4162);
+    			add_location(div, file$2, 155, 8, 4163);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1918,14 +1921,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(156:4) {:else}",
+    		source: "(155:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (154:4) {#if $error}
+    // (153:4) {#if $error}
     function create_if_block_2(ctx) {
     	let div;
 
@@ -1933,7 +1936,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "error svelte-a430go");
-    			add_location(div, file$2, 154, 8, 4102);
+    			add_location(div, file$2, 153, 8, 4103);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1952,14 +1955,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(154:4) {#if $error}",
+    		source: "(153:4) {#if $error}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (141:0) {#if $incidentItems && $incidentItems.length}
+    // (140:0) {#if visible}
     function create_if_block_1(ctx) {
     	let each_1_anchor;
     	let current;
@@ -2048,14 +2051,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(141:0) {#if $incidentItems && $incidentItems.length}",
+    		source: "(140:0) {#if visible}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (142:2) {#each $incidentItems as listItem, index}
+    // (141:4) {#each $incidentItems as listItem, index}
     function create_each_block(ctx) {
     	let div2;
     	let div1;
@@ -2112,28 +2115,28 @@ var app = (function () {
     			t9 = text(t9_value);
     			t10 = space();
     			attr_dev(span0, "class", "description svelte-a430go");
-    			add_location(span0, file$2, 144, 12, 3713);
+    			add_location(span0, file$2, 143, 12, 3714);
     			attr_dev(small0, "class", "svelte-a430go");
-    			add_location(small0, file$2, 146, 16, 3816);
+    			add_location(small0, file$2, 145, 16, 3817);
     			attr_dev(span1, "class", "date");
-    			add_location(span1, file$2, 146, 43, 3843);
+    			add_location(span1, file$2, 145, 43, 3844);
     			attr_dev(small1, "class", "svelte-a430go");
-    			add_location(small1, file$2, 146, 85, 3885);
+    			add_location(small1, file$2, 145, 85, 3886);
     			attr_dev(span2, "class", "address");
-    			add_location(span2, file$2, 146, 103, 3903);
+    			add_location(span2, file$2, 145, 103, 3904);
     			attr_dev(div0, "class", "meta svelte-a430go");
-    			add_location(div0, file$2, 145, 12, 3781);
+    			add_location(div0, file$2, 144, 12, 3782);
     			attr_dev(span3, "class", "tag code");
-    			add_location(span3, file$2, 148, 12, 3982);
+    			add_location(span3, file$2, 147, 12, 3983);
     			attr_dev(div1, "class", "list-item svelte-a430go");
-    			add_location(div1, file$2, 143, 8, 3677);
+    			add_location(div1, file$2, 142, 8, 3678);
 
     			attr_dev(div2, "class", div2_class_value = "list-item-wrapper " + /*listItem*/ ctx[11].codeLabel + " " + (/*$activeMapItem*/ ctx[4] === /*index*/ ctx[13]
     			? "active"
     			: "") + " svelte-a430go");
 
     			attr_dev(div2, "id", div2_id_value = "list-item-" + /*index*/ ctx[13]);
-    			add_location(div2, file$2, 142, 4, 3469);
+    			add_location(div2, file$2, 141, 4, 3470);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div2, anchor);
@@ -2197,14 +2200,14 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(142:2) {#each $incidentItems as listItem, index}",
+    		source: "(141:4) {#each $incidentItems as listItem, index}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (167:0) {#if visible}
+    // (166:0) {#if visible}
     function create_if_block(ctx) {
     	let div2;
     	let div1;
@@ -2249,21 +2252,21 @@ var app = (function () {
     			button3 = element("button");
     			button3.textContent = "Last";
     			attr_dev(button0, "class", "svelte-a430go");
-    			add_location(button0, file$2, 169, 8, 4633);
+    			add_location(button0, file$2, 168, 8, 4634);
     			attr_dev(button1, "class", "svelte-a430go");
-    			add_location(button1, file$2, 170, 8, 4692);
-    			add_location(span0, file$2, 172, 12, 4781);
-    			add_location(span1, file$2, 172, 43, 4812);
+    			add_location(button1, file$2, 169, 8, 4693);
+    			add_location(span0, file$2, 171, 12, 4782);
+    			add_location(span1, file$2, 171, 43, 4813);
     			attr_dev(div0, "class", "count svelte-a430go");
-    			add_location(div0, file$2, 171, 8, 4749);
+    			add_location(div0, file$2, 170, 8, 4750);
     			attr_dev(button2, "class", "svelte-a430go");
-    			add_location(button2, file$2, 174, 8, 4862);
+    			add_location(button2, file$2, 173, 8, 4863);
     			attr_dev(button3, "class", "svelte-a430go");
-    			add_location(button3, file$2, 175, 8, 4919);
+    			add_location(button3, file$2, 174, 8, 4920);
     			attr_dev(div1, "class", "pagination svelte-a430go");
-    			add_location(div1, file$2, 168, 4, 4600);
+    			add_location(div1, file$2, 167, 4, 4601);
     			attr_dev(div2, "class", "footer svelte-a430go");
-    			add_location(div2, file$2, 167, 2, 4531);
+    			add_location(div2, file$2, 166, 2, 4532);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, div2, anchor);
@@ -2322,7 +2325,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(167:0) {#if visible}",
+    		source: "(166:0) {#if visible}",
     		ctx
     	});
 
@@ -2346,6 +2349,7 @@ var app = (function () {
     	let t7;
     	let i;
     	let t9;
+    	let div1_class_value;
     	let current;
 
     	const header = new Header({
@@ -2357,7 +2361,7 @@ var app = (function () {
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*$incidentItems*/ ctx[2] && /*$incidentItems*/ ctx[2].length) return 0;
+    		if (/*visible*/ ctx[1]) return 0;
     		if (/*$error*/ ctx[5]) return 1;
     		return 2;
     	}
@@ -2390,17 +2394,17 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			attr_dev(a0, "href", "https://github.com/goliatone");
     			attr_dev(a0, "target", "_blank");
-    			add_location(a0, file$2, 161, 40, 4277);
-    			add_location(p0, file$2, 161, 4, 4241);
+    			add_location(a0, file$2, 160, 40, 4278);
+    			add_location(p0, file$2, 160, 4, 4242);
     			attr_dev(a1, "href", "/about");
     			attr_dev(a1, "target", "_blank");
-    			add_location(a1, file$2, 162, 24, 4374);
-    			add_location(p1, file$2, 162, 4, 4354);
-    			add_location(i, file$2, 163, 4, 4430);
+    			add_location(a1, file$2, 161, 24, 4375);
+    			add_location(p1, file$2, 161, 4, 4355);
+    			add_location(i, file$2, 162, 4, 4431);
     			attr_dev(div0, "class", "tail svelte-a430go");
-    			add_location(div0, file$2, 160, 2, 4218);
+    			add_location(div0, file$2, 159, 2, 4219);
     			attr_dev(div1, "id", "list-items");
-    			attr_dev(div1, "class", "svelte-a430go");
+    			attr_dev(div1, "class", div1_class_value = "" + (null_to_empty(/*visible*/ ctx[1] ? "open" : "") + " svelte-a430go"));
     			add_location(div1, file$2, 136, 0, 3294);
     		},
     		l: function claim(nodes) {
@@ -2473,6 +2477,10 @@ var app = (function () {
     				});
 
     				check_outros();
+    			}
+
+    			if (!current || dirty & /*visible*/ 2 && div1_class_value !== (div1_class_value = "" + (null_to_empty(/*visible*/ ctx[1] ? "open" : "") + " svelte-a430go"))) {
+    				attr_dev(div1, "class", div1_class_value);
     			}
     		},
     		i: function intro(local) {
@@ -2655,24 +2663,24 @@ var app = (function () {
 
     /* src/components/Tags.svelte generated by Svelte v3.20.1 */
 
-    const { console: console_1, window: window_1 } = globals;
+    const { window: window_1 } = globals;
     const file$3 = "src/components/Tags.svelte";
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[31] = list[i];
-    	child_ctx[33] = i;
+    	child_ctx[35] = list[i];
+    	child_ctx[37] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[5] = list[i];
-    	child_ctx[33] = i;
+    	child_ctx[37] = i;
     	return child_ctx;
     }
 
-    // (257:8) {#if tags.length > 0}
+    // (265:8) {#if tags.length > 0}
     function create_if_block_1$1(ctx) {
     	let each_1_anchor;
     	let each_value_1 = /*tags*/ ctx[0];
@@ -2733,14 +2741,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(257:8) {#if tags.length > 0}",
+    		source: "(265:8) {#if tags.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (258:12) {#each tags as tag, i}
+    // (266:12) {#each tags as tag, i}
     function create_each_block_1(ctx) {
     	let span1;
     	let t0_value = /*tag*/ ctx[5] + "";
@@ -2752,7 +2760,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler(...args) {
-    		return /*click_handler*/ ctx[27](/*i*/ ctx[33], ...args);
+    		return /*click_handler*/ ctx[31](/*i*/ ctx[37], ...args);
     	}
 
     	const block = {
@@ -2763,10 +2771,10 @@ var app = (function () {
     			span0 = element("span");
     			span0.textContent = "×";
     			t3 = space();
-    			attr_dev(span0, "class", "svelte-tags-input-tag-remove svelte-3bs6df");
-    			add_location(span0, file$3, 259, 20, 7606);
-    			attr_dev(span1, "class", span1_class_value = "svelte-tags-input-tag tag " + /*tag*/ ctx[5] + " svelte-3bs6df");
-    			add_location(span1, file$3, 258, 16, 7533);
+    			attr_dev(span0, "class", "svelte-tags-input-tag-remove svelte-1crb5pm");
+    			add_location(span0, file$3, 267, 20, 7696);
+    			attr_dev(span1, "class", span1_class_value = "svelte-tags-input-tag tag " + /*tag*/ ctx[5] + " svelte-1crb5pm");
+    			add_location(span1, file$3, 266, 16, 7623);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, span1, anchor);
@@ -2781,7 +2789,7 @@ var app = (function () {
     			ctx = new_ctx;
     			if (dirty[0] & /*tags*/ 1 && t0_value !== (t0_value = /*tag*/ ctx[5] + "")) set_data_dev(t0, t0_value);
 
-    			if (dirty[0] & /*tags*/ 1 && span1_class_value !== (span1_class_value = "svelte-tags-input-tag tag " + /*tag*/ ctx[5] + " svelte-3bs6df")) {
+    			if (dirty[0] & /*tags*/ 1 && span1_class_value !== (span1_class_value = "svelte-tags-input-tag tag " + /*tag*/ ctx[5] + " svelte-1crb5pm")) {
     				attr_dev(span1, "class", span1_class_value);
     			}
     		},
@@ -2795,17 +2803,17 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(258:12) {#each tags as tag, i}",
+    		source: "(266:12) {#each tags as tag, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (275:4) {#if autoComplete && arrelementsmatch.length > 0}
+    // (283:4) {#if autoComplete && matchedElements.length > 0}
     function create_if_block$1(ctx) {
     	let ul;
-    	let each_value = /*arrelementsmatch*/ ctx[3];
+    	let each_value = /*matchedElements*/ ctx[4];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -2821,8 +2829,8 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(ul, "class", "svelte-tags-input-matchs svelte-3bs6df");
-    			add_location(ul, file$3, 275, 8, 8132);
+    			attr_dev(ul, "class", "svelte-tags-input-matchs svelte-1crb5pm");
+    			add_location(ul, file$3, 283, 8, 8221);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, ul, anchor);
@@ -2832,8 +2840,8 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*arrelementsmatch, addTagFromDropdown*/ 136) {
-    				each_value = /*arrelementsmatch*/ ctx[3];
+    			if (dirty[0] & /*matchedElements, addTagFromDropdown*/ 144) {
+    				each_value = /*matchedElements*/ ctx[4];
     				validate_each_argument(each_value);
     				let i;
 
@@ -2866,46 +2874,64 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(275:4) {#if autoComplete && arrelementsmatch.length > 0}",
+    		source: "(283:4) {#if autoComplete && matchedElements.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (277:12) {#each arrelementsmatch as element, i}
+    // (285:12) {#each matchedElements as element, i}
     function create_each_block$1(ctx) {
     	let li;
-    	let t_value = /*element*/ ctx[31] + "";
-    	let t;
+    	let div;
+    	let span0;
+    	let t0_value = /*element*/ ctx[35] + "";
+    	let t0;
+    	let span1;
+    	let t2;
     	let li_id_value;
     	let li_value_value;
     	let dispose;
 
     	function click_handler_1(...args) {
-    		return /*click_handler_1*/ ctx[29](/*element*/ ctx[31], ...args);
+    		return /*click_handler_1*/ ctx[33](/*element*/ ctx[35], ...args);
     	}
 
     	const block = {
     		c: function create() {
     			li = element("li");
-    			t = text(t_value);
-    			attr_dev(li, "id", li_id_value = "li-" + /*i*/ ctx[33]);
-    			li.value = li_value_value = /*element*/ ctx[31];
-    			attr_dev(li, "class", "svelte-3bs6df");
-    			add_location(li, file$3, 277, 12, 8233);
+    			div = element("div");
+    			span0 = element("span");
+    			t0 = text(t0_value);
+    			span1 = element("span");
+    			span1.textContent = "(333)";
+    			t2 = space();
+    			attr_dev(span0, "class", "icon");
+    			add_location(span0, file$3, 287, 20, 8451);
+    			attr_dev(span1, "class", "count");
+    			add_location(span1, file$3, 287, 55, 8486);
+    			add_location(div, file$3, 286, 16, 8425);
+    			attr_dev(li, "id", li_id_value = "li-" + /*i*/ ctx[37]);
+    			li.value = li_value_value = /*element*/ ctx[35];
+    			attr_dev(li, "class", "svelte-1crb5pm");
+    			add_location(li, file$3, 285, 12, 8321);
     		},
     		m: function mount(target, anchor, remount) {
     			insert_dev(target, li, anchor);
-    			append_dev(li, t);
+    			append_dev(li, div);
+    			append_dev(div, span0);
+    			append_dev(span0, t0);
+    			append_dev(div, span1);
+    			append_dev(li, t2);
     			if (remount) dispose();
     			dispose = listen_dev(li, "click", click_handler_1, false, false, false);
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty[0] & /*arrelementsmatch*/ 8 && t_value !== (t_value = /*element*/ ctx[31] + "")) set_data_dev(t, t_value);
+    			if (dirty[0] & /*matchedElements*/ 16 && t0_value !== (t0_value = /*element*/ ctx[35] + "")) set_data_dev(t0, t0_value);
 
-    			if (dirty[0] & /*arrelementsmatch*/ 8 && li_value_value !== (li_value_value = /*element*/ ctx[31])) {
+    			if (dirty[0] & /*matchedElements*/ 16 && li_value_value !== (li_value_value = /*element*/ ctx[35])) {
     				prop_dev(li, "value", li_value_value);
     			}
     		},
@@ -2919,7 +2945,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(277:12) {#each arrelementsmatch as element, i}",
+    		source: "(285:12) {#each matchedElements as element, i}",
     		ctx
     	});
 
@@ -2934,7 +2960,7 @@ var app = (function () {
     	let t1;
     	let dispose;
     	let if_block0 = /*tags*/ ctx[0].length > 0 && create_if_block_1$1(ctx);
-    	let if_block1 = /*autoComplete*/ ctx[2] && /*arrelementsmatch*/ ctx[3].length > 0 && create_if_block$1(ctx);
+    	let if_block1 = /*autoComplete*/ ctx[2] && /*matchedElements*/ ctx[4].length > 0 && create_if_block$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -2946,12 +2972,12 @@ var app = (function () {
     			t1 = space();
     			if (if_block1) if_block1.c();
     			attr_dev(input, "type", "text");
-    			attr_dev(input, "class", "svelte-tags-input svelte-3bs6df");
+    			attr_dev(input, "class", "svelte-tags-input svelte-1crb5pm");
     			attr_dev(input, "placeholder", /*placeholder*/ ctx[1]);
-    			add_location(input, file$3, 263, 8, 7754);
-    			attr_dev(div0, "class", "svelte-tags-input-layout svelte-3bs6df");
-    			add_location(div0, file$3, 255, 4, 7413);
-    			add_location(div1, file$3, 254, 0, 7381);
+    			add_location(input, file$3, 271, 8, 7844);
+    			attr_dev(div0, "class", "svelte-tags-input-layout svelte-1crb5pm");
+    			add_location(div0, file$3, 263, 4, 7503);
+    			add_location(div1, file$3, 262, 0, 7471);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2965,13 +2991,13 @@ var app = (function () {
     			set_input_value(input, /*tag*/ ctx[5]);
     			append_dev(div1, t1);
     			if (if_block1) if_block1.m(div1, null);
-    			/*div1_binding*/ ctx[30](div1);
+    			/*div1_binding*/ ctx[34](div1);
     			if (remount) run_all(dispose);
 
     			dispose = [
     				listen_dev(window_1, "click", /*handleWindowClick*/ ctx[12], false, false, false),
     				listen_dev(window_1, "keydown", /*handleKeyPress*/ ctx[13], false, false, false),
-    				listen_dev(input, "input", /*input_input_handler*/ ctx[28]),
+    				listen_dev(input, "input", /*input_input_handler*/ ctx[32]),
     				listen_dev(input, "keydown", /*setTag*/ ctx[6], false, false, false),
     				listen_dev(input, "keyup", /*getMatchElements*/ ctx[11], false, false, false),
     				listen_dev(input, "paste", /*onPaste*/ ctx[9], false, false, false),
@@ -3000,7 +3026,7 @@ var app = (function () {
     				set_input_value(input, /*tag*/ ctx[5]);
     			}
 
-    			if (/*autoComplete*/ ctx[2] && /*arrelementsmatch*/ ctx[3].length > 0) {
+    			if (/*autoComplete*/ ctx[2] && /*matchedElements*/ ctx[4].length > 0) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
@@ -3019,7 +3045,7 @@ var app = (function () {
     			if (detaching) detach_dev(div1);
     			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
-    			/*div1_binding*/ ctx[30](null);
+    			/*div1_binding*/ ctx[34](null);
     			run_all(dispose);
     		}
     	};
@@ -3056,10 +3082,11 @@ var app = (function () {
     function instance$3($$self, $$props, $$invalidate) {
     	const dispatch = createEventDispatcher();
     	let tag;
-    	let arrelementsmatch = [];
-    	let liIndex = -1;
+    	let tid;
     	let container;
+    	let liIndex = -1;
     	let removeComma = false;
+    	let matchedElements = [];
     	let { tags } = $$props;
     	let { addKeys } = $$props;
     	let { maxTags } = $$props;
@@ -3070,6 +3097,7 @@ var app = (function () {
     	let { allowDrop } = $$props;
     	let { splitWith } = $$props;
     	let { autoComplete } = $$props;
+    	let { dropdownTimeout } = $$props;
 
     	/**
      * More here https://keycode.info/
@@ -3091,9 +3119,9 @@ var app = (function () {
 
     		//On ENTER press we add the tag
     		if (keyCode === CODES.ENTER) {
-    			if (arrelementsmatch.length > 0) {
+    			if (matchedElements.length > 0) {
     				let index = liIndex === -1 ? 0 : liIndex;
-    				currentTag = arrelementsmatch[index];
+    				currentTag = matchedElements[index];
     			}
 
     			return addTag(currentTag);
@@ -3130,7 +3158,7 @@ var app = (function () {
     					case CODES.TAB:
     						event.preventDefault();
     						let index = liIndex === -1 ? 0 : liIndex;
-    						let match = arrelementsmatch[index];
+    						let match = matchedElements[index];
     						addTagFromDropdown(currentTag, match);
     						break;
     					default:
@@ -3153,8 +3181,6 @@ var app = (function () {
     	}
 
     	function addTagFromDropdown(currentTag, match) {
-    		console.log("add tag from dropdown", currentTag, match);
-
     		if (match) {
     			if (currentTag === match) {
     				$$invalidate(5, tag = "");
@@ -3164,7 +3190,7 @@ var app = (function () {
     		}
 
     		if (onlyUnique) {
-    			$$invalidate(3, arrelementsmatch = arrelementsmatch.filter(m => m !== currentTag));
+    			$$invalidate(4, matchedElements = matchedElements.filter(m => m !== currentTag));
     		}
 
     		addTag(currentTag);
@@ -3218,7 +3244,7 @@ var app = (function () {
     	function getMatchElements(e) {
     		if (!Array.isArray(autoComplete)) return;
     		let term = e.target.value;
-    		if (!term) return $$invalidate(3, arrelementsmatch = []);
+    		if (!term) return $$invalidate(4, matchedElements = []);
 
     		/**
      * Select elements that match the given
@@ -3232,7 +3258,7 @@ var app = (function () {
     			matched = matched.filter(m => tags.indexOf(m) === -1);
     		}
 
-    		$$invalidate(3, arrelementsmatch = matched);
+    		$$invalidate(4, matchedElements = matched);
     	}
 
     	function handleWindowClick(event) {
@@ -3243,36 +3269,35 @@ var app = (function () {
     		: event.target;
 
     		if (container.contains(eventTarget)) return;
-    		$$invalidate(3, arrelementsmatch = []);
+    		reset();
+    	}
+
+    	function reset() {
+    		$$invalidate(4, matchedElements = []);
     		$$invalidate(5, tag = "");
     		liIndex = -1;
     	}
 
     	function handleKeyPress(event) {
-    		if (!arrelementsmatch || arrelementsmatch.length === 0) return;
+    		if (!matchedElements || matchedElements.length === 0) return;
     		const keyCode = event.keyCode;
-    		let el;
 
     		switch (keyCode) {
     			case CODES.ARROW_UP:
-    				el = document.getElementById(`li-${liIndex}`);
-    				if (el) el.classList.remove("active");
-    				liIndex--;
-    				el = document.getElementById(`li-${liIndex}`);
-    				if (el) {
-    					el.classList.add("active");
-    				}
+    				_moveActiveLi(true);
     				break;
     			case CODES.ARROW_DOWN:
-    				el = document.getElementById(`li-${liIndex}`);
-    				if (el) el.classList.remove("active");
-    				liIndex++;
-    				el = document.getElementById(`li-${liIndex}`);
-    				if (el) {
-    					el.classList.add("active");
-    				}
+    				_moveActiveLi(false);
     				break;
     		}
+    	}
+
+    	function _moveActiveLi(up = false) {
+    		let el = document.getElementById(`li-${liIndex}`);
+    		if (el) el.classList.remove("active");
+    		up ? liIndex-- : liIndex++;
+    		el = document.getElementById(`li-${liIndex}`);
+    		if (el) el.classList.add("active");
     	}
 
     	const writable_props = [
@@ -3285,11 +3310,12 @@ var app = (function () {
     		"allowPaste",
     		"allowDrop",
     		"splitWith",
-    		"autoComplete"
+    		"autoComplete",
+    		"dropdownTimeout"
     	];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Tags> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Tags> was created with unknown prop '${key}'`);
     	});
 
     	let { $$slots = {}, $$scope } = $$props;
@@ -3305,7 +3331,7 @@ var app = (function () {
 
     	function div1_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
-    			$$invalidate(4, container = $$value);
+    			$$invalidate(3, container = $$value);
     		});
     	}
 
@@ -3320,16 +3346,18 @@ var app = (function () {
     		if ("allowDrop" in $$props) $$invalidate(19, allowDrop = $$props.allowDrop);
     		if ("splitWith" in $$props) $$invalidate(20, splitWith = $$props.splitWith);
     		if ("autoComplete" in $$props) $$invalidate(2, autoComplete = $$props.autoComplete);
+    		if ("dropdownTimeout" in $$props) $$invalidate(21, dropdownTimeout = $$props.dropdownTimeout);
     	};
 
     	$$self.$capture_state = () => ({
     		createEventDispatcher,
     		dispatch,
     		tag,
-    		arrelementsmatch,
-    		liIndex,
+    		tid,
     		container,
+    		liIndex,
     		removeComma,
+    		matchedElements,
     		tags,
     		addKeys,
     		maxTags,
@@ -3340,6 +3368,7 @@ var app = (function () {
     		allowDrop,
     		splitWith,
     		autoComplete,
+    		dropdownTimeout,
     		CODES,
     		setTag,
     		addTagFromDropdown,
@@ -3351,16 +3380,19 @@ var app = (function () {
     		splitTags,
     		getMatchElements,
     		handleWindowClick,
+    		reset,
     		handleKeyPress,
+    		_moveActiveLi,
     		_trimTrailing
     	});
 
     	$$self.$inject_state = $$props => {
     		if ("tag" in $$props) $$invalidate(5, tag = $$props.tag);
-    		if ("arrelementsmatch" in $$props) $$invalidate(3, arrelementsmatch = $$props.arrelementsmatch);
+    		if ("tid" in $$props) tid = $$props.tid;
+    		if ("container" in $$props) $$invalidate(3, container = $$props.container);
     		if ("liIndex" in $$props) liIndex = $$props.liIndex;
-    		if ("container" in $$props) $$invalidate(4, container = $$props.container);
     		if ("removeComma" in $$props) removeComma = $$props.removeComma;
+    		if ("matchedElements" in $$props) $$invalidate(4, matchedElements = $$props.matchedElements);
     		if ("tags" in $$props) $$invalidate(0, tags = $$props.tags);
     		if ("addKeys" in $$props) $$invalidate(14, addKeys = $$props.addKeys);
     		if ("maxTags" in $$props) $$invalidate(15, maxTags = $$props.maxTags);
@@ -3371,6 +3403,7 @@ var app = (function () {
     		if ("allowDrop" in $$props) $$invalidate(19, allowDrop = $$props.allowDrop);
     		if ("splitWith" in $$props) $$invalidate(20, splitWith = $$props.splitWith);
     		if ("autoComplete" in $$props) $$invalidate(2, autoComplete = $$props.autoComplete);
+    		if ("dropdownTimeout" in $$props) $$invalidate(21, dropdownTimeout = $$props.dropdownTimeout);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3417,14 +3450,18 @@ var app = (function () {
     		if ($$self.$$.dirty[0] & /*autoComplete*/ 4) {
     			 $$invalidate(2, autoComplete = autoComplete || false);
     		}
+
+    		if ($$self.$$.dirty[0] & /*dropdownTimeout*/ 2097152) {
+    			 $$invalidate(21, dropdownTimeout = dropdownTimeout || false);
+    		}
     	};
 
     	return [
     		tags,
     		placeholder,
     		autoComplete,
-    		arrelementsmatch,
     		container,
+    		matchedElements,
     		tag,
     		setTag,
     		addTagFromDropdown,
@@ -3441,12 +3478,16 @@ var app = (function () {
     		allowPaste,
     		allowDrop,
     		splitWith,
+    		dropdownTimeout,
     		liIndex,
     		removeComma,
     		dispatch,
+    		tid,
     		CODES,
     		addTag,
     		splitTags,
+    		reset,
+    		_moveActiveLi,
     		click_handler,
     		input_input_handler,
     		click_handler_1,
@@ -3474,7 +3515,8 @@ var app = (function () {
     				allowPaste: 18,
     				allowDrop: 19,
     				splitWith: 20,
-    				autoComplete: 2
+    				autoComplete: 2,
+    				dropdownTimeout: 21
     			},
     			[-1, -1]
     		);
@@ -3490,43 +3532,47 @@ var app = (function () {
     		const props = options.props || {};
 
     		if (/*tags*/ ctx[0] === undefined && !("tags" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'tags'");
+    			console.warn("<Tags> was created without expected prop 'tags'");
     		}
 
     		if (/*addKeys*/ ctx[14] === undefined && !("addKeys" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'addKeys'");
+    			console.warn("<Tags> was created without expected prop 'addKeys'");
     		}
 
     		if (/*maxTags*/ ctx[15] === undefined && !("maxTags" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'maxTags'");
+    			console.warn("<Tags> was created without expected prop 'maxTags'");
     		}
 
     		if (/*onlyUnique*/ ctx[16] === undefined && !("onlyUnique" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'onlyUnique'");
+    			console.warn("<Tags> was created without expected prop 'onlyUnique'");
     		}
 
     		if (/*removeKeys*/ ctx[17] === undefined && !("removeKeys" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'removeKeys'");
+    			console.warn("<Tags> was created without expected prop 'removeKeys'");
     		}
 
     		if (/*placeholder*/ ctx[1] === undefined && !("placeholder" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'placeholder'");
+    			console.warn("<Tags> was created without expected prop 'placeholder'");
     		}
 
     		if (/*allowPaste*/ ctx[18] === undefined && !("allowPaste" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'allowPaste'");
+    			console.warn("<Tags> was created without expected prop 'allowPaste'");
     		}
 
     		if (/*allowDrop*/ ctx[19] === undefined && !("allowDrop" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'allowDrop'");
+    			console.warn("<Tags> was created without expected prop 'allowDrop'");
     		}
 
     		if (/*splitWith*/ ctx[20] === undefined && !("splitWith" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'splitWith'");
+    			console.warn("<Tags> was created without expected prop 'splitWith'");
     		}
 
     		if (/*autoComplete*/ ctx[2] === undefined && !("autoComplete" in props)) {
-    			console_1.warn("<Tags> was created without expected prop 'autoComplete'");
+    			console.warn("<Tags> was created without expected prop 'autoComplete'");
+    		}
+
+    		if (/*dropdownTimeout*/ ctx[21] === undefined && !("dropdownTimeout" in props)) {
+    			console.warn("<Tags> was created without expected prop 'dropdownTimeout'");
     		}
     	}
 
@@ -3607,6 +3653,14 @@ var app = (function () {
     	}
 
     	set autoComplete(value) {
+    		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get dropdownTimeout() {
+    		throw new Error("<Tags>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set dropdownTimeout(value) {
     		throw new Error("<Tags>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
