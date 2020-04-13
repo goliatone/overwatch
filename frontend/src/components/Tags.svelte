@@ -2,13 +2,13 @@
     import {createEventDispatcher} from 'svelte';
         
     const dispatch = createEventDispatcher();
+
     let tag;
-    let arrelementsmatch = [];
-    let liIndex = -1;
-
+    let tid;
     let container;
-
+    let liIndex = -1;
     let removeComma = false;
+    let matchedElements = [];
 
     export let tags;
     export let addKeys;
@@ -20,6 +20,7 @@
     export let allowDrop;
     export let splitWith;
     export let autoComplete;
+    export let dropdownTimeout;
 
     /**
      * More here https://keycode.info/
@@ -43,6 +44,7 @@
     $: allowDrop = allowDrop || false;
     $: splitWith = splitWith || ',';
     $: autoComplete = autoComplete || false;
+    $: dropdownTimeout = dropdownTimeout || false;
 
     function setTag(event) {
         // handleKeyPress(event);
@@ -51,11 +53,11 @@
 
         //On ENTER press we add the tag
         if(keyCode === CODES.ENTER) {
-            if(arrelementsmatch.length > 0) {
+            if(matchedElements.length > 0) {
                 let index = liIndex === -1 ? 0 : liIndex;
-                currentTag = arrelementsmatch[index];
+                currentTag = matchedElements[index];
             }
-            
+
             return addTag(currentTag);
         }
         
@@ -89,7 +91,7 @@
                     case CODES.TAB:
                         event.preventDefault();
                         let index = liIndex === -1 ? 0 : liIndex;
-                        let match = arrelementsmatch[index];
+                        let match = matchedElements[index];
                         addTagFromDropdown(currentTag, match);
                         break;
                     default:
@@ -112,8 +114,6 @@
     }
 
     function addTagFromDropdown(currentTag, match) {
-        
-        console.log('add tag from dropdown', currentTag, match);
         if(match) {
             if(currentTag === match) {
                 tag = '';
@@ -123,7 +123,7 @@
         }
 
         if(onlyUnique) {
-            arrelementsmatch = arrelementsmatch.filter(m => m !== currentTag );
+            matchedElements = matchedElements.filter(m => m !== currentTag );
         }
         
         addTag(currentTag);
@@ -189,7 +189,7 @@
         if(!Array.isArray(autoComplete)) return;
 
         let term = e.target.value;
-        if(!term) return arrelementsmatch = [];
+        if(!term) return matchedElements = [];
 
         /**
          * Select elements that match the given
@@ -203,43 +203,43 @@
             matched = matched.filter(m => tags.indexOf(m) === -1 );
         }
 
-        arrelementsmatch = matched;
+        matchedElements = matched;
     }
 
     function handleWindowClick(event) {
         if(!container) return;
         const eventTarget = event.path && event.path.length > 0 ? event.path[0] : event.target;
         if (container.contains(eventTarget)) return;
-        arrelementsmatch = [];
+        reset();
+    }
+
+    function reset() {
+        matchedElements = [];
         tag = '';
         liIndex = -1;
     }
 
     function handleKeyPress(event) {
-        if(!arrelementsmatch || arrelementsmatch.length === 0) return;
+        if(!matchedElements || matchedElements.length === 0) return;
         const keyCode = event.keyCode;
         let el;
         switch (keyCode) {
             case CODES.ARROW_UP:
-                el = document.getElementById(`li-${liIndex}`);
-                if(el) el.classList.remove('active');
-                liIndex--;
-                el = document.getElementById(`li-${liIndex}`);
-                if(el) { 
-                    el.classList.add('active');
-                }
+                _moveActiveLi(true);
                 break;
         
             case CODES.ARROW_DOWN:
-                el = document.getElementById(`li-${liIndex}`);
-                if(el) el.classList.remove('active');
-                liIndex++;
-                el = document.getElementById(`li-${liIndex}`);
-                if(el) {
-                    el.classList.add('active');
-                }
+                _moveActiveLi(false);
                 break;
         }
+    }
+
+    function _moveActiveLi(up=false) {
+        let el = document.getElementById(`li-${liIndex}`);
+        if(el) el.classList.remove('active');
+        up ? liIndex-- : liIndex++;
+        el = document.getElementById(`li-${liIndex}`);
+        if(el) el.classList.add('active');
     }
 
     function _trimTrailing(word='', char=',') {
@@ -247,6 +247,14 @@
         if(char !== last) return word;
         return word.substring(0, word.length - 1);
     }
+ 
+    /**
+     * Handle menu suggestions close on 
+     * inactive user. This should rather
+     * be an idle timeout...
+     */ 
+    // $: if(matchedElements.length > 0) tid = setTimeout(reset, dropdownTimeout);
+    // $: if(matchedElements.length === 0 && tid) clearTimeout(tid);
 
 </script>
 <svelte:window on:click={handleWindowClick}
@@ -272,10 +280,14 @@ on:keydown={handleKeyPress} />
         
     </div>
 
-    {#if autoComplete && arrelementsmatch.length > 0}
+    {#if autoComplete && matchedElements.length > 0}
         <ul class="svelte-tags-input-matchs">
-            {#each arrelementsmatch as element, i}
-            <li id="li-{i}" value="{element}" on:click={_ => addTagFromDropdown(element, element)}>{element}</li>
+            {#each matchedElements as element, i}
+            <li id="li-{i}" value="{element}" on:click={_ => addTagFromDropdown(element, element)}>
+                <div>
+                    <span class="icon">{element}</span><span class="count">(333)</span>
+                </div>
+            </li>
             {/each}
         </ul>
     {/if}
@@ -299,10 +311,16 @@ on:keydown={handleKeyPress} />
     -webkit-box-align:center;
         -ms-flex-align:center;
             align-items:center;
+
+    /* min-width: 400px;
+    max-width: 600px;
+    flex-basis: auto; 
+    flex-grow: 1; */
+
     padding: 0px 5px 5px 5px;
     border: solid 1px #CCC;
     background: #f6f6fc;
-    border-radius: 4px;
+    border-radius: 2px;
     box-shadow: 0 0 0 2px rgba(0,0,0,.1);
 }
 
@@ -315,7 +333,8 @@ on:keydown={handleKeyPress} />
 .svelte-tags-input {
     -webkit-box-flex: 1;
         -ms-flex: 1;
-            flex: 1; 
+            flex: 1;
+    
     margin: 0;
     margin-top: 5px;
     border:none;
@@ -348,11 +367,12 @@ on:keydown={handleKeyPress} />
     display:-webkit-box;
     display:-ms-flexbox;
     display:flex;
+
     white-space: nowrap;
     list-style:none;
     background: #252529;
     color: #f6f6fc;
-    border-radius: 4px;
+    border-radius: 2px;
     margin-right: 5px;
     margin-top: 5px;
 }
@@ -371,7 +391,7 @@ on:keydown={handleKeyPress} />
     margin: 3px 0;
     padding: 0px;
     border: solid 1px #CCC;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 2px 2px;
     max-height: 310px;
     overflow: scroll;
     overflow-x: hidden;
