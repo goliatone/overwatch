@@ -39,6 +39,7 @@ function dev:test {
     popd
 } 
 
+# Bundle and move frontend assets to server 
 function dev:frontend {
     pushd ./frontend
     npm run build
