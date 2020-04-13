@@ -6,7 +6,7 @@ body {
 }
 
 body {
-    color: #354052;
+    color: #2C3A47;
     margin: 0;
     padding: 0px;
     background-color: #f6f6fc;
@@ -71,4 +71,309 @@ button:not(:disabled):active {
 
 button:focus {
     border-color: #666;
+}
+
+
+/**
+* Style the tag for code labels in List
+*/
+
+.tag.code {
+    width: 90px;
+    font-size: .8em;
+    font-weight: 600;
+    /* background-color: #fff;
+    padding: 4px 8px; */
+}
+
+li.active {
+    color: #f6f6fc;
+    background: #252529 !important;
+}
+
+
+/* *****
+* Styles here
+* find"'(\w+-?\w+)':" 
+* replace".$1"
+* *****/
+
+.homicide {
+    border-left: 3px solid #ff3f34 !important;
+}
+
+.active.homicide {
+    border-left: 6px solid #ff3f34 !important;
+}
+
+.manslaughter {
+    border-left: 3px solid #ff5e57 !important;
+}
+
+.active.manslaughter {
+    border-left: 6px solid #ff5e57 !important;
+}
+
+.assault {
+    border-left: 3px solid #f53b57 !important;
+}
+
+.active.assault {
+    border-left: 6px solid #f53b57 !important;
+}
+
+.arms {
+    border-left: 3px solid #ef5777 !important;
+}
+
+.active.arms {
+    border-left: 6px solid #ef5777 !important;
+}
+
+.battery {
+    border-left: 3px solid #ffa801 !important;
+}
+
+.active.battery {
+    border-left: 6px solid #ffa801 !important;
+}
+
+.threat {
+    border-left: 3px solid #ffc048 !important;
+}
+
+.active.threat {
+    border-left: 6px solid #ffc048 !important;
+}
+
+.theft {
+    border-left: 3px solid #0fbcf9 !important;
+}
+
+.active.theft {
+    border-left: 6px solid #0fbcf9 !important;
+}
+
+.carjacking {
+    border-left: 3px solid #4bcffa !important;
+}
+
+.active.carjacking {
+    border-left: 6px solid #4bcffa !important;
+}
+
+.robbery {
+    border-left: 3px solid #00d8d6 !important;
+}
+
+.active.robbery {
+    border-left: 6px solid #00d8d6 !important;
+}
+
+.trespass {
+    border-left: 3px solid #00a8ff !important;
+}
+
+.active.trespass {
+    border-left: 6px solid #00a8ff !important;
+}
+
+.arson {
+    border-left: 3px solid #ffdd59 !important;
+}
+
+.active.arson {
+    border-left: 6px solid #ffdd59 !important;
+}
+
+.burglary {
+    border-left: 3px solid #3c40c6 !important;
+}
+
+.active.burglary {
+    border-left: 6px solid #3c40c6 !important;
+}
+
+.forgery {
+    border-left: 3px solid #575fcf !important;
+}
+
+.active.forgery {
+    border-left: 6px solid #575fcf !important;
+}
+
+.fraud {
+    border-left: 3px solid #00d8d6 !important;
+}
+
+.active.fraud {
+    border-left: 6px solid #00d8d6 !important;
+}
+
+.impersonation {
+    border-left: 3px solid #34e7e4 !important;
+}
+
+.active.impersonation {
+    border-left: 6px solid #34e7e4 !important;
+}
+
+.embezzlement {
+    border-left: 3px solid #18dcff !important;
+}
+
+.active.embezzlement {
+    border-left: 6px solid #18dcff !important;
+}
+
+.stolen-property {
+    border-left: 3px solid #17c0eb !important;
+}
+
+.active.stolen-property {
+    border-left: 6px solid #17c0eb !important;
+}
+
+.vandalism {
+    border-left: 3px solid #ffaf40 !important;
+}
+
+.active.vandalism {
+    border-left: 6px solid #ffaf40 !important;
+}
+
+.drugs {
+    border-left: 3px solid #BDC581 !important;
+}
+
+.active.drugs {
+    border-left: 6px solid #BDC581 !important;
+}
+
+.indecent {
+    border-left: 3px solid #F8EFBA !important;
+}
+
+.active.indecent {
+    border-left: 6px solid #F8EFBA !important;
+}
+
+.disturbance {
+    border-left: 3px solid #EAB543 !important;
+}
+
+.active.disturbance {
+    border-left: 6px solid #EAB543 !important;
+}
+
+.prostitution {
+    border-left: 3px solid #3B3B98 !important;
+}
+
+.active.prostitution {
+    border-left: 6px solid #3B3B98 !important;
+}
+
+.minor {
+    border-left: 3px solid #1B9CFC !important;
+}
+
+.active.minor {
+    border-left: 6px solid #1B9CFC !important;
+}
+
+.child-custody {
+    border-left: 3px solid #1B9CFC !important;
+}
+
+.active.child-custody {
+    border-left: 6px solid #1B9CFC !important;
+}
+
+.disobedience {
+    border-left: 3px solid #fbc531 !important;
+}
+
+.active.disobedience {
+    border-left: 6px solid #fbc531 !important;
+}
+
+.traffic-accident {
+    border-left: 3px solid #FEA47F !important;
+}
+
+.active.traffic-accident {
+    border-left: 6px solid #FEA47F !important;
+}
+
+.hit-run {
+    border-left: 3px solid #F97F51 !important;
+}
+
+.active.hit-run {
+    border-left: 6px solid #F97F51 !important;
+}
+
+.dui {
+    border-left: 3px solid #8c7ae6 !important;
+}
+
+.active.dui {
+    border-left: 6px solid #8c7ae6 !important;
+}
+
+.traffic-offense {
+    border-left: 3px solid #9c88ff !important;
+}
+
+.active.traffic-offense {
+    border-left: 6px solid #9c88ff !important;
+}
+
+.health-safety {
+    border-left: 3px solid #0097e6 !important;
+}
+
+.active.health-safety {
+    border-left: 6px solid #0097e6 !important;
+}
+
+.lewd-conduct {
+    border-left: 3px solid #fdcb6e !important;
+}
+
+.active.lewd-conduct {
+    border-left: 6px solid #fdcb6e !important;
+}
+
+.public-offense {
+    border-left: 3px solid #ffeaa7 !important;
+}
+
+.active.public-offense {
+    border-left: 6px solid #ffeaa7 !important;
+}
+
+.parole {
+    border-left: 3px solid #e17055 !important;
+}
+
+.active.parole {
+    border-left: 6px solid #e17055 !important;
+}
+
+.probation {
+    border-left: 3px solid #e17055 !important;
+}
+
+.active.probation {
+    border-left: 6px solid #e17055 !important;
+}
+
+.other {
+    border-left: 3px solid #636e72 !important;
+}
+
+.active.other {
+    border-left: 6px solid #636e72 !important;
 }
