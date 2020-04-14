@@ -1,6 +1,6 @@
 {
     "name": "crime-visualization-frontend",
-    "version": "0.0.0",
+    "version": "0.0.8",
     "description": "Crime visualization frontend",
     "scripts": {
         "build": "rollup -c",
