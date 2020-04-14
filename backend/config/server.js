@@ -26,6 +26,7 @@ module.exports = {
     },
     frontend: {
         baseUrl: '${server.host}',
+        version: '${package.version}',
         /**
          * We send this token to the front-end.
          * We would normally pull from user session
