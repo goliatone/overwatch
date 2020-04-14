@@ -13,11 +13,12 @@ module.exports.init = function(server, config) {
     });
 
     server.get('/about', (req, res) => {
-        const content = readFileSync(config.frontend.bodyPath).toString();
+        const content = config.frontend.body.toString();
         res.renderFile('about', {
             title: config.frontend.title,
             // body: marked(config.frontend.body.toString())
-            body: marked(content)
+            body: marked(content),
+            version: config.frontend.version
         });
     });
 };
