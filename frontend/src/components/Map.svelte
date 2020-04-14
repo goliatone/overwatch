@@ -132,7 +132,7 @@
                 }
             });
 
-            addHeatMap();
+            // addHeatMap();
 
             /**
              * Query backend for our first page of items
