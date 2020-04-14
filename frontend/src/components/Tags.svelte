@@ -285,7 +285,7 @@ on:keydown={handleKeyPress} />
             {#each matchedElements as element, i}
             <li id="li-{i}" value="{element}" on:click={_ => addTagFromDropdown(element, element)}>
                 <div>
-                    <span class="icon">{element}</span><span class="count">(333)</span>
+                    <span class="icon">{element}</span>
                 </div>
             </li>
             {/each}
