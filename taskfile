@@ -133,6 +133,10 @@ function release:tag {
     FVERSION=$(npm version patch)
     popd
 
+    git add ./backend/package.json
+    git add ./frontend/package.json
+    git ci "Bump package version ${BVERSION}"
+
     git tag -a "$BVERSION" -m "Tag version $BVERSION"
     git push origin --tags
 
