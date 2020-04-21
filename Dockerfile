@@ -13,9 +13,15 @@ RUN npm install
 
 RUN npm run build
 
+# Install git in our alpine base image
+FROM node:13.12.0-alpine as basenode
+
+RUN apk --update add git less openssh && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm /var/cache/apk/*
 
 # Build backend
-FROM node:13.12.0-alpine
+FROM basenode
 
 RUN mkdir -p /usr/src/app
 
@@ -23,10 +29,12 @@ WORKDIR /usr/src/app
 
 COPY ./backend/ /usr/src/app
 
-COPY ./README.md /usr/src/data/pages/ABOUT.md
+COPY ./README.md /usr/src/app/data/pages/ABOUT.md
 
 # Copy frontend from build step
 COPY --from=builder /usr/src/frontend/build /usr/src/app/modules/server/public
+
+RUN npm install
 
 # Move our index.html file to the view as an ejs file 
 # with the right hashs for bundled files
