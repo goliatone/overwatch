@@ -23,7 +23,7 @@ const plugins = [
     /**
      * Minifies `build/index.html`
      */
-    htmlnano()
+    // htmlnano()
 ];
 
 const html = fs.readFileSync('build/index.html');
