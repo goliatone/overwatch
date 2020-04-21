@@ -1,6 +1,7 @@
 #!/bin/bash
 PATH=./backend/node_modules/.bin:$PATH
 
+PROJECT_NAME=goliatone/crime-visualization-backend
 ##########################################
 # Development
 ##########################################
@@ -68,13 +69,11 @@ function dev:frontend {
 }
 
 function dev:docker {
-    NAME=goliatone/crime-visualization-backend
-    docker build --tag "$NAME" .
+    docker build --tag "$PROJECT_NAME" .
 }
 
 function dev:run {
-    NAME=goliatone/crime-visualization-backend
-    docker run -it --rm --env-file ./backend/.envset -p 4981:1981 -p 9090:9090 -d "$NAME"
+    docker run -it --rm --env-file ./backend/.envset -p 4981:1981 -p 9090:9090 -d "$PROJECT_NAME"
 }
 
 ##########################################
@@ -142,26 +141,24 @@ function release:tag {
 
 function release:docker {
 
-    NAME=goliatone/crime-visualization-backend
     TAG=${1:-$(git describe --abbrev=0 --tags)}
     if [ -z "${TAG}" ]; then
         TAG=latest
     fi
 
-    docker build --no-cache --tag "$NAME:$TAG" .
+    docker build --no-cache --tag "$PROJECT_NAME:$TAG" .
 }
 
 function release:run {
 
-    NAME=goliatone/crime-visualization-backend
     TAG=${1:-$(git describe --abbrev=0 --tags)}
     if [ -z "${TAG}" ]; then
         TAG=latest
     fi
 
-    echo "running $NAME:$TAG"
+    echo "running $PROJECT_NAME:$TAG"
 
-    docker run -it --rm --env-file ./backend/.envset -p 1981:1981 -p 9090:9090 -d "$NAME:$TAG"
+    docker run -it --rm --env-file ./backend/.envset -p 1981:1981 -p 9090:9090 -d "$PROJECT_NAME:$TAG"
     
     green=`tput setaf 2`
     reset=`tput sgr0`
