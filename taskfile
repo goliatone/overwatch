@@ -10,10 +10,12 @@ function dev:clean {
     [ -d "frontend/node_modules" ] && rm -r frontend/node_modules
     [ -d "build" ] && rm -r build
 
-    rm -r backend/*.log
-    rm -r ./backend/modules/server/public/build
     rm ./data/*.json
-    rm -r dist
+    rm ./backend/*.log
+
+    rm -rf ./dist
+    rm -rf ./frontend/build
+    rm -rf ./backend/modules/server/public/build
 }
 
 function dev:install {
@@ -27,10 +29,12 @@ function dev:install {
 }
 
 function data:json {
-    # csv2json ./data/sacramento.01.2006.csv ./data/crime_data.json
     # TODO use json2csv
-    csv2json ./data/SacramentocrimeJanuary2006.csv ./data/sources/crime_data.json
-    ./backend/bin/format-data > ./backend/data/crime.json
+    # csv2json ./data/sacramento.01.2006.csv ./data/crime_data.json
+    SRC="./data/sources/crime_data.json"
+    mkdir -p ./data/sources
+    csv2json ./data/SacramentocrimeJanuary2006.csv "${SRC}"
+    ./backend/bin/format-data --data "${SRC}" > ./backend/data/crimesdb.json
 }
 
 function dev:test {
@@ -45,10 +49,15 @@ function dev:frontend {
     npm run build
     popd
 
-    rm -fr ./backend/modules/server/public/build
-    mkdir -p ./backend/modules/server/public/build
-    cp -r ./frontend/public/* ./backend/modules/server/public/
-    rm -f ./backend/modules/server/public/index.html
+    # Clean old assets
+    rm -f ./backend/modules/server/public/bundle.*
+    rm -f ./backend/modules/server/public/global.*.css
+
+    # Copy new assets
+    cp -r ./frontend/build/* ./backend/modules/server/public/
+
+    # Update view with new hashes..,
+    mv ./backend/modules/server/public/index.html ./backend/modules/server/views/index.ejs
 }
 
 function dev:docker {
