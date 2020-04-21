@@ -1,40 +1,39 @@
-FROM        node
-MAINTAINER  goliatone <burgosemi@gmail.com>
+# Build frontend
+FROM node:9.6.1 as builder
 
-RUN \
-    mkdir -p /usr/src/app
+RUN mkdir /usr/src/frontend
+
+WORKDIR /usr/src/frontend
+
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+COPY ./frontend /usr/src/frontend
+
+RUN npm install
+
+RUN npm run build
+
+
+# Build backend
+FROM node:13.12.0-alpine
+
+RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-# Add dumb-init to solve docker's dangling pid 0
-RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 && \
-    chmod +x /usr/local/bin/dumb-init && \
-    #install dependencies for canvas < face-crop < routes/image
-    apt-get update
-    #&& apt-get install -y build-essential g++
-
-#use changes to package.json to force Docker to not use
-#cache. Use docker build --no-cache to force npm install.
-ADD ./backend/package.json /tmp/package.json
-
-RUN cd /tmp && npm install --production
-RUN cp -a /tmp/node_modules /usr/src/app/
-
 COPY ./backend/ /usr/src/app
-COPY ./README.md /usr/src/README.md
 
-#compile frontend
-COPY ./frontend/ /tmp/frontend
-RUN cd /tmp/frontend && npm i  && \
-    npm run build && \
-    mkdir -p ./usr/src/app/modules/server/public/build && \
-    cp -r /tmp/frontend/public/* /usr/src/app/modules/server/public && \
-    rm -f /usr/src/app/modules/server/public/index.html
+COPY ./README.md /usr/src/data/pages/ABOUT.md
 
-RUN cp -a /tmp/node_modules /usr/src/app/
+# Copy frontend from build step
+COPY --from=builder /usr/src/frontend/build /usr/src/app/modules/server/public
+
+# Move our index.html file to the view as an ejs file 
+# with the right hashs for bundled files
+RUN mv /usr/src/app/modules/server/public/index.html /usr/src/app/modules/server/views/index.ejs
 
 # Ensure this ports match the ones in docker-compose
 # the and .envset file
 EXPOSE 1981 9090
 
-CMD ["dumb-init", "node", "index.js"]
+CMD ["npm", "start"]
