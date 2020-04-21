@@ -1,0 +1,22 @@
+.git
+
+**/.cache
+**/.DS_Store
+
+# Frontend
+./frontend/.npmrc
+./frontend/README.md
+./frontend/samples
+./frontend/node_modules
+
+# Backend
+
+./backend/bin
+./backend/*.log
+./backend/tests
+./backend/.nvmrc
+# ./backend/.envset
+./backend/README.md
+./backend/node_modules
+./backend/.repl_history
+./backend/captain-definition
