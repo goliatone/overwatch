@@ -1,6 +1,6 @@
 {
     "name": "crime-visualization-frontend",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "Crime visualization frontend",
     "scripts": {
         "build": "rimraf build && rollup -c",

@@ -1,6 +1,6 @@
 {
     "name": "crime-visualization-backend",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "Crime visualization backend offering data services",
     "main": "index.js",
     "scripts": {
