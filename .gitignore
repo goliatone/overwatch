@@ -63,3 +63,4 @@ node_modules
 .nyc_output
 .tmp
 dist/*
+.envset
