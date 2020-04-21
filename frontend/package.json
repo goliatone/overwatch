@@ -1,12 +1,12 @@
 {
     "name": "crime-visualization-frontend",
-    "version": "0.0.8",
+    "version": "0.0.10",
     "description": "Crime visualization frontend",
     "scripts": {
         "build": "rimraf build && rollup -c",
         "dev": "rollup -c -w",
         "test": "./node_modules/.bin/bogota",
-        "start": "sirv public",
+        "start": "sirv build",
         "postbuild": "node postbuild.js"
     },
     "author": "burgosemi@gmail.com",
@@ -17,11 +17,13 @@
         "in-view": "^0.6.1",
         "mapbox-gl": "^1.9.1",
         "posthtml": "^0.12.2",
+        "posthtml-content": "0.0.3",
         "posthtml-hash": "^0.2.3",
         "rimraf": "^3.0.2",
         "rollup": "^1.20.0",
         "rollup-plugin-copy": "^3.3.0",
         "rollup-plugin-livereload": "^1.0.0",
+        "rollup-plugin-replace": "^2.2.0",
         "rollup-plugin-svelte": "^5.0.3",
         "rollup-plugin-terser": "^5.1.2",
         "sirv-cli": "^0.4.4",
