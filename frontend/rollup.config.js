@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import copy from 'rollup-plugin-copy';
+import replace from 'rollup-plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -16,6 +17,13 @@ export default {
         file: 'build/bundle.js'
     },
     plugins: [
+        replace({
+            exclude: 'node_modules/**',
+            values: {
+                VERSION: require('./package.json').version,
+                ENVIRONMENT: production ? 'production' : 'development',
+            }
+        }),
         copy({ targets: [{ src: 'public/*', dest: 'build' }] }),
         svelte({
             // enable run-time checks when not in production

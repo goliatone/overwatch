@@ -1,0 +1,39 @@
+#!/bin/bash
+# This makes all bin packages installed via npm available here
+# e.g. bogota, nyc, autocannon, etc.
+PATH=./node_modules/.bin:$PATH
+#This will make all scripts available in the ./src/bin directory
+PATH=./src/bin:$PATH
+
+function dist {
+
+    # This is the name of the final css file
+    CSS_FILENAME=global
+
+    # Remove dist folder
+    rm -rf ./dist
+
+    # Make dist folder
+    mkdir -p ./dist
+
+    # Defer build to package.json
+    npm run build
+
+    # Copy all contents to dist
+    cp -r ./public/* ./dist 
+
+    # Remove all css files from dist
+    rm ./dist/*.css
+
+    # Minify our css files and make a single min file
+    minify ./public/*.css > "./dist/${CSS_FILENAME}.css"
+}
+
+function help {
+    echo "$0 <task> <args>"
+    echo "Tasks:"
+    compgen -A function | grep -v '^_' | cat -n
+}
+
+TIMEFORMAT="Task completed in %3lR"
+time ${@:-help}  

@@ -114,6 +114,6 @@
     <div class="title">
         <span class="logo"><img src="/images/eye-0{frameNumber}.svg" alt="logo"/></span>
         <h2>Overwatch</h2>
-        <div class="version {showVersion ? '' : 'hide'}">v0.0.9</div>
+        <div class="version {showVersion ? '' : 'hide'}">VERSION</div>
     </div>
   </div>
