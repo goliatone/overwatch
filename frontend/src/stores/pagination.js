@@ -75,6 +75,7 @@ methods.last = function() {
 };
 
 methods.update = function(meta) {
+    //TODO: Make handle `total` and `count`
     if (meta.hasOwnProperty('total')) totalItems.set(meta.total);
     if (meta.hasOwnProperty('size')) itemsPerPage.set(meta.size);
     if (meta.hasOwnProperty('page')) methods.goto(meta.page);
