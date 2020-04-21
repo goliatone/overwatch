@@ -16,6 +16,7 @@ function dev:clean {
     rm -rf ./dist
     rm -rf ./frontend/build
     rm -rf ./backend/modules/server/public/build
+    rm -rf ./backend/data/pages/*.md
 }
 
 function dev:install {
@@ -25,7 +26,13 @@ function dev:install {
     pushd frontend
     npm i 
 
+    data:pages
+
     data:json
+}
+
+function data:pages {
+    ln -s ./README.md ./backend/data/pages/ABOUT.md
 }
 
 function data:json {
@@ -96,7 +103,7 @@ function dev:certs:keychain {
 # Release build
 ##########################################
 
-function release:bundle {
+function release:zip {
     #Only update files, if we made some changes
     if output=$(git status --untracked-files=no --porcelain) && [ -z "$output" ]; then
         echo "Bundling project zip..."
@@ -118,17 +125,44 @@ function release:bundle {
     fi
 }
 
-function release:docker {
+function release:tag {
     pushd ./backend || echo "faild pushd"
-    VERSION=$(npm version patch)
+    BVERSION=$(npm version patch)
     popd
+
+    pushd ./frontend || echo "faild pushd"
+    FVERSION=$(npm version patch)
+    popd
+
+    git tag -a "$BVERSION" -m "Tag version $BVERSION"
+    git push origin --tags
+
+    echo $BVERSION
+}
+
+function release:docker {
+
     NAME=goliatone/crime-visualization-backend
-    docker build --no-cache --tag "$NAME" .
+    TAG=${1:-$(git describe --abbrev=0 --tags)}
+    if [ -z "${TAG}" ]; then
+        TAG=latest
+    fi
+
+    docker build --no-cache --tag "$NAME:$TAG" .
 }
 
 function release:run {
-    NAME=goliatone/crime-visualization-backend:latest
-    docker run -it --rm --env-file ./backend/.envset -p 1981:1981 -p 9090:9090 -d "$NAME"
+
+    NAME=goliatone/crime-visualization-backend
+    TAG=${1:-$(git describe --abbrev=0 --tags)}
+    if [ -z "${TAG}" ]; then
+        TAG=latest
+    fi
+
+    echo "running $NAME:$TAG"
+
+    docker run -it --rm --env-file ./backend/.envset -p 1981:1981 -p 9090:9090 -d "$NAME:$TAG"
+    
     green=`tput setaf 2`
     reset=`tput sgr0`
     echo "  ${green}The application should open in the browser."
