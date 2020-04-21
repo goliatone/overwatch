@@ -9,7 +9,7 @@
         "start": "sirv build",
         "postbuild": "node postbuild.js"
     },
-    "author": "burgosemi@gmail.com",
+    "author": "goliatone <hello@goliatone.com>",
     "devDependencies": {
         "@rollup/plugin-commonjs": "^11.0.0",
         "@rollup/plugin-node-resolve": "^7.0.0",

@@ -9,7 +9,7 @@
         "cover": "./node_modules/.bin/nyc npm test",
         "start": "envset development -- node index.js"
     },
-    "author": "burgosemi@gmail.com",
+    "author": "goliatone <hello@goliatone.com>",
     "dependencies": {
         "@polka/redirect": "^1.0.0-next.0",
         "@polka/send-type": "^0.5.2",
