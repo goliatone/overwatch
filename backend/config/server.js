@@ -34,8 +34,8 @@ module.exports = {
          */
         token: '256203db-dd78-4de3-8bd7-8a88861225f6',
         title: 'Overwatch - Crime Watcher',
-        bodyPath: resolve('../README.md'),
-        body: readFileSync(resolve('../README.md')).toString()
+        bodyPath: resolve('./data/pages/ABOUT.md'),
+        body: readFileSync(resolve('./data/pages/ABOUT.md')).toString()
     },
     middlewareOptions: {
         public: {
