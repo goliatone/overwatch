@@ -62,8 +62,8 @@
     }
 
     .list-item {
-        /* font-family: Helvetica, Arial, sans-serif;
-        font-size: 1.2em;
+        font-family: Arial, Helvetica, sans-serif;
+        /*font-size: 1.2em;
         line-height: 1.5em; */
         margin: 0px 40px 0px 40px;
         padding-top: 16px;
@@ -73,19 +73,29 @@
     }
 
     .list-item .description {
+        font-family: 'Courier New', Courier, monospace;
         font-size: 1.2em;
         line-height: 1.3em;
         padding-bottom: 8px;
     }
 
     .list-item .meta {
-        font-size: 0.8em;
+        font-size: 0.9em;
         font-weight: 400;
         line-height: 1.4em;
     }
 
     .list-item .meta small {
         font-weight: bold;
+    }
+
+    .tag.code {
+        width: 120px;
+        font-size: .8em;
+        font-weight: 600;
+        padding-top: 8px;
+        /* background-color: #fff;
+        padding: 4px 8px; */
     }
 
     .error,
