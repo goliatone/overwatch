@@ -2,6 +2,7 @@
 PATH=./backend/node_modules/.bin:$PATH
 
 PROJECT_NAME=goliatone/crime-visualization-backend
+PROJECT_GITLAB=registry.gitlab.com/goliatone/overwatch
 ##########################################
 # Development
 ##########################################
@@ -96,6 +97,53 @@ function dev:certs:create {
 function dev:certs:keychain {
     local crt="./ops/certs/crimeviz-localhost.crt"
     sudo security add-trusted-cert -d -r trustRoot -k "/Library/Keychains/System.keychain" "$crt"
+}
+
+##########################################
+# GitLab build
+##########################################
+
+# Build image and tag. You can pass a tag
+# as the function's only argument. If you don't
+# provide a tag we try to use a `git` tag.
+# If there are no `git` tags we default to **latest**.
+#
+# arg {1} Tag
+function gitlab:build {
+
+    TAG=${1:-$(git describe --abbrev=0 --tags)}
+    if [ -z "${TAG}" ]; then
+        TAG=latest
+    fi
+    
+    echo "Build tag $PROJECT_GITLAB:$TAG"
+
+    docker build --tag "$PROJECT_GITLAB:$TAG" .
+
+    if [ "$TAG" = "latest"]; then
+        echo "We built latest tag. Better to tag :)"
+    else
+        docker build --tag "$PROJECT_GITLAB:latest" .
+    fi
+}
+
+function gitlab:push {
+    
+    TAG=${1:-$(git describe --abbrev=0 --tags)}
+    if [ -z "${TAG}" ]; then
+        TAG=latest
+    fi
+
+    echo "Push tag $PROJECT_GITLAB:$TAG"
+
+    docker push "$PROJECT_GITLAB:$TAG"
+
+    if [ "$TAG" = "latest"]; then
+        echo "We pushed tag ${TAG} to the registry..."
+    else
+        echo "We are also going to push our latest..."
+        docker build --tag "$PROJECT_GITLAB:latest" .
+    fi
 }
 
 ##########################################
