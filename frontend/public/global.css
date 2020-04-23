@@ -6,7 +6,7 @@ body {
 }
 
 body {
-    color: #2C3A47;
+    color: #171a21;
     margin: 0;
     padding: 0px;
     background-color: #f6f6fc;
@@ -80,7 +80,17 @@ button:focus {
 
 li.active {
     color: #f6f6fc;
-    background: #252529 !important;
+    background: #171a21 !important;
+}
+
+
+/*////////////////////////////////////
+// MapBox Style
+///////////////////////////////////*/
+
+.mapboxgl-popup-content {
+    max-width: 400px;
+    font: 12px/20px 'Courier New', Courier, monospace;
 }
 
 
