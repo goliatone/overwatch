@@ -120,7 +120,7 @@
         bottom: 0px;
         height: 40px;
         width:100%;
-        background-color:#252529;
+        background-color:#171a21;
         padding: 20px 40px;
     }
 
