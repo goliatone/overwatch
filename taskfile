@@ -150,6 +150,20 @@ function gitlab:push {
 # Release build
 ##########################################
 
+function release {
+    echo "Tagging current release..."
+    release:tag 
+
+    echo "Update captain-definition..."
+    release:captain
+
+    echo "Build gitlab docker image..."
+    gitlab:build 
+
+    echo "Push gitlab docker image..."
+    gitlab:push
+}
+
 function release:captain {
     TAG=${1:-$(git describe --abbrev=0 --tags)}
     if [ -z "${TAG}" ]; then
@@ -159,6 +173,9 @@ function release:captain {
     # Find our file and replace the tag.
     perl -pi.back -e "s/\:v.+/:${TAG}\"/g" ./captain-definition
     mv ./captain-definition.back .tmp/
+
+    git add ./captain-definition
+    git ci 'Bump version'
 }
 
 function release:zip {
