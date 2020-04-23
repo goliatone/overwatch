@@ -89,7 +89,7 @@
          */
         const mapOptions =  {
             container: 'map',
-            style: 'mapbox://styles/mapbox/dark-v10?optimize=true',
+            style: 'mapbox://styles/goliatone/ck9c45y9c070g1il7tnym7cr5',
             zoom: 15,
             minZoom: 7,
             maxZoom: 20,
@@ -234,10 +234,14 @@
                 'text-letter-spacing': 0.05,
                 'text-offset': [0, 1.5]
             },
-                'paint': {
-                'text-color': '#202',
-                'text-halo-color': '#fff',
-                'text-halo-width': 2
+            'paint': {
+                // 'text-color': '#202',
+                // 'text-halo-color': '#fff',
+                // 'text-halo-width': 2
+
+                'text-halo-color': '#171618',
+                'text-color': ['get', 'color'], //This will retrieve color from props
+                'text-halo-width': 1,
             },
             filter: ['==', 'icon', symbol]
         });
@@ -249,6 +253,7 @@
          */ 
         map.on('click', layerID, function({ features }) {
             const match = features[0];
+            window.fmatch = match;
             const coordinates = match.geometry.coordinates.slice();
 
             setActiveMapItem(match.properties.id);
@@ -350,7 +355,7 @@
     #map {
         width: 100%;
         height: 100%;
-        background-color: #393838;
+        background-color: #171a21;
     }
 
     #map:before {
