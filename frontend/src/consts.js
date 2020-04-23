@@ -1,5 +1,4 @@
 export const accessToken = 'pk.eyJ1IjoiZ29saWF0b25lIiwiYSI6ImlSZjZtblkifQ.715XLbqmeY7uZrR-nzKelQ';
-// export const accessToken = 'pk.eyJ1IjoiZ29saWF0b25lIiwiYSI6ImNrOG5kbmlzbTB4MngzaXF4Nnc4ZmlrN3kifQ.XgPimC6XiswkzavVSwHeJg';
 
 export const activeCity = {
     name: 'sacramento',
