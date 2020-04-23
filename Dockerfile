@@ -34,7 +34,7 @@ COPY ./README.md /usr/src/app/data/pages/ABOUT.md
 # Copy frontend from build step
 COPY --from=builder /usr/src/frontend/build /usr/src/app/modules/server/public
 
-RUN npm install
+RUN npm install --only=production
 
 # Move our index.html file to the view as an ejs file 
 # with the right hashs for bundled files
