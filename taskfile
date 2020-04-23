@@ -142,13 +142,24 @@ function gitlab:push {
         echo "We pushed tag ${TAG} to the registry..."
     else
         echo "We are also going to push our latest..."
-        docker build --tag "$PROJECT_GITLAB:latest" .
+        docker push "$PROJECT_GITLAB:latest"
     fi
 }
 
 ##########################################
 # Release build
 ##########################################
+
+function release:captain {
+    TAG=${1:-$(git describe --abbrev=0 --tags)}
+    if [ -z "${TAG}" ]; then
+        TAG=latest
+    fi
+
+    # Find our file and replace the tag.
+    perl -pi.back -e "s/\:v.+/:${TAG}\"/g" ./captain-definition
+    mv ./captain-definition.back .tmp/
+}
 
 function release:zip {
     #Only update files, if we made some changes
