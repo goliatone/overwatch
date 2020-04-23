@@ -175,7 +175,7 @@ function release:captain {
     mv ./captain-definition.back .tmp/
 
     git add ./captain-definition
-    git ci 'Bump version'
+    git ci "Update captain-definition: v${TAG}"
 }
 
 function release:zip {
