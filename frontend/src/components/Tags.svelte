@@ -326,7 +326,7 @@ on:keydown={handleKeyPress} />
 
 .svelte-tags-input-layout:focus,
 .svelte-tags-input-layout:hover {
-    border: solid 1px #252529;    
+    border: solid 1px #171a21;    
 }
 
 /* svelte-tags-input */
@@ -370,7 +370,7 @@ on:keydown={handleKeyPress} />
 
     white-space: nowrap;
     list-style:none;
-    background: #252529;
+    background: #171a21;
     color: #f6f6fc;
     border-radius: 2px;
     margin-right: 5px;
@@ -390,7 +390,7 @@ on:keydown={handleKeyPress} />
 .svelte-tags-input-matchs {
     margin: 3px 0;
     padding: 0px;
-    border: solid 1px #CCC;
+    /* border: solid 1px #CCC; */
     border-radius: 0 0 2px 2px;
     max-height: 310px;
     overflow: scroll;
@@ -407,11 +407,11 @@ on:keydown={handleKeyPress} />
 
 .svelte-tags-input-matchs  li.active  {
     color:#f6f6fc;
-    background:#252529 !important;
+    background:#171a21 !important;
 }
 
 .svelte-tags-input-matchs li:hover {
-    background:#252529;
+    background:#171a21;
     color:#f6f6fc;
 }
 </style>
