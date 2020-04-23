@@ -2,9 +2,10 @@ import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import commonjs from '@rollup/plugin-commonjs';
-import livereload from 'rollup-plugin-livereload';
+// import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import copy from 'rollup-plugin-copy';
+import browsersync from 'rollup-plugin-browsersync'
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -48,14 +49,15 @@ export default {
 
         // In dev mode, call `npm run start` once
         // the bundle has been generated
-        !production && serve({
-            contentBase: ['build'],
-            port: 5000
-        }),
+        // !production && serve({
+        //     contentBase: ['build'],
+        //     port: 5000
+        // }),
 
         // Watch the `public` directory and refresh the
         // browser on changes when not in production
-        !production && livereload({ watch: 'build' }),
+        // !production && livereload({ watch: 'build' }),
+        !production && browsersync({ server: 'build' }),
 
         // If we're building for production (npm run build
         // instead of npm run dev), minify
