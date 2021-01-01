@@ -250,7 +250,7 @@ function release:run {
     open http://localhost:1981/about
 }
 
-function deploay {
+function deploy {
     caprover deploy -c "${CAPROVER_PROJECT_CONFIG}"
 }
 
