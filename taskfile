@@ -3,6 +3,7 @@ PATH=./backend/node_modules/.bin:$PATH
 
 PROJECT_NAME=goliatone/crime-visualization-backend
 PROJECT_GITLAB=registry.gitlab.com/goliatone/overwatch
+CAPROVER_PROJECT_CONFIG=~/.caprover/overwatch/conf.json
 ##########################################
 # Development
 ##########################################
@@ -247,6 +248,10 @@ function release:run {
     echo "  ${green}http://localhost:1981/about${reset}"
     sleep 2s
     open http://localhost:1981/about
+}
+
+function deploay {
+    caprover deploy -c "${CAPROVER_PROJECT_CONFIG}"
 }
 
 function help {
