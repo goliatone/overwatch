@@ -23,10 +23,17 @@ MapBox security:
     - [ ] Query * 
     - [ ] Sort * 
 - [ ] Export as web component *
+- [ ] Add Infinite Scroll
 
-* strech goal
+* stretch goal
 
 
 <!-- 
 https://www.heropatterns.com/
+
+https://github.com/andrelmlins/svelte-infinite-scroll
+
+icons:
+https://thenounproject.com/term/crime/8847/
+https://www.flaticon.com/packs/linear-police-elements
 -->
