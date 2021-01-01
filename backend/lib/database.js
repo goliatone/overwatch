@@ -19,6 +19,7 @@ class Data {
     init(config = {}) {
         if (this.initialized) return;
         this.initialized = true;
+
         extend(this, config);
         extend.unshim(this);
     }
